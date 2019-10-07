@@ -1,0 +1,3 @@
+[submodule "Patlus.Common.UseCase"]
+	path = Patlus.Common.UseCase
+	url = https://github.com/leopripos/Patlus.Common.UseCase
