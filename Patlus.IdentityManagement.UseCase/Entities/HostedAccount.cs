@@ -15,6 +15,6 @@ namespace Patlus.IdentityManagement.UseCase.Entities
 
         public bool Archived { get; set; }
 
-        public Account Account { get; set; }
+        public Identity Identity { get; set; }
     }
 }

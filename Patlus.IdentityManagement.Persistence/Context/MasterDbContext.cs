@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Patlus.Common.UseCase.Services;
-using Patlus.IdentityManagement.UseCase.Entities;
 using Patlus.IdentityManagement.Persistence.Configurations;
+using Patlus.IdentityManagement.UseCase.Entities;
 using Patlus.IdentityManagement.UseCase.Services;
 using System.Linq;
 
@@ -19,9 +19,14 @@ namespace Patlus.IdentityManagement.Persistence.Contexts
             this.passwordService = passwordService;
         }
 
-        public IQueryable<Account> Accounts
+        public IQueryable<Pool> Pools
         {
-            get { return Set<Account>(); }
+            get { return Set<Pool>(); }
+        }
+
+        public IQueryable<Identity> Identities
+        {
+            get { return Set<Identity>(); }
         }
 
         public IQueryable<HostedAccount> HostedAccounts
@@ -41,18 +46,34 @@ namespace Patlus.IdentityManagement.Persistence.Contexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfiguration(new AccountConfiguration());
+            modelBuilder.ApplyConfiguration(new PoolConfiguration());
+            modelBuilder.ApplyConfiguration(new IdentityConfiguration());
             modelBuilder.ApplyConfiguration(new HostedAccountConfiguration());
 
-            var accountId = new System.Guid("90fdc79d-b97a-4b62-9c04-5b2f94df2026");
-            var accountName = "root";
-            var accountPassword = "root";
+            var identityId = new System.Guid("90fdc79d-b97a-4b62-9c04-5b2f94df2026");
+            var poolId = new System.Guid("c73d72b1-326d-4213-ab11-ba47d83b9ccf");
+            var identityName = "root";
+            var identityPassword = "root";
 
-            modelBuilder.Entity<Account>().HasData(new Account[] {
-                new Account() {
-                    Id = accountId,
+            modelBuilder.Entity<Pool>().HasData(new Pool[] {
+                new Pool() {
+                    Id = poolId,
                     Active = true,
-                    CreatorId = accountId,
+                    Name = "System Administrator",
+                    Description = "Default identity pool for system administrator.",
+                    CreatorId = identityId,
+                    CreatedTime = timeService.Now,
+                    LastModifiedTime = timeService.Now,
+                }
+            });
+
+            modelBuilder.Entity<Identity>().HasData(new Identity[] {
+                new Identity() {
+                    Id = identityId,
+                    PoolId = poolId,
+                    Name = identityName,
+                    Active = true,
+                    CreatorId = identityId,
                     CreatedTime = timeService.Now,
                     LastModifiedTime = timeService.Now,
                 }
@@ -60,10 +81,10 @@ namespace Patlus.IdentityManagement.Persistence.Contexts
 
             modelBuilder.Entity<HostedAccount>().HasData(new HostedAccount [] {
                 new HostedAccount(){
-                    Id = accountId,
-                    Name = accountName,
-                    Password = passwordService.GeneratePasswordHash(accountPassword),
-                    CreatorId = accountId,
+                    Id = identityId,
+                    Name = identityName,
+                    Password = passwordService.GeneratePasswordHash(identityPassword),
+                    CreatorId = identityId,
                     CreatedTime = timeService.Now,
                     LastModifiedTime = timeService.Now,
                 }

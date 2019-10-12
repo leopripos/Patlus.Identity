@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,7 +15,8 @@ using Microsoft.OpenApi.Models;
 using Patlus.Common.UseCase.Behaviours;
 using Patlus.Common.UseCase.Services;
 using Patlus.IdentityManagement.Persistence.Contexts;
-using Patlus.IdentityManagement.Persistence.Services;
+using Patlus.IdentityManagement.Rest.Authentication;
+using Patlus.IdentityManagement.Rest.Filters.Exceptions;
 using Patlus.IdentityManagement.Rest.Policies;
 using Patlus.IdentityManagement.Rest.Services;
 using Patlus.IdentityManagement.UseCase;
@@ -36,7 +38,11 @@ namespace Patlus.IdentityManagement.Rest
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services
+                .AddControllers(opt => {
+                    opt.Filters.Add(new NotFoundExceptionFilter());
+                    opt.Filters.Add(new ValidationExceptionFilter());
+                }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             services.AddMediatR(ModuleProfile.GetBundles());
             services.AddValidatorsFromAssemblies(ModuleProfile.GetBundles());
@@ -46,22 +52,16 @@ namespace Patlus.IdentityManagement.Rest
             services.AddSingleton<ITimeService>(new TimeService());
             services.AddSingleton<ITokenService>(new JwtTokenService(Configuration));
             services.AddSingleton<IPasswordService>(new HMACSHA1PasswordService(Configuration));
-            services.AddSingleton<IDbActivatorService, DbActivationService>();
 
             services.AddHttpContextAccessor();
             services.AddScoped<IPoolResolver, PoolResolver>();
 
-            services.AddDbContext<IMetadataDbContext, MetadataDbContext>(opt => {
-                opt.UseSqlServer(Configuration["Database:Connection"]);
+            services.AddDbContext<IMasterDbContext, MasterDbContext>(opt => {
+                opt.UseSqlServer(Configuration["Database:Connection"], x => x.MigrationsAssembly("Patlus.IdentityManagement.Persistence"));
             });
 
-            services.AddDbContext<IMasterDbContext, MasterDbContext>(
-                (serviceProvider, builder) => {
-                    var poolResolver = serviceProvider.GetService<IPoolResolver>();
-                    builder.UseSqlServer(poolResolver.Current.Database.ConnectionString);
-                }
-            );
-
+            services.AddScoped<IUserResolver, UserResolver>();
+            services.AddTransient(typeof(JwtBearerAuthenticationEvent));
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(opt =>
                 {
@@ -77,6 +77,8 @@ namespace Patlus.IdentityManagement.Rest
                         ValidAudience = Configuration["Authentication:Jwt:Audience"],
                         ClockSkew = TimeSpan.FromMinutes(5)
                     };
+
+                    opt.EventsType = typeof(JwtBearerAuthenticationEvent);
                 });
 
             services.AddAuthorization(opt =>

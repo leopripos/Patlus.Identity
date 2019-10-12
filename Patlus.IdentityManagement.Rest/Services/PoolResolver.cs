@@ -2,9 +2,9 @@
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.EntityFrameworkCore;
+using Patlus.Common.UseCase.Exceptions;
 using Patlus.IdentityManagement.UseCase.Entities;
-using Patlus.IdentityManagement.UseCase.Features.Pools.Queries.GetOneById;
+using Patlus.IdentityManagement.UseCase.Features.Pools.GetOneById;
 using System;
 using System.Linq;
 using System.Net;
@@ -18,9 +18,9 @@ namespace Patlus.IdentityManagement.Rest.Services
 
         public Pool Current { get; private set; }
 
-        public PoolResolver(IHttpContextAccessor httpContextAccesor, IMediator mediator, IMapper mapper)
+        public PoolResolver(IHttpContextAccessor httpContextAccesor, IMediator mediator)
         {
-            var task = Resolve(httpContextAccesor, mediator, mapper);
+            var task = Resolve(httpContextAccesor, mediator);
 
             if (task.Result == null)
             {
@@ -31,20 +31,19 @@ namespace Patlus.IdentityManagement.Rest.Services
             }
         }
 
-        private async Task<Pool> Resolve(IHttpContextAccessor httpContextAccesor, IMediator mediator, IMapper mapper)
+        private async Task<Pool> Resolve(IHttpContextAccessor httpContextAccesor, IMediator mediator)
         {
             var httpContext = httpContextAccesor.HttpContext;
             var routeData = httpContext.GetRouteData();
 
-            Pool pool = null;
             if (Guid.TryParse(routeData.Values[POOL_ID_KEY].ToString(), out Guid poolId))
             {
-                var query = await mediator.Send(new GetOneByIdQuery() { Id = poolId });
+                var pool = await mediator.Send(new GetOneByIdQuery() { Id = poolId });
 
-                pool = query.Include(e => e.Database).FirstOrDefault();
+                return pool;
             }
 
-            return pool;
+            return null;
         }
     }
 }

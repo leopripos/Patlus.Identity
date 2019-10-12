@@ -4,17 +4,18 @@ using Patlus.IdentityManagement.UseCase.Entities;
 
 namespace Patlus.IdentityManagement.Persistence.Configurations
 {
-    public class HostedAccountConfiguration : IEntityTypeConfiguration<HostedAccount>
+    public class IdentityConfiguration : IEntityTypeConfiguration<Identity>
     {
-        public void Configure(EntityTypeBuilder<HostedAccount> builder)
+        public void Configure(EntityTypeBuilder<Identity> builder)
         {
             builder.Property(e => e.Id)
+                .IsRequired()
+                .ValueGeneratedNever();
+
+            builder.Property(e => e.Active)
                 .IsRequired();
 
             builder.Property(e => e.Name)
-                .IsRequired();
-
-            builder.Property(e => e.Password)
                 .IsRequired();
 
             builder.Property(e => e.CreatorId)
@@ -31,9 +32,9 @@ namespace Patlus.IdentityManagement.Persistence.Configurations
 
             builder.HasKey(e => e.Id);
 
-            builder.HasOne(e => e.Identity)
-                .WithOne(account => account.HostedAccount)
-                .HasPrincipalKey<HostedAccount>(e => e.Id)
+            builder.HasOne(e => e.Pool)
+                .WithOne()
+                .HasForeignKey<Identity>(e => e.PoolId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }

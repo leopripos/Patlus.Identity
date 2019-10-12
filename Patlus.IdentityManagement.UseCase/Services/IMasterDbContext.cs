@@ -7,7 +7,8 @@ namespace Patlus.IdentityManagement.UseCase.Services
 {
     public interface IMasterDbContext 
     {
-        IQueryable<Account> Accounts { get; }
+        IQueryable<Pool> Pools { get; }
+        IQueryable<Identity> Identities { get; }
         IQueryable<HostedAccount> HostedAccounts { get;}
 
         void Add<TEntity>(TEntity entity) where TEntity : class;

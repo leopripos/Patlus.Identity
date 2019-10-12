@@ -2,13 +2,14 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Patlus.IdentityManagement.Rest.Authentication;
 using Patlus.IdentityManagement.Rest.Policies;
-using Patlus.IdentityManagement.UseCase.Features.Pools.Commands.Create;
-using Patlus.IdentityManagement.UseCase.Features.Pools.Commands.UpdateActiveStatus;
-using Patlus.IdentityManagement.UseCase.Features.Pools.Queries.GetList;
-using Patlus.IdentityManagement.UseCase.Features.Pools.Queries.GetOneById;
+using Patlus.IdentityManagement.UseCase.Entities;
+using Patlus.IdentityManagement.UseCase.Features.Pools.Create;
+using Patlus.IdentityManagement.UseCase.Features.Pools.GetAll;
+using Patlus.IdentityManagement.UseCase.Features.Pools.GetOneById;
+using Patlus.IdentityManagement.UseCase.Features.Pools.UpdateActiveStatus;
 using System;
-using System.Linq;
 using System.Net.Mime;
 using System.Threading.Tasks;
 
@@ -22,29 +23,36 @@ namespace Patlus.IdentityManagement.Rest.Features.Pools
     {
         private readonly IMediator mediator;
         private readonly IMapper mapper;
+        private readonly IUserResolver userResolver;
 
-        public PoolsController(IMediator mediator, IMapper mapper)
+        public PoolsController(IMediator mediator, IMapper mapper, IUserResolver userResolver)
         {
             this.mediator = mediator;
             this.mapper = mapper;
+            this.userResolver = userResolver;
         }
 
         [HttpGet]
         [Authorize(Policy = PoolPolicy.Read)]
         public async Task<PoolDto[]> GetAll()
         {
-            var query = await mediator.Send(new GetListQuery());
+            var pools = await mediator.Send(new GetAllQuery() { 
+                RequestorId = userResolver.Current.Id
+            });
 
-            return mapper.ProjectTo<PoolDto>(query).ToArray();
+            return mapper.Map<Pool[], PoolDto[]>(pools);
         }
 
         [HttpGet("{poolId}")]
         [Authorize(Policy = PoolPolicy.Read)]
         public async Task<PoolDto> GetById(Guid poolId)
         {
-            var query = await mediator.Send(new GetOneByIdQuery() { Id = poolId });
+            var pool = await mediator.Send(new GetOneByIdQuery() { 
+                Id = poolId,
+                RequestorId = userResolver.Current.Id
+            });
 
-            return mapper.Map<PoolDto>(query);
+            return mapper.Map<Pool, PoolDto>(pool);
         }
 
         [HttpPost]
@@ -53,9 +61,10 @@ namespace Patlus.IdentityManagement.Rest.Features.Pools
         {
             var command = new CreateCommand
             {
-                Id = form.Id,
                 Active = form.Active,
-                RequestorId = null
+                Name = form.Name,
+                Description = form.Description,
+                RequestorId = userResolver.Current.Id
             };
 
             var pool = await mediator.Send(command);
@@ -71,12 +80,12 @@ namespace Patlus.IdentityManagement.Rest.Features.Pools
             {
                 Id = poolId,
                 Active = form.Active,
-                RequestorId = null
+                RequestorId = userResolver.Current.Id
             };
 
-            var account = await mediator.Send(command);
+            var pool = await mediator.Send(command);
 
-            return mapper.Map<PoolDto>(account);
+            return mapper.Map<Pool, PoolDto>(pool);
         }
     }
 }

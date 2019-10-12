@@ -1,0 +1,11 @@
+﻿using Patlus.Common.UseCase;
+using System;
+
+namespace Patlus.IdentityManagement.Rest.Features.Identities
+{
+    public class HostedAccountDto : IDto
+    {
+        public string Name { get; set; }
+        public DateTime CreatedTime { get; set; }
+    }
+}

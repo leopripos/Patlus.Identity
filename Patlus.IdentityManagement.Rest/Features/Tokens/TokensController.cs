@@ -2,11 +2,14 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Patlus.Common.UseCase.Exceptions;
 using Patlus.Common.UseCase.Services;
-using Patlus.IdentityManagement.UseCase.Entities;
 using Patlus.IdentityManagement.Rest.Policies;
+using Patlus.IdentityManagement.Rest.Responses.Content;
 using Patlus.IdentityManagement.Rest.Services;
-using Patlus.IdentityManagement.UseCase.Features.Accounts.Queries.GetOneBySecret;
+using Patlus.IdentityManagement.UseCase.Entities;
+using Patlus.IdentityManagement.UseCase.Features.Identities.GetOneById;
+using Patlus.IdentityManagement.UseCase.Features.Identities.GetOneBySecret;
 using System;
 using System.Collections.Generic;
 using System.Net.Mime;
@@ -37,37 +40,79 @@ namespace Patlus.IdentityManagement.Rest.Features.Tokens
 
         [HttpPut]
         [Authorize(Policy = TokenPolicy.Refresh)]
-        public async Task<TokenDto> Refresh()
+        public async Task<IActionResult> Refresh()
         {
-            var subject = User.FindFirst(ClaimType.Subject);
-            var accountId = Guid.Parse(subject.Value);
+            var subjectClaim = User.FindFirst(ClaimType.Subject);
+            var poolClaim = User.FindFirst(ClaimType.Pool);
+            var identityId = Guid.Parse(subjectClaim.Value);
+            var poolId = Guid.Parse(poolClaim.Value);
 
-            var command = new UseCase.Features.Accounts.Queries.GetOneById.GetOneByIdQuery
+            var command = new GetOneByIdQuery
             {
-                Id = accountId
+                PoolId = poolId,
+                Id = identityId
             };
 
-            var account = await mediator.Send(command);
+            try
+            {
+                var identity = await mediator.Send(command);
 
-            return CreateToken(account);
+                if (identity.Active && identity.Pool.Active)
+                {
+                    return Ok(CreateToken(identity));
+                }
+                else
+                {
+                    return BadRequest(new ValidationErrorResultContent()
+                    {
+                        Message = "Identity inactive."
+                    });
+                }
+            }
+            catch (NotFoundException)
+            {
+                return BadRequest(new ValidationErrorResultContent()
+                {
+                    Message = "Invalid name or password."
+                });
+            }
         }
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<TokenDto> Create([FromBody] CreateForm form)
+        public async Task<IActionResult> Create([FromBody] CreateForm form)
         {
-            var command = new GetOneBySecretQuery
+            var command = new GetOneBySecretQuery()
             {
+                PoolId = poolResolver.Current.Id,
                 Name = form.Name,
                 Password = form.Password
             };
 
-            var account = await mediator.Send(command);
+            try
+            {
+                var identity = await mediator.Send(command);
 
-            return CreateToken(account);
+                if (identity.Active && identity.Pool.Active)
+                {
+                    return Ok(CreateToken(identity));
+                }
+                else {
+                    return BadRequest(new ValidationErrorResultContent()
+                    {
+                        Message = "Identity inactive."
+                    });
+                }
+            }
+            catch (NotFoundException)
+            {
+                return BadRequest(new ValidationErrorResultContent() { 
+                    Message = "Invalid name or password."
+                });
+            }
         }
 
-        private TokenDto CreateToken(Account account)
+        private TokenDto CreateToken(Identity account)
         {
             var accessClaims = new List<Claim>
             {

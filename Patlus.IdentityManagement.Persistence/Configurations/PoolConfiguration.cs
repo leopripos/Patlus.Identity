@@ -15,6 +15,12 @@ namespace Patlus.IdentityManagement.Persistence.Configurations
             builder.Property(e => e.Active)
                 .IsRequired();
 
+            builder.Property(e => e.Name)
+                .IsRequired();
+
+            builder.Property(e => e.Description)
+                .IsRequired(false);
+
             builder.Property(e => e.CreatorId)
                 .IsRequired();
 
