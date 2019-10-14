@@ -4,7 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Patlus.Common.UseCase.Exceptions;
 using Patlus.Common.UseCase.Services;
-using Patlus.IdentityManagement.Rest.Policies;
+using Patlus.IdentityManagement.Rest.Auhtorization.Policies;
+using Patlus.IdentityManagement.Rest.Authentication.Token;
 using Patlus.IdentityManagement.Rest.Responses.Content;
 using Patlus.IdentityManagement.Rest.Services;
 using Patlus.IdentityManagement.UseCase.Entities;
@@ -42,8 +43,8 @@ namespace Patlus.IdentityManagement.Rest.Features.Tokens
         [Authorize(Policy = TokenPolicy.Refresh)]
         public async Task<IActionResult> Refresh()
         {
-            var subjectClaim = User.FindFirst(ClaimType.Subject);
-            var poolClaim = User.FindFirst(ClaimType.Pool);
+            var subjectClaim = User.FindFirst(TokenClaimType.Subject);
+            var poolClaim = User.FindFirst(TokenClaimType.Pool);
             var identityId = Guid.Parse(subjectClaim.Value);
             var poolId = Guid.Parse(poolClaim.Value);
 
@@ -116,18 +117,18 @@ namespace Patlus.IdentityManagement.Rest.Features.Tokens
         {
             var accessClaims = new List<Claim>
             {
-                new Claim(ClaimType.AccessType, TokenType.AccessToken),
-                new Claim(ClaimType.Version, "1.0"),
-                new Claim(ClaimType.Subject, account.Id.ToString()),
-                new Claim(ClaimType.Pool, poolResolver.Current.Id.ToString())
+                new Claim(TokenClaimType.AccessType, TokenAccessType.AccessToken),
+                new Claim(TokenClaimType.Version, "1.0"),
+                new Claim(TokenClaimType.Subject, account.Id.ToString()),
+                new Claim(TokenClaimType.Pool, poolResolver.Current.Id.ToString())
             };
 
             var refreshClaims = new List<Claim>
             {
-                new Claim(ClaimType.AccessType, TokenType.RefreshToken),
-                new Claim(ClaimType.Version, "1.0"),
-                new Claim(ClaimType.Subject, account.Id.ToString()),
-                new Claim(ClaimType.Pool, poolResolver.Current.Id.ToString())
+                new Claim(TokenClaimType.AccessType, TokenAccessType.RefreshToken),
+                new Claim(TokenClaimType.Version, "1.0"),
+                new Claim(TokenClaimType.Subject, account.Id.ToString()),
+                new Claim(TokenClaimType.Pool, poolResolver.Current.Id.ToString())
             };
 
             var accessTokenTime = int.Parse(configuration["Authentication:Jwt:AccessTokenTime"]);

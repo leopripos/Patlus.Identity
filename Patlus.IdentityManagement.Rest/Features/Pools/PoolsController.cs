@@ -2,8 +2,8 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Patlus.IdentityManagement.Rest.Auhtorization.Policies;
 using Patlus.IdentityManagement.Rest.Authentication;
-using Patlus.IdentityManagement.Rest.Policies;
 using Patlus.IdentityManagement.UseCase.Entities;
 using Patlus.IdentityManagement.UseCase.Features.Pools.Create;
 using Patlus.IdentityManagement.UseCase.Features.Pools.GetAll;

@@ -1,6 +1,6 @@
-﻿namespace Patlus.IdentityManagement.Rest
+﻿namespace Patlus.IdentityManagement.Rest.Authentication.Token
 {
-    public static class ClaimType
+    public static class TokenClaimType
     {
         public const string Audience = "aud";
         public const string Issuer = "iss";

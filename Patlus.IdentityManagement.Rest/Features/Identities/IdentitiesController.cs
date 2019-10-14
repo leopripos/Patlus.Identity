@@ -2,8 +2,8 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Patlus.IdentityManagement.Rest.Auhtorization.Policies;
 using Patlus.IdentityManagement.Rest.Authentication;
-using Patlus.IdentityManagement.Rest.Policies;
 using Patlus.IdentityManagement.Rest.Services;
 using Patlus.IdentityManagement.UseCase.Entities;
 using Patlus.IdentityManagement.UseCase.Features.Identities.CreateHosted;
@@ -35,7 +35,7 @@ namespace Patlus.IdentityManagement.Rest.Features.Identities
         }
 
         [HttpGet]
-        [Authorize(Policy = AccountPolicy.Read)]
+        [Authorize(Policy = IdentityPolicy.Read)]
         public async Task<IdentityDto[]> GetAll()
         {
             var identities = await mediator.Send(new GetAllQuery() { 
@@ -47,7 +47,7 @@ namespace Patlus.IdentityManagement.Rest.Features.Identities
         }
 
         [HttpGet("{identityId}")]
-        [Authorize(Policy = AccountPolicy.Read)]
+        [Authorize(Policy = IdentityPolicy.Read)]
         public async Task<IdentityDto> GetById(Guid identityId)
         {
             var identity = await mediator.Send(new GetOneByIdQuery() { 
@@ -60,7 +60,7 @@ namespace Patlus.IdentityManagement.Rest.Features.Identities
         }
 
         [HttpPost]
-        [Authorize(Policy = AccountPolicy.Create)]
+        [Authorize(Policy = IdentityPolicy.Create)]
         public async Task<ActionResult<IdentityDto>> Create([FromBody] CreateForm form)
         {
             var command = new CreateHostedCommand
@@ -77,7 +77,7 @@ namespace Patlus.IdentityManagement.Rest.Features.Identities
         }
 
         [HttpPut("{identityId}/active")]
-        [Authorize(Policy = AccountPolicy.UpdateActiveStatus)]
+        [Authorize(Policy = IdentityPolicy.UpdateActiveStatus)]
         public async Task<IdentityDto> UpdateActiveStatus(Guid identityId, [FromBody] UpdateActiveStatusForm form)
         {
             var command = new UpdateActiveStatusCommand
