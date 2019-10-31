@@ -16,6 +16,7 @@ namespace Patlus.IdentityManagement.Rest.Extensions
             {
                 opt.AddPoolPolicies();
                 opt.AddIdentityPolicies();
+                opt.AddTokenPolicies();
             });
         }
 
@@ -27,17 +28,20 @@ namespace Patlus.IdentityManagement.Rest.Extensions
         {
             opt.AddPolicy(PoolPolicy.Read, policy =>
             {
-                policy.RequireClaim(TokenClaimType.AccessType, TokenAccessType.AccessToken);
+                policy.RequireClaim(TokenClaimType.Subject);
+                policy.RequireClaim(TokenClaimType.Pool);
             });
 
             opt.AddPolicy(PoolPolicy.Create, policy =>
             {
-                policy.RequireClaim(TokenClaimType.AccessType, TokenAccessType.AccessToken);
+                policy.RequireClaim(TokenClaimType.Subject);
+                policy.RequireClaim(TokenClaimType.Pool);
             });
 
             opt.AddPolicy(PoolPolicy.UpdateActiveStatus, policy =>
             {
-                policy.RequireClaim(TokenClaimType.AccessType, TokenAccessType.AccessToken);
+                policy.RequireClaim(TokenClaimType.Subject);
+                policy.RequireClaim(TokenClaimType.Pool);
             });
         }
 
@@ -45,22 +49,35 @@ namespace Patlus.IdentityManagement.Rest.Extensions
         {
             opt.AddPolicy(IdentityPolicy.Read, policy =>
             {
-                policy.RequireClaim(TokenClaimType.AccessType, TokenAccessType.AccessToken);
+                policy.RequireClaim(TokenClaimType.Subject);
+                policy.RequireClaim(TokenClaimType.Pool);
             });
 
             opt.AddPolicy(IdentityPolicy.Create, policy =>
             {
-                policy.RequireClaim(TokenClaimType.AccessType, TokenAccessType.AccessToken);
+                policy.RequireClaim(TokenClaimType.Subject);
+                policy.RequireClaim(TokenClaimType.Pool);
             });
 
             opt.AddPolicy(IdentityPolicy.UpdateActiveStatus, policy =>
             {
-                policy.RequireClaim(TokenClaimType.AccessType, TokenAccessType.AccessToken);
+                policy.RequireClaim(TokenClaimType.Subject);
+                policy.RequireClaim(TokenClaimType.Pool);
             });
 
             opt.AddPolicy(TokenPolicy.Refresh, policy =>
             {
-                policy.RequireClaim(TokenClaimType.AccessType, TokenAccessType.RefreshToken);
+                policy.RequireClaim(TokenClaimType.Subject);
+                policy.RequireClaim(TokenClaimType.Pool);
+            });
+        }
+
+        private static void AddTokenPolicies(this AuthorizationOptions opt)
+        {
+            opt.AddPolicy(TokenPolicy.Refresh, policy =>
+            {
+                policy.RequireClaim(TokenClaimType.Subject);
+                policy.RequireClaim(TokenClaimType.Pool);
             });
         }
     }

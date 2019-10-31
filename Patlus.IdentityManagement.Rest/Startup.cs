@@ -34,6 +34,16 @@ namespace Patlus.IdentityManagement.Rest
                     opt.Filters.Add(new ValidationExceptionFilter());
                 });
 
+            services.AddCors(opt =>
+            {
+                opt.AddDefaultPolicy(builder =>
+                {
+                    builder.AllowAnyOrigin();
+                    builder.AllowAnyMethod();
+                    builder.AllowAnyHeader();
+                });
+            });
+
             services.AddMediatR(ModuleProfile.GetBundles());
             services.AddValidatorsFromAssemblies(ModuleProfile.GetBundles());
             services.AddAutoMapper(GetType().Assembly);
@@ -47,7 +57,10 @@ namespace Patlus.IdentityManagement.Rest
             services.AddScoped<IPoolResolver, PoolResolver>();
 
             services.AddDbContext<IMasterDbContext, MasterDbContext>(opt => {
-                opt.UseSqlServer(Configuration["Database:Connection"], x => x.MigrationsAssembly("Patlus.IdentityManagement.Persistence"));
+                opt.UseSqlServer(
+                    Configuration["Database:Connection"], 
+                    optBuilder => optBuilder.MigrationsAssembly("Patlus.IdentityManagement.Persistence")
+                );
             });
 
             services.ConfigureAuthenticationService(this.Configuration);
@@ -64,18 +77,20 @@ namespace Patlus.IdentityManagement.Rest
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseCors();
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseAuthenticationFeature(env);
+
+            app.UseAuthorizationFeature(env);
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
-
-            app.UseAuthenticationFeature(env);
-
-            app.UseAuthorizationFeature(env);
 
             app.UseSwaggerFeature(env);
         }

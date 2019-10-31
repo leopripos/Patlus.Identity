@@ -3,6 +3,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Patlus.IdentityManagement.Rest.Authentication.Token;
 
 namespace Patlus.IdentityManagement.Rest.Authentication
 {
@@ -23,7 +24,7 @@ namespace Patlus.IdentityManagement.Rest.Authentication
             {
                 ClaimsIdentity identity = context.Principal.Identity as ClaimsIdentity;
 
-                var subjectClaim = identity.FindFirst(ClaimTypes.NameIdentifier);
+                var subjectClaim = identity.FindFirst(TokenClaimType.Subject);
 
                 if (subjectClaim == null)
                 {

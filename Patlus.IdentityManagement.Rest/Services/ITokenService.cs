@@ -6,6 +6,8 @@ namespace Patlus.IdentityManagement.Rest.Services
 {
     public interface ITokenService
     {
-        string Generate(IEnumerable<Claim> claims, DateTime expired, DateTime notBefore);
+        string GenerateAccessToken(IEnumerable<Claim> claims, DateTime expired, DateTime notBefore);
+        string GenerateRefreshToken(IEnumerable<Claim> claims, DateTime expired, DateTime notBefore);
+        bool ValidateRefreshToken(string refreshToken, out ClaimsPrincipal principal);
     }
 }

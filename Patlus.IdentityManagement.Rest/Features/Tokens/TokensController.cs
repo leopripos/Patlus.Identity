@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Patlus.Common.UseCase.Exceptions;
 using Patlus.Common.UseCase.Services;
-using Patlus.IdentityManagement.Rest.Auhtorization.Policies;
 using Patlus.IdentityManagement.Rest.Authentication.Token;
 using Patlus.IdentityManagement.Rest.Responses.Content;
 using Patlus.IdentityManagement.Rest.Services;
@@ -37,46 +36,6 @@ namespace Patlus.IdentityManagement.Rest.Features.Tokens
             this.timeService = timeService;
             this.tokenGenerator = tokenGenerator;
             this.poolResolver = poolResolver;
-        }
-
-        [HttpPut]
-        [Authorize(Policy = TokenPolicy.Refresh)]
-        public async Task<IActionResult> Refresh()
-        {
-            var subjectClaim = User.FindFirst(TokenClaimType.Subject);
-            var poolClaim = User.FindFirst(TokenClaimType.Pool);
-            var identityId = Guid.Parse(subjectClaim.Value);
-            var poolId = Guid.Parse(poolClaim.Value);
-
-            var command = new GetOneByIdQuery
-            {
-                PoolId = poolId,
-                Id = identityId
-            };
-
-            try
-            {
-                var identity = await mediator.Send(command);
-
-                if (identity.Active && identity.Pool.Active)
-                {
-                    return Ok(CreateToken(identity));
-                }
-                else
-                {
-                    return BadRequest(new ValidationErrorResultContent()
-                    {
-                        Message = "Identity inactive."
-                    });
-                }
-            }
-            catch (NotFoundException)
-            {
-                return BadRequest(new ValidationErrorResultContent()
-                {
-                    Message = "Invalid name or password."
-                });
-            }
         }
 
         [HttpPost]
@@ -113,11 +72,59 @@ namespace Patlus.IdentityManagement.Rest.Features.Tokens
             }
         }
 
+        [HttpPut]
+        [AllowAnonymous]
+        public async Task<IActionResult> Refresh([FromBody] RefreshForm form)
+        {
+            if (tokenGenerator.ValidateRefreshToken(form.RefreshToken, out ClaimsPrincipal principal))
+            {
+                var subjectClaim = principal.FindFirst(TokenClaimType.Subject);
+                var poolClaim = principal.FindFirst(TokenClaimType.Pool);
+
+                var identityId = Guid.Parse(subjectClaim.Value);
+                var poolId = Guid.Parse(poolClaim.Value);
+
+                var command = new GetOneByIdQuery
+                {
+                    PoolId = poolId,
+                    Id = identityId
+                };
+
+                try
+                {
+                    var identity = await mediator.Send(command);
+
+                    if (identity.Active && identity.Pool.Active)
+                    {
+                        return Ok(CreateToken(identity));
+                    }
+                    else
+                    {
+                        return BadRequest(new ValidationErrorResultContent()
+                        {
+                            Message = "Identity inactive."
+                        });
+                    }
+                }
+                catch (NotFoundException)
+                {
+                    ModelState.AddModelError(nameof(form.RefreshToken), "Invalid refresh token");
+
+                    return BadRequest(ModelState);
+                }
+            }
+            else
+            {
+                ModelState.AddModelError(nameof(form.RefreshToken), "Invalid refresh token");
+
+                return BadRequest(ModelState);
+            }
+        }
+
         private TokenDto CreateToken(Identity account)
         {
             var accessClaims = new List<Claim>
             {
-                new Claim(TokenClaimType.AccessType, TokenAccessType.AccessToken),
                 new Claim(TokenClaimType.Version, "1.0"),
                 new Claim(TokenClaimType.Subject, account.Id.ToString()),
                 new Claim(TokenClaimType.Pool, poolResolver.Current.Id.ToString())
@@ -125,7 +132,6 @@ namespace Patlus.IdentityManagement.Rest.Features.Tokens
 
             var refreshClaims = new List<Claim>
             {
-                new Claim(TokenClaimType.AccessType, TokenAccessType.RefreshToken),
                 new Claim(TokenClaimType.Version, "1.0"),
                 new Claim(TokenClaimType.Subject, account.Id.ToString()),
                 new Claim(TokenClaimType.Pool, poolResolver.Current.Id.ToString())
@@ -136,8 +142,8 @@ namespace Patlus.IdentityManagement.Rest.Features.Tokens
 
             return new TokenDto()
             {
-                AccessToken = tokenGenerator.Generate(accessClaims, timeService.Now.AddMinutes(accessTokenTime), timeService.Now),
-                RefreshToken = tokenGenerator.Generate(refreshClaims, timeService.Now.AddMinutes(refreshTokenTime), timeService.Now),
+                AccessToken = tokenGenerator.GenerateAccessToken(accessClaims, timeService.Now.AddMinutes(accessTokenTime), timeService.Now),
+                RefreshToken = tokenGenerator.GenerateRefreshToken(refreshClaims, timeService.Now.AddMinutes(refreshTokenTime), timeService.Now),
             };
         }
     }
