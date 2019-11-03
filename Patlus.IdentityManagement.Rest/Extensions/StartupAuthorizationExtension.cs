@@ -17,6 +17,7 @@ namespace Patlus.IdentityManagement.Rest.Extensions
                 opt.AddPoolPolicies();
                 opt.AddIdentityPolicies();
                 opt.AddTokenPolicies();
+                opt.AddMePolicies();
             });
         }
 
@@ -75,6 +76,15 @@ namespace Patlus.IdentityManagement.Rest.Extensions
         private static void AddTokenPolicies(this AuthorizationOptions opt)
         {
             opt.AddPolicy(TokenPolicy.Refresh, policy =>
+            {
+                policy.RequireClaim(TokenClaimType.Subject);
+                policy.RequireClaim(TokenClaimType.Pool);
+            });
+        }
+
+        private static void AddMePolicies(this AuthorizationOptions opt)
+        {
+            opt.AddPolicy(MePolicy.UpdatePassword, policy =>
             {
                 policy.RequireClaim(TokenClaimType.Subject);
                 policy.RequireClaim(TokenClaimType.Pool);

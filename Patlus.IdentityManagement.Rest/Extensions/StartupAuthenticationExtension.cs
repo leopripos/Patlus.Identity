@@ -14,6 +14,8 @@ namespace Patlus.IdentityManagement.Rest.Extensions
     {
         public static void ConfigureAuthenticationService(this IServiceCollection services, IConfiguration configuration)
         {
+            var tokenConfiguration = configuration.GetSection("Authentication:Token");
+
             services.AddScoped<IUserResolver, UserResolver>();
             services.AddTransient(typeof(JwtBearerAuthenticationEvent));
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -21,15 +23,15 @@ namespace Patlus.IdentityManagement.Rest.Extensions
                 {
                     opt.TokenValidationParameters = new TokenValidationParameters()
                     {
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Authentication:Jwt:Key:Access"])),
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenConfiguration.GetValue<string>("Key:Access"))),
                         RequireSignedTokens = true,
                         RequireExpirationTime = true,
                         ValidateLifetime = true,
                         ValidateIssuer = true,
                         ValidateAudience = true,
-                        ValidIssuer = configuration["Authentication:Jwt:Issuer"],
-                        ValidAudience = configuration["Authentication:Jwt:Audience"],
-                        ClockSkew = TimeSpan.FromMinutes(5)
+                        ValidIssuer = tokenConfiguration.GetValue<string>("Issuer"),
+                        ValidAudience = tokenConfiguration.GetValue<string>("Audience"),
+                        ClockSkew = TimeSpan.Zero,
                     };
 
                     opt.EventsType = typeof(JwtBearerAuthenticationEvent);

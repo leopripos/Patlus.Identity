@@ -12,6 +12,9 @@ namespace Patlus.IdentityManagement.Persistence.Configurations
                 .IsRequired()
                 .ValueGeneratedNever();
 
+            builder.Property(e => e.AuthKey)
+                .IsRequired();
+
             builder.Property(e => e.Active)
                 .IsRequired();
 

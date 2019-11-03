@@ -3,6 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 
@@ -10,20 +11,20 @@ namespace Patlus.IdentityManagement.Rest.Services
 {
     public class JwtTokenService : ITokenService
     {
-        private readonly IConfiguration configuration;
-        public JwtTokenService(IConfiguration configuration)
+        private readonly IConfiguration tokenConfiguration;
+        public JwtTokenService(IConfigurationSection tokenConfiguration)
         {
-            this.configuration = configuration;
+            this.tokenConfiguration = tokenConfiguration;
         }
 
         public string GenerateAccessToken(IEnumerable<Claim> claims, DateTime expired, DateTime notBefore)
         {
-            return Generate(claims, expired, notBefore, configuration["Authentication:Jwt:Key:Access"]);
+            return Generate(claims, expired, notBefore, tokenConfiguration.GetValue<string>("Key:Access"));
         }
 
         public string GenerateRefreshToken(IEnumerable<Claim> claims, DateTime expired, DateTime notBefore)
         {
-            return Generate(claims, expired, notBefore, configuration["Authentication:Jwt:Key:Refresh"]);
+            return Generate(claims, expired, notBefore, tokenConfiguration.GetValue<string>("Key:Refresh"));
         }
 
         private string Generate(IEnumerable<Claim> claims, DateTime expired, DateTime notBefore, string key)
@@ -32,8 +33,8 @@ namespace Patlus.IdentityManagement.Rest.Services
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
-                configuration["Authentication:Jwt:Issuer"],
-                configuration["Authentication:Jwt:Audience"],
+                tokenConfiguration.GetValue<string>("Issuer"),
+                tokenConfiguration.GetValue<string>("Audience"),
                 claims,
                 expires: expired,
                 notBefore: notBefore,
@@ -47,15 +48,15 @@ namespace Patlus.IdentityManagement.Rest.Services
         {
             var validatioParameter = new TokenValidationParameters()
             {
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Authentication:Jwt:Key:Refresh"])),
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenConfiguration.GetValue<string>("Key:Refresh"))),
                 RequireSignedTokens = true,
                 RequireExpirationTime = true,
                 ValidateLifetime = true,
                 ValidateIssuer = true,
                 ValidateAudience = true,
-                ValidIssuer = configuration["Authentication:Jwt:Issuer"],
-                ValidAudience = configuration["Authentication:Jwt:Audience"],
-                ClockSkew = TimeSpan.FromMinutes(5)
+                ValidIssuer = tokenConfiguration.GetValue<string>("Issuer"),
+                ValidAudience = tokenConfiguration.GetValue<string>("Audience"),
+                ClockSkew = TimeSpan.Zero
             };
 
             try

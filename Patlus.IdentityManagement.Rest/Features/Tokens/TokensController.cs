@@ -26,15 +26,17 @@ namespace Patlus.IdentityManagement.Rest.Features.Tokens
         private readonly IConfiguration configuration;
         private readonly IMediator mediator;
         private readonly ITimeService timeService;
-        private readonly ITokenService tokenGenerator;
+        private readonly ITokenService tokenService;
+        private readonly ITokenCacheService tokenCacheService;
         private readonly IPoolResolver poolResolver;
 
-        public TokensController(IConfiguration configuration, IMediator mediator, ITimeService timeService, ITokenService tokenGenerator, IPoolResolver poolResolver)
+        public TokensController(IConfiguration configuration, IMediator mediator, ITimeService timeService, ITokenService tokenService, ITokenCacheService tokenCacheService, IPoolResolver poolResolver)
         {
             this.configuration = configuration;
             this.mediator = mediator;
             this.timeService = timeService;
-            this.tokenGenerator = tokenGenerator;
+            this.tokenService = tokenService;
+            this.tokenCacheService = tokenCacheService;
             this.poolResolver = poolResolver;
         }
 
@@ -55,7 +57,8 @@ namespace Patlus.IdentityManagement.Rest.Features.Tokens
 
                 if (identity.Active && identity.Pool.Active)
                 {
-                    return Ok(CreateToken(identity));
+                    var token = CreateToken(identity);
+                    return Ok(token.Dto);
                 }
                 else {
                     return BadRequest(new ValidationErrorResultContent()
@@ -76,11 +79,14 @@ namespace Patlus.IdentityManagement.Rest.Features.Tokens
         [AllowAnonymous]
         public async Task<IActionResult> Refresh([FromBody] RefreshForm form)
         {
-            if (tokenGenerator.ValidateRefreshToken(form.RefreshToken, out ClaimsPrincipal principal))
+            if (tokenService.ValidateRefreshToken(form.RefreshToken, out ClaimsPrincipal principal))
             {
+                var tokenIdClaim = principal.FindFirst(TokenClaimType.TokenId);
                 var subjectClaim = principal.FindFirst(TokenClaimType.Subject);
                 var poolClaim = principal.FindFirst(TokenClaimType.Pool);
 
+
+                var currentTokenId = Guid.Parse(tokenIdClaim.Value);
                 var identityId = Guid.Parse(subjectClaim.Value);
                 var poolId = Guid.Parse(poolClaim.Value);
 
@@ -94,9 +100,17 @@ namespace Patlus.IdentityManagement.Rest.Features.Tokens
                 {
                     var identity = await mediator.Send(command);
 
-                    if (identity.Active && identity.Pool.Active)
+                    if (tokenCacheService.HasToken(identity.Id, currentTokenId, identity.AuthKey.ToString()))
+                    { 
+                        ModelState.AddModelError(nameof(form.RefreshToken), "Invalid refresh token");
+                    }
+                    else if (identity.Active && identity.Pool.Active)
                     {
-                        return Ok(CreateToken(identity));
+                        var newToken = CreateToken(identity);
+
+                        RefreshToken(identity, newToken, currentTokenId);
+
+                        return Ok(newToken.Dto);
                     }
                     else
                     {
@@ -109,22 +123,24 @@ namespace Patlus.IdentityManagement.Rest.Features.Tokens
                 catch (NotFoundException)
                 {
                     ModelState.AddModelError(nameof(form.RefreshToken), "Invalid refresh token");
-
-                    return BadRequest(ModelState);
                 }
             }
             else
             {
                 ModelState.AddModelError(nameof(form.RefreshToken), "Invalid refresh token");
-
-                return BadRequest(ModelState);
             }
+
+
+            return BadRequest(ModelState);
         }
 
-        private TokenDto CreateToken(Identity account)
+        private TokenGenerated CreateToken(Identity account)
         {
+            var tokenId = Guid.NewGuid();
+
             var accessClaims = new List<Claim>
             {
+                new Claim(TokenClaimType.TokenId, tokenId.ToString()),
                 new Claim(TokenClaimType.Version, "1.0"),
                 new Claim(TokenClaimType.Subject, account.Id.ToString()),
                 new Claim(TokenClaimType.Pool, poolResolver.Current.Id.ToString())
@@ -132,19 +148,40 @@ namespace Patlus.IdentityManagement.Rest.Features.Tokens
 
             var refreshClaims = new List<Claim>
             {
+                new Claim(TokenClaimType.TokenId, tokenId.ToString()),
                 new Claim(TokenClaimType.Version, "1.0"),
                 new Claim(TokenClaimType.Subject, account.Id.ToString()),
                 new Claim(TokenClaimType.Pool, poolResolver.Current.Id.ToString())
             };
 
-            var accessTokenTime = int.Parse(configuration["Authentication:Jwt:AccessTokenTime"]);
-            var refreshTokenTime = int.Parse(configuration["Authentication:Jwt:RefreshTokenTime"]);
+            var accessTokenExpiredTime = timeService.Now.AddMinutes(configuration.GetValue<int>("Authentication:Token:AccessTokenTime"));
+            var refreshTokenExpiredTime = timeService.Now.AddMinutes(configuration.GetValue<int>("Authentication:Token:RefreshTokenTime"));
 
-            return new TokenDto()
+            var tokenDto = new TokenDto()
             {
-                AccessToken = tokenGenerator.GenerateAccessToken(accessClaims, timeService.Now.AddMinutes(accessTokenTime), timeService.Now),
-                RefreshToken = tokenGenerator.GenerateRefreshToken(refreshClaims, timeService.Now.AddMinutes(refreshTokenTime), timeService.Now),
+                AccessToken = tokenService.GenerateAccessToken(accessClaims, accessTokenExpiredTime, timeService.Now),
+                RefreshToken = tokenService.GenerateRefreshToken(refreshClaims, refreshTokenExpiredTime, timeService.Now),
             };
+
+            return new TokenGenerated()
+            {
+                TokenId = tokenId,
+                RefreshExpiredTime = refreshTokenExpiredTime,
+                Dto = tokenDto
+            };
+        }
+
+        private void RefreshToken(Identity identity, TokenGenerated newToken, Guid currentTokenId)
+        {
+            tokenCacheService.Remove(identity.Id, currentTokenId);
+
+            tokenCacheService.Set(identity.Id, newToken.TokenId, identity.AuthKey.ToString(), newToken.RefreshExpiredTime);
+        }
+
+        class TokenGenerated { 
+            public Guid TokenId { get; set; }
+            public DateTime RefreshExpiredTime { get; set; }
+            public TokenDto Dto { get; set; }
         }
     }
 }

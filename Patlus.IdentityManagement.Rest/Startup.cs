@@ -21,10 +21,12 @@ namespace Patlus.IdentityManagement.Rest
     public class Startup
     {
         public IConfiguration Configuration { get; }
+        public IWebHostEnvironment HostEnvironment { get; }
 
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment hostEnvironment)
         {
             Configuration = configuration;
+            HostEnvironment = hostEnvironment;
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -50,8 +52,9 @@ namespace Patlus.IdentityManagement.Rest
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
             services.AddSingleton<ITimeService>(new TimeService());
-            services.AddSingleton<ITokenService>(new JwtTokenService(Configuration));
-            services.AddSingleton<IPasswordService>(new HMACSHA1PasswordService(Configuration));
+            services.AddSingleton<ITokenCacheService, TokenCacheService>();
+            services.AddSingleton<ITokenService>(new JwtTokenService(Configuration.GetSection("Authentication:Token")));
+            services.AddSingleton<IPasswordService>(new HMACSHA1PasswordService(Configuration.GetSection("Authentication:Password")));
 
             services.AddHttpContextAccessor();
             services.AddScoped<IPoolResolver, PoolResolver>();
@@ -62,6 +65,8 @@ namespace Patlus.IdentityManagement.Rest
                     optBuilder => optBuilder.MigrationsAssembly("Patlus.IdentityManagement.Persistence")
                 );
             });
+
+            services.ConfigureDistributedCacheService(Configuration, HostEnvironment);
 
             services.ConfigureAuthenticationService(this.Configuration);
 
