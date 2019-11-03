@@ -34,6 +34,7 @@ namespace Patlus.IdentityManagement.UseCase.Features.Identities.CreateHosted
             var entity = new Identity()
             {
                 Id = Guid.NewGuid(),
+                AuthKey = Guid.NewGuid(),
                 PoolId = request.PoolId.Value,
                 Active = request.Active.Value,
                 Name = request.Name,

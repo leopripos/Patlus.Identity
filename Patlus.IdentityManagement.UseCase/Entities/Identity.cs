@@ -7,6 +7,7 @@ namespace Patlus.IdentityManagement.UseCase.Entities
     {
         public Guid Id { get; set; }
         public Guid PoolId { get; set; }
+        public Guid AuthKey { get; set; }
         public bool Active { get; set; }
         public string Name { get; set; }
 

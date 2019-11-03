@@ -3,6 +3,7 @@ using Patlus.Common.UseCase.Services;
 using Patlus.IdentityManagement.Persistence.Configurations;
 using Patlus.IdentityManagement.UseCase.Entities;
 using Patlus.IdentityManagement.UseCase.Services;
+using System;
 using System.Linq;
 
 namespace Patlus.IdentityManagement.Persistence.Contexts
@@ -50,8 +51,8 @@ namespace Patlus.IdentityManagement.Persistence.Contexts
             modelBuilder.ApplyConfiguration(new IdentityConfiguration());
             modelBuilder.ApplyConfiguration(new HostedAccountConfiguration());
 
-            var identityId = new System.Guid("90fdc79d-b97a-4b62-9c04-5b2f94df2026");
-            var poolId = new System.Guid("c73d72b1-326d-4213-ab11-ba47d83b9ccf");
+            var identityId = new Guid("90fdc79d-b97a-4b62-9c04-5b2f94df2026");
+            var poolId = new Guid("c73d72b1-326d-4213-ab11-ba47d83b9ccf");
             var identityName = "root";
             var identityPassword = "root";
 
@@ -70,6 +71,7 @@ namespace Patlus.IdentityManagement.Persistence.Contexts
             modelBuilder.Entity<Identity>().HasData(new Identity[] {
                 new Identity() {
                     Id = identityId,
+                    AuthKey = Guid.NewGuid(),
                     PoolId = poolId,
                     Name = identityName,
                     Active = true,
