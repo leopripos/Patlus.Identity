@@ -1,14 +1,16 @@
 ﻿using FluentValidation;
 using Patlus.Common.UseCase;
+using Patlus.IdentityManagement.UseCase.Services;
 
 namespace Patlus.IdentityManagement.UseCase.Features.Pools.UpdateActiveStatus
 {
     public class UpdateActiveStatusCommandValidator : AbstractValidator<UpdateActiveStatusCommand>, IFeatureValidator<UpdateActiveStatusCommand>
     {
-        public UpdateActiveStatusCommandValidator()
+        private readonly IMasterDbContext dbService;
+
+        public UpdateActiveStatusCommandValidator(IMasterDbContext dbService)
         {
-            RuleFor(r => r.Id)
-                .NotEmpty();
+            this.dbService = dbService;
 
             RuleFor(r => r.Active)
                 .NotEmpty();

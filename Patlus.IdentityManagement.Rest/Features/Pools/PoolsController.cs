@@ -8,6 +8,7 @@ using Patlus.IdentityManagement.UseCase.Entities;
 using Patlus.IdentityManagement.UseCase.Features.Pools.Create;
 using Patlus.IdentityManagement.UseCase.Features.Pools.GetAll;
 using Patlus.IdentityManagement.UseCase.Features.Pools.GetOneById;
+using Patlus.IdentityManagement.UseCase.Features.Pools.Update;
 using Patlus.IdentityManagement.UseCase.Features.Pools.UpdateActiveStatus;
 using System;
 using System.Net.Mime;
@@ -70,6 +71,31 @@ namespace Patlus.IdentityManagement.Rest.Features.Pools
             var pool = await mediator.Send(command);
 
             return Created(new Uri($"{Request.Path}/{pool.Id}", UriKind.Relative), mapper.Map<PoolDto>(pool));
+        }
+
+        [HttpPatch("{poolId}")]
+        [Authorize(Policy = PoolPolicy.Update)]
+        public async Task<ActionResult<PoolDto>> Update(Guid poolId, [FromBody] UpdateForm form)
+        {
+            var command = new UpdateCommand()
+            {
+                Id = poolId,
+                RequestorId = userResolver.Current.Id
+            };
+
+            if (form.HasName)
+            {
+                command.Name = form.Name;
+            }
+
+            if (form.HasDescription)
+            {
+                command.Name = form.Description;
+            }
+
+            var pool = await mediator.Send(command);
+
+            return Ok(mapper.Map<PoolDto>(pool));
         }
 
         [HttpPut("{poolId}/active")]
