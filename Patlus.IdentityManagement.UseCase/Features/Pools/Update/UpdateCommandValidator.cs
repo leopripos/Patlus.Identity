@@ -2,22 +2,20 @@
 using Microsoft.EntityFrameworkCore;
 using Patlus.Common.UseCase;
 using Patlus.IdentityManagement.UseCase.Services;
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Patlus.IdentityManagement.UseCase.Features.Pools.Create
+namespace Patlus.IdentityManagement.UseCase.Features.Pools.Update
 {
-    public class CreateCommandValidator : AbstractValidator<CreateCommand>, IFeatureValidator<CreateCommand>
+    public class UpdateCommandValidator : AbstractValidator<UpdateCommand>, IFeatureValidator<UpdateCommand>
     {
         private readonly IMasterDbContext dbService;
 
-        public CreateCommandValidator(IMasterDbContext dbService)
+        public UpdateCommandValidator(IMasterDbContext dbService)
         {
             this.dbService = dbService;
-
-            RuleFor(r => r.Active)
-                .NotEmpty();
 
             RuleFor(r => r.Name)
                 .NotEmpty()
@@ -30,9 +28,9 @@ namespace Patlus.IdentityManagement.UseCase.Features.Pools.Create
                 .NotEmpty();
         }
 
-        private async Task<bool> UniqueName(string value, CancellationToken cancellationToken)
+        private async Task<bool> UniqueName(string name, CancellationToken cancellationToken)
         {
-            var count = await dbService.Pools.Where(e => e.Name == value).CountAsync(cancellationToken);
+            var count = await dbService.Pools.Where(e => e.Name == name).CountAsync(cancellationToken);
 
             return count == 0;
         }
