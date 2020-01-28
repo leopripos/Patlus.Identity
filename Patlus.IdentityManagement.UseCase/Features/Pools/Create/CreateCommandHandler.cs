@@ -27,6 +27,11 @@ namespace Patlus.IdentityManagement.UseCase.Features.Pools.Create
 
         public async Task<Pool> Handle(CreateCommand request, CancellationToken cancellationToken)
         {
+            if (request.Name is null) throw new ArgumentNullException(nameof(request.Name));
+            if (request.Description is null) throw new ArgumentNullException(nameof(request.Description));
+            if (request.Active is null) throw new ArgumentNullException(nameof(request.Active));
+            if (request.RequestorId is null) throw new ArgumentNullException(nameof(request.RequestorId));
+
             var currentTime = timeService.Now;
 
             var entity = new Pool()
@@ -42,20 +47,16 @@ namespace Patlus.IdentityManagement.UseCase.Features.Pools.Create
 
             dbService.Add(entity);
 
-            await dbService.SaveChangesAsync(cancellationToken);
+            await dbService.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-            var notification = new CreatedNotification
-            {
-                Entity = entity,
-                By = request.RequestorId.Value,
-                Time = currentTime
-            };
+            var notification = new CreatedNotification(entity, request.RequestorId.Value, currentTime);
 
             try
             {
-                await mediator.Publish(notification, cancellationToken);
+                await mediator.Publish(notification, cancellationToken).ConfigureAwait(false);
             }
-            catch(Exception e) {
+            catch (Exception e)
+            {
                 logger.LogError(e, $"Error publish {nameof(CreatedNotification)} when handle { nameof(CreateCommand) } at { nameof(CreateCommandHandler) }");
             }
 

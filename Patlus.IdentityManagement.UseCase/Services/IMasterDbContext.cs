@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace Patlus.IdentityManagement.UseCase.Services
 {
-    public interface IMasterDbContext 
+    public interface IMasterDbContext
     {
         IQueryable<Pool> Pools { get; }
         IQueryable<Identity> Identities { get; }
-        IQueryable<HostedAccount> HostedAccounts { get;}
+        IQueryable<HostedAccount> HostedAccounts { get; }
 
         void Add<TEntity>(TEntity entity) where TEntity : class;
         void Update<TEntity>(TEntity entity) where TEntity : class;

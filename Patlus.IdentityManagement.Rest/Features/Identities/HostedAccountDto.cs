@@ -5,7 +5,7 @@ namespace Patlus.IdentityManagement.Rest.Features.Identities
 {
     public class HostedAccountDto : IDto
     {
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
         public DateTime CreatedTime { get; set; }
     }
 }

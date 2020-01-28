@@ -31,6 +31,9 @@ namespace Patlus.IdentityManagement.UseCase.Features.Pools.Update
         }
         public async Task<Pool> Handle(UpdateCommand request, CancellationToken cancellationToken)
         {
+            if (request.Id is null) throw new ArgumentNullException(nameof(request.Id));
+            if (request.RequestorId is null) throw new ArgumentNullException(nameof(request.RequestorId));
+
             var currentTime = timeService.Now;
 
             var entity = dbService.Pools.Where(e => e.Id == request.Id).SingleOrDefault();
@@ -42,45 +45,34 @@ namespace Patlus.IdentityManagement.UseCase.Features.Pools.Update
 
             var valueChanges = new Dictionary<string, ValueChanged>();
 
-            if (request.HasName)
+            if (request.Name != null)
             {
-                valueChanges.Add(nameof(request.Name), new ValueChanged()
-                {
-                    Old = entity.Name,
-                    New = request.Name
-                });
-
+                valueChanges.Add(nameof(request.Name), new ValueChanged(entity.Name, request.Name));
                 entity.Name = request.Name;
             }
 
-            if (request.HasDescription)
+            if (request.Description != null)
             {
-                valueChanges.Add(nameof(request.Description), new ValueChanged()
-                {
-                    Old = entity.Description,
-                    New = request.Description
-                });
-
-                entity.Name = request.Name;
+                valueChanges.Add(nameof(request.Description), new ValueChanged(entity.Description, request.Description));
+                entity.Description = request.Description;
             }
 
-            var notification = new UpdatedNotification
-            {
-                Entity = entity,
-                Values = valueChanges,
-                By = request.RequestorId.Value,
-                Time = currentTime
-            };
-            
+            var notification = new UpdatedNotification(
+                entity,
+                valueChanges,
+                request.RequestorId.Value,
+                currentTime
+            );
+
             entity.LastModifiedTime = currentTime;
 
             dbService.Update(entity);
 
-            await dbService.SaveChangesAsync(cancellationToken);
+            await dbService.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
             try
             {
-                await mediator.Publish(notification, cancellationToken);
+                await mediator.Publish(notification, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception e)
             {

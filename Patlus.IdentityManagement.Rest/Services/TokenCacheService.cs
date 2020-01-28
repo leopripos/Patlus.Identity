@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -24,7 +22,7 @@ namespace Patlus.IdentityManagement.Rest.Services
             return value == authKey;
         }
 
-        public Task Set(Guid accountId, Guid tokenId, string authKey, DateTime expiredTime)
+        public Task Set(Guid accountId, Guid tokenId, string authKey, DateTimeOffset expiredTime)
         {
             var key = $"{accountId.ToString()}:{tokenId.ToString()}";
 

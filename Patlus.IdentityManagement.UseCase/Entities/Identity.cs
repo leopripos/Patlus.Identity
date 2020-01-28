@@ -9,15 +9,15 @@ namespace Patlus.IdentityManagement.UseCase.Entities
         public Guid PoolId { get; set; }
         public Guid AuthKey { get; set; }
         public bool Active { get; set; }
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
         public Guid CreatorId { get; set; }
-        public DateTime CreatedTime { get; set; }
-        public DateTime LastModifiedTime { get; set; }
+        public DateTimeOffset CreatedTime { get; set; }
+        public DateTimeOffset LastModifiedTime { get; set; }
 
         public bool Archived { get; set; }
 
-        public Pool Pool { get; set; }
-        public HostedAccount HostedAccount { get; set; }
+        public Pool? Pool { get; set; }
+        public HostedAccount? HostedAccount { get; set; }
     }
 }

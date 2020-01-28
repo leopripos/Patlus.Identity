@@ -4,7 +4,16 @@ namespace Patlus.IdentityManagement.Rest.Responses.Content
 {
     public class ValidationErrorResultContent
     {
-        public string Message { get; set; }
-        public IReadOnlyDictionary<string, string[]> Details { get; set; } = new Dictionary<string, string[]>();
+        public readonly string Message;
+        public readonly IReadOnlyDictionary<string, List<string>> Details;
+
+        public ValidationErrorResultContent(string message, IReadOnlyDictionary<string, List<string>> details)
+        {
+            this.Message = message;
+            this.Details = details;
+        }
+
+        public ValidationErrorResultContent(string message) : this(message, new Dictionary<string, List<string>>())
+        { }
     }
 }

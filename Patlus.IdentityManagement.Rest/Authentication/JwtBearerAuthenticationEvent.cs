@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Patlus.IdentityManagement.Rest.Authentication.Token;
+using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Patlus.IdentityManagement.Rest.Authentication.Token;
 
 namespace Patlus.IdentityManagement.Rest.Authentication
 {
@@ -22,21 +22,28 @@ namespace Patlus.IdentityManagement.Rest.Authentication
 
             if (accessToken != null)
             {
-                ClaimsIdentity identity = context.Principal.Identity as ClaimsIdentity;
+                var identity = context.Principal.Identity as ClaimsIdentity;
 
-                var subjectClaim = identity.FindFirst(TokenClaimType.Subject);
-
-                if (subjectClaim == null)
+                if (identity == null)
                 {
-                    context.Fail("Invalid access token");
-                }
-                else if (Guid.TryParse(subjectClaim.Value, out Guid userId))
-                {
-                    this.userResolver.Initialize(userId);
+                    context.Fail("Identity not found");
                 }
                 else
                 {
-                    context.Fail("Invalid access token");
+                    var subjectClaim = identity.FindFirst(TokenClaimType.Subject);
+
+                    if (subjectClaim == null)
+                    {
+                        context.Fail("Invalid access token");
+                    }
+                    else if (Guid.TryParse(subjectClaim.Value, out Guid userId))
+                    {
+                        this.userResolver.Initialize(new User(userId));
+                    }
+                    else
+                    {
+                        context.Fail("Invalid access token");
+                    }
                 }
             }
 

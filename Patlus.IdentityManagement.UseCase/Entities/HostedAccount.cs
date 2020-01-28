@@ -6,15 +6,15 @@ namespace Patlus.IdentityManagement.UseCase.Entities
     public class HostedAccount : IStandardEntity, IAccount
     {
         public Guid Id { get; set; }
-        public string Name { get; set; }
-        public string Password { get; set; }
+        public string Name { get; set; } = null!;
+        public string Password { get; set; } = null!;
 
         public Guid CreatorId { get; set; }
-        public DateTime CreatedTime { get; set; }
-        public DateTime LastModifiedTime { get; set; }
+        public DateTimeOffset CreatedTime { get; set; }
+        public DateTimeOffset LastModifiedTime { get; set; }
 
         public bool Archived { get; set; }
 
-        public Identity Identity { get; set; }
+        public Identity Identity { get; set; } = null!;
     }
 }

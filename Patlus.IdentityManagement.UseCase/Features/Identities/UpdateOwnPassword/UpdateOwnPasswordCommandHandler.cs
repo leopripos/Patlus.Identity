@@ -10,67 +10,67 @@ using Patlus.IdentityManagement.UseCase.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Patlus.IdentityManagement.UseCase.Features.Identities.UpdateOwnPassword
 {
-    public class UpdateOwnPasswordCommandHandler : ICommandFeatureHandler<UpdateOwnPasswordCommand, HostedAccount>
+    public class UpdateOwnPasswordCommandHandler : ICommandFeatureHandler<UpdateOwnPasswordCommand, Identity>
     {
-        private readonly ILogger<UpdateOwnPasswordCommand> logger;
-        private readonly IMasterDbContext dbService;
-        private readonly ITimeService timeService;
-        private readonly IMediator mediator;
-        private readonly IPasswordService passwordService;
+        private readonly ILogger<UpdateOwnPasswordCommandHandler> _logger;
+        private readonly IMasterDbContext _dbService;
+        private readonly ITimeService _timeService;
+        private readonly IMediator _mediator;
+        private readonly IPasswordService _passwordService;
 
-        public UpdateOwnPasswordCommandHandler(ILogger<UpdateOwnPasswordCommand> logger, IMasterDbContext dbService, ITimeService timeService, IMediator mediator, IPasswordService passwordService)
+        public UpdateOwnPasswordCommandHandler(ILogger<UpdateOwnPasswordCommandHandler> logger, IMasterDbContext dbService, ITimeService timeService, IMediator mediator, IPasswordService passwordService)
         {
-            this.logger = logger;
-            this.dbService = dbService;
-            this.timeService = timeService;
-            this.mediator = mediator;
-            this.passwordService = passwordService;
+            _logger = logger;
+            _dbService = dbService;
+            _timeService = timeService;
+            _mediator = mediator;
+            _passwordService = passwordService;
         }
 
-        public async Task<HostedAccount> Handle(UpdateOwnPasswordCommand request, CancellationToken cancellationToken)
+        public async Task<Identity> Handle(UpdateOwnPasswordCommand request, CancellationToken cancellationToken)
         {
-            var currentTime = timeService.Now;
+            if (string.IsNullOrWhiteSpace(request.OldPassword)) throw new ArgumentException($"{nameof(request.OldPassword)} can not be empty, null or whitespace", nameof(request.OldPassword));
+            if (string.IsNullOrWhiteSpace(request.NewPassword)) throw new ArgumentException($"{nameof(request.NewPassword)} can not be empty, null or whitespace", nameof(request.NewPassword));
+            if (request.RequestorId is null) throw new ArgumentNullException(nameof(request.RequestorId));
 
-            var query = dbService.HostedAccounts.Include(e => e.Identity).Where(e => e.Id == request.RequestorId);
+            var currentTime = _timeService.Now;
+
+            var query = _dbService.Identities.Include(e => e.HostedAccount).Where(e => e.Id == request.RequestorId);
 
             var entity = query.SingleOrDefault();
 
-            if (entity == null)
+            if (entity == null || !_passwordService.ValidatePasswordHash(entity.HostedAccount!.Password, request.OldPassword))
             {
-                throw new NotFoundException(nameof(HostedAccount), request.RequestorId);
+                throw new NotFoundException(nameof(HostedAccount), new { request.RequestorId, request.OldPassword });
             }
 
-            var notification = new OwnPasswordUdpatedNotification
-            {
-                Entity = entity,
-                Values = new Dictionary<string, ValueChanged>(),
-                By = request.RequestorId.Value,
-                Time = currentTime
-            };
+            var notification = new OwnPasswordUdpatedNotification(entity, new Dictionary<string, ValueChanged>(), request.RequestorId.Value, currentTime);
 
-            entity.Password = passwordService.GeneratePasswordHash(request.NewPassword);
-            entity.Identity.AuthKey = Guid.NewGuid();
-
+            entity.AuthKey = Guid.NewGuid();
             entity.LastModifiedTime = currentTime;
 
-            dbService.Update(entity);
+            entity.HostedAccount.Password = _passwordService.GeneratePasswordHash(request.NewPassword);
+            entity.HostedAccount.LastModifiedTime = currentTime;
 
-            await dbService.SaveChangesAsync(cancellationToken);
+            _dbService.Update(entity);
+
+            await _dbService.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
             try
             {
-                await mediator.Publish(notification, cancellationToken);
+                await _mediator.Publish(notification, cancellationToken).ConfigureAwait(false);
             }
+#pragma warning disable CA1031 // Do not catch general exception types, Justification: Error publishing notification unknown, but it should not interup action
             catch (Exception e)
             {
-                logger.LogError(e, $"Error publish { nameof(OwnPasswordUdpatedNotification) } when handle { nameof(UpdateOwnPasswordCommand) } at { nameof(UpdateOwnPasswordCommandHandler) }");
+                _logger.LogError(e, $"Error publish { nameof(OwnPasswordUdpatedNotification) } when handle { nameof(UpdateOwnPasswordCommand) } at { nameof(UpdateOwnPasswordCommandHandler) }");
             }
+#pragma warning restore CA1031 // Do not catch general exception types
 
             return entity;
         }

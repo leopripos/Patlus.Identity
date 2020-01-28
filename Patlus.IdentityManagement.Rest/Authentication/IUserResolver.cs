@@ -5,11 +5,11 @@ namespace Patlus.IdentityManagement.Rest.Authentication
     public interface IUserResolver
     {
         IUser Current { get; }
-        void Initialize(Guid userId);
+        void Initialize(IUser user);
+    }
 
-        public interface IUser
-        {
-            public Guid Id { get; }
-        }
+    public interface IUser
+    {
+        Guid Id { get; }
     }
 }

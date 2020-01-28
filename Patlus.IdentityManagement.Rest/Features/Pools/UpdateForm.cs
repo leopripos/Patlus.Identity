@@ -2,8 +2,8 @@
 {
     public class UpdateForm
     {
-        private string name;
-        private string description;
+        private string name = null!;
+        private string description = null!;
 
         public bool HasName { get; private set; }
         public string Name

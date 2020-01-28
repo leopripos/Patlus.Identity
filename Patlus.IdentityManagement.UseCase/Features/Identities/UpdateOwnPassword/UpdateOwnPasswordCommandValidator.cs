@@ -1,5 +1,7 @@
 ﻿using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using Patlus.Common.UseCase;
+using Patlus.Common.UseCase.Validators;
 using Patlus.IdentityManagement.UseCase.Services;
 using System.Linq;
 using System.Threading;
@@ -9,46 +11,43 @@ namespace Patlus.IdentityManagement.UseCase.Features.Identities.UpdateOwnPasswor
 {
     public class UpdateOwnPasswordCommandValidator : AbstractValidator<UpdateOwnPasswordCommand>, IFeatureValidator<UpdateOwnPasswordCommand>
     {
-        private readonly IMasterDbContext dbService;
-        private readonly IPasswordService passwordService;
+        private readonly IMasterDbContext _dbService;
+        private readonly IPasswordService _passwordService;
 
         public UpdateOwnPasswordCommandValidator(IMasterDbContext dbService, IPasswordService passwordService)
         {
-            this.dbService = dbService;
-            this.passwordService = passwordService;
+            _dbService = dbService;
+            _passwordService = passwordService;
 
             RuleFor(r => r.RequestorId)
-                .NotEmpty();
+                .NotEmpty().WithErrorCode(ValidationErrorCodes.NotEmpty);
 
             RuleFor(r => r.OldPassword)
-                .NotEmpty()
-                .MustAsync(CorrectOldPassword).WithMessage(e => $"Invalid { nameof(e.OldPassword) } password");
+                .NotEmpty().WithErrorCode(ValidationErrorCodes.NotEmpty)
+                .MustAsync(CorrectOldPassword).WithMessage(e => $"Invalid { nameof(e.OldPassword) } password").WithErrorCode(ValidationErrorCodes.Invalid);
 
             RuleFor(r => r.NewPassword)
-                .NotEmpty()
-                .MinimumLength(4)
-                .MaximumLength(10);
+                .NotEmpty().WithErrorCode(ValidationErrorCodes.NotEmpty)
+                .MinimumLength(6).WithErrorCode(ValidationErrorCodes.MinLength)
+                .MaximumLength(20).WithErrorCode(ValidationErrorCodes.MaxLength);
 
             RuleFor(r => r.RetypeNewPassword)
-                .NotEmpty()
-                .MustAsync(UqualToNewPassword).WithMessage(e => $"{ nameof(e.RetypeNewPassword) } should equal to { nameof(e.NewPassword) } ");
+                .NotEmpty().WithErrorCode(ValidationErrorCodes.NotEmpty)
+                .Equal(e => e.NewPassword).WithErrorCode(ValidationErrorCodes.Equal);
         }
 
         private Task<bool> CorrectOldPassword(UpdateOwnPasswordCommand command, string oldPassword, CancellationToken cancellationToken)
         {
-            var entity = dbService.HostedAccounts.Where(e => e.Id == command.RequestorId).FirstOrDefault();
+            var entity = _dbService.Identities
+                .Include(e => e.HostedAccount)
+                .Where(e => e.Id == command.RequestorId && e.Archived == false).FirstOrDefault();
 
-            if (entity == null)
+            if (entity is null || entity.HostedAccount is null)
             {
                 return Task.FromResult(false);
             }
 
-            return Task.FromResult(passwordService.ValidatePasswordHash(entity.Password, oldPassword));
-        }
-
-        private Task<bool> UqualToNewPassword(UpdateOwnPasswordCommand command, string retypeNewPassword, CancellationToken cancellationToken)
-        {
-            return Task.FromResult(retypeNewPassword == command.NewPassword);
+            return Task.FromResult(_passwordService.ValidatePasswordHash(entity.HostedAccount.Password, oldPassword));
         }
     }
 }

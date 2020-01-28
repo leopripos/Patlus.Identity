@@ -32,7 +32,7 @@ namespace Patlus.IdentityManagement.UseCase.Features.Pools.Create
 
         private async Task<bool> UniqueName(string value, CancellationToken cancellationToken)
         {
-            var count = await dbService.Pools.Where(e => e.Name == value).CountAsync(cancellationToken);
+            var count = await dbService.Pools.Where(e => e.Name == value).CountAsync(cancellationToken).ConfigureAwait(false);
 
             return count == 0;
         }
