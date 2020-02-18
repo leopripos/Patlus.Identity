@@ -1,0 +1,93 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Patlus.IdentityManagement.Rest</name>
+    </assembly>
+    <members>
+        <member name="M:Patlus.IdentityManagement.Rest.Features.Identities.IdentitiesController.GetAll(System.Guid)">
+            <summary>
+            Get all identities in specific pool
+            </summary>
+            <returns>List of identities</returns>
+        </member>
+        <member name="M:Patlus.IdentityManagement.Rest.Features.Identities.IdentitiesController.GetById(System.Guid,System.Guid)">
+            <summary>
+            Get specific identity in specific pool
+            </summary>
+            <param name="poolId">Pool Id</param>
+            <param name="identityId">Identity Id</param>
+            <returns>Requested Identity</returns>
+        </member>
+        <member name="M:Patlus.IdentityManagement.Rest.Features.Identities.IdentitiesController.Create(System.Guid,Patlus.IdentityManagement.Rest.Features.Identities.CreateForm)">
+            <summary>
+            Create new identity 
+            </summary>
+            <param name="poolId">Pool Id</param>
+            <param name="form">Create Form</param>
+            <returns>Created Identity</returns>
+        </member>
+        <member name="M:Patlus.IdentityManagement.Rest.Features.Identities.IdentitiesController.UpdateActiveStatus(System.Guid,System.Guid,Patlus.IdentityManagement.Rest.Features.Identities.UpdateActiveStatusForm)">
+            <summary>
+            Update active status of specific identity
+            </summary>
+            <param name="poolId">Pool Id</param>
+            <param name="identityId">Identity Id</param>
+            <param name="form">Update Active Status Form</param>
+            <returns>Updated Identity</returns>
+        </member>
+        <member name="M:Patlus.IdentityManagement.Rest.Features.Pools.PoolsController.GetAll">
+            <summary>
+            Get the list of Pool
+            </summary>
+            <returns>Array of pool</returns>
+        </member>
+        <member name="M:Patlus.IdentityManagement.Rest.Features.Pools.PoolsController.GetById(System.Guid)">
+            <summary>
+            Get pool with specific id
+            </summary>
+            <param name="poolId">Pool Id</param>
+            <returns>Pool</returns>
+        </member>
+        <member name="M:Patlus.IdentityManagement.Rest.Features.Pools.PoolsController.Create(Patlus.IdentityManagement.Rest.Features.Pools.CreateForm)">
+            <summary>
+            Create new Pool
+            </summary>
+            <param name="form">New Pool Form</param>
+            <returns>Created Pool</returns>
+        </member>
+        <member name="M:Patlus.IdentityManagement.Rest.Features.Pools.PoolsController.Update(System.Guid,Patlus.IdentityManagement.Rest.Features.Pools.UpdateForm)">
+            <summary>
+            Update the detail of specific pool
+            </summary>
+            <remarks>
+            Updating pool using partial update, so you have to update which field you want to update.
+            No need to pass all value
+            </remarks>
+            <param name="poolId">Pool Id</param>
+            <param name="form">Updated Pool Form</param>
+            <returns>Pool Updated</returns>
+        </member>
+        <member name="M:Patlus.IdentityManagement.Rest.Features.Pools.PoolsController.UpdateActiveStatus(System.Guid,Patlus.IdentityManagement.Rest.Features.Pools.UpdateActiveStatusForm)">
+            <summary>
+            Update active status of specific pool
+            </summary>
+            <param name="poolId">Pool Id</param>
+            <param name="form">Update Form</param>
+            <returns>Pool Updated</returns>
+        </member>
+        <member name="M:Patlus.IdentityManagement.Rest.Features.Tokens.TokensController.Create(Patlus.IdentityManagement.Rest.Features.Tokens.CreateForm)">
+            <summary>
+            Create authentication token by passing user credential
+            </summary>
+            <param name="form">Create form</param>
+            <returns>Authentication Token</returns>
+        </member>
+        <member name="M:Patlus.IdentityManagement.Rest.Features.Tokens.TokensController.Refresh(Patlus.IdentityManagement.Rest.Features.Tokens.RefreshForm)">
+            <summary>
+            Refresh the token by passing refresh token
+            </summary>
+            <param name="form">Refresh Form</param>
+            <returns>Authentication token</returns>
+        </member>
+    </members>
+</doc>

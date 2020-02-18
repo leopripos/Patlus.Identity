@@ -7,12 +7,12 @@ namespace Patlus.IdentityManagement.UseCase.Entities
     {
         public Guid Id { get; set; }
         public bool Active { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public string Name { get; set; } = null!;
+        public string Description { get; set; } = null!;
 
         public Guid CreatorId { get; set; }
-        public DateTime CreatedTime { get; set; }
-        public DateTime LastModifiedTime { get; set; }
+        public DateTimeOffset CreatedTime { get; set; }
+        public DateTimeOffset LastModifiedTime { get; set; }
 
         public bool Archived { get; set; }
     }

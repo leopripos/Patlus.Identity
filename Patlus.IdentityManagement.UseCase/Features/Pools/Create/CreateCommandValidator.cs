@@ -1,40 +1,28 @@
 ﻿using FluentValidation;
-using Microsoft.EntityFrameworkCore;
 using Patlus.Common.UseCase;
+using Patlus.Common.UseCase.Validators;
 using Patlus.IdentityManagement.UseCase.Services;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Patlus.IdentityManagement.UseCase.Features.Pools.Create
 {
     public class CreateCommandValidator : AbstractValidator<CreateCommand>, IFeatureValidator<CreateCommand>
     {
-        private readonly IMasterDbContext dbService;
-
         public CreateCommandValidator(IMasterDbContext dbService)
         {
-            this.dbService = dbService;
-
             RuleFor(r => r.Active)
-                .NotEmpty();
+                .NotEmpty().WithErrorCode(ValidationErrorCodes.NotEmpty);
 
             RuleFor(r => r.Name)
-                .NotEmpty()
-                .MustAsync(UniqueName);
+                .NotEmpty().WithErrorCode(ValidationErrorCodes.NotEmpty)
+                .MinimumLength(4).WithErrorCode(ValidationErrorCodes.MinLength)
+                .Matches(@"^[a-zA-Z]").WithErrorCode(ValidationErrorCodes.PatternMatch)
+                .Unique(dbService.Pools, (value) => (x => x.Name == value)).WithErrorCode(ValidationErrorCodes.Unique);
 
             RuleFor(r => r.Description)
-                .NotEmpty();
+                .NotEmpty().WithErrorCode(ValidationErrorCodes.NotEmpty);
 
             RuleFor(r => r.RequestorId)
-                .NotEmpty();
-        }
-
-        private async Task<bool> UniqueName(string value, CancellationToken cancellationToken)
-        {
-            var count = await dbService.Pools.Where(e => e.Name == value).CountAsync(cancellationToken);
-
-            return count == 0;
+                .NotEmpty().WithErrorCode(ValidationErrorCodes.NotEmpty);
         }
     }
 }

@@ -17,7 +17,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Patlus.IdentityManagement.U
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Patlus.IdentityManagement.Persistence", "Patlus.IdentityManagement.Persistence\Patlus.IdentityManagement.Persistence.csproj", "{23C1FCC4-1D52-4C86-A535-646F86975043}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Patlus.IdentityManagement.Rest", "Patlus.IdentityManagement.Rest\Patlus.IdentityManagement.Rest.csproj", "{142595E0-35A5-4005-92BA-17D6909D13F7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Patlus.IdentityManagement.Rest", "Patlus.IdentityManagement.Rest\Patlus.IdentityManagement.Rest.csproj", "{061ED4A6-B438-46BD-A667-EA0CB0DC4ACA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Patlus.IdentityManagement.UseCaseTests", "Patlus.IdentityManagement.UseCaseTests\Patlus.IdentityManagement.UseCaseTests.csproj", "{751BFC7C-F010-4B55-A558-0EC49CB3FD0F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Patlus.IdentityManagement.RestTests", "Patlus.IdentityManagement.RestTests\Patlus.IdentityManagement.RestTests.csproj", "{4C5AB483-A67D-4497-A337-41968D58333F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1042F49F-9575-4033-9B09-AC1A33C2494B}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,10 +46,18 @@ Global
 		{23C1FCC4-1D52-4C86-A535-646F86975043}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{23C1FCC4-1D52-4C86-A535-646F86975043}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{23C1FCC4-1D52-4C86-A535-646F86975043}.Release|Any CPU.Build.0 = Release|Any CPU
-		{142595E0-35A5-4005-92BA-17D6909D13F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{142595E0-35A5-4005-92BA-17D6909D13F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{142595E0-35A5-4005-92BA-17D6909D13F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{142595E0-35A5-4005-92BA-17D6909D13F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{061ED4A6-B438-46BD-A667-EA0CB0DC4ACA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{061ED4A6-B438-46BD-A667-EA0CB0DC4ACA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{061ED4A6-B438-46BD-A667-EA0CB0DC4ACA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{061ED4A6-B438-46BD-A667-EA0CB0DC4ACA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{751BFC7C-F010-4B55-A558-0EC49CB3FD0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{751BFC7C-F010-4B55-A558-0EC49CB3FD0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{751BFC7C-F010-4B55-A558-0EC49CB3FD0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{751BFC7C-F010-4B55-A558-0EC49CB3FD0F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C5AB483-A67D-4497-A337-41968D58333F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C5AB483-A67D-4497-A337-41968D58333F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C5AB483-A67D-4497-A337-41968D58333F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C5AB483-A67D-4497-A337-41968D58333F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -49,7 +66,9 @@ Global
 		{41BC28D0-92A1-4EB6-B34A-D06BCA22FE06} = {3A0816ED-434E-4075-94E9-0E661830B3A1}
 		{63267D57-D0FC-411C-9B7E-5E25DC9A9C44} = {831531B8-FF19-45C9-989E-1C903369BBB0}
 		{23C1FCC4-1D52-4C86-A535-646F86975043} = {BC475C10-08C0-4C83-B933-BBE81E1D995B}
-		{142595E0-35A5-4005-92BA-17D6909D13F7} = {3B6806BC-B09E-4354-ADBF-9F2959EF943F}
+		{061ED4A6-B438-46BD-A667-EA0CB0DC4ACA} = {3B6806BC-B09E-4354-ADBF-9F2959EF943F}
+		{751BFC7C-F010-4B55-A558-0EC49CB3FD0F} = {831531B8-FF19-45C9-989E-1C903369BBB0}
+		{4C5AB483-A67D-4497-A337-41968D58333F} = {3B6806BC-B09E-4354-ADBF-9F2959EF943F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D89C5DCC-709D-4D7C-8E4D-F43F5D2850E8}

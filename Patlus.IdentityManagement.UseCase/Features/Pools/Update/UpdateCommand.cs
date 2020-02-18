@@ -6,30 +6,38 @@ namespace Patlus.IdentityManagement.UseCase.Features.Pools.Update
 {
     public class UpdateCommand : ICommandFeature<Pool>
     {
-        private string name;
-        private string description;
+        private string _name = null!;
+        private string _description = null!;
 
         public Guid? Id { get; set; }
-        public Guid? RequestorId { get; set; }
-
         public bool HasName { get; private set; }
-        public string Name {
-            get { return name; }
-            set {
-                name = Name;
-                HasName = true;
+        public string Name
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                _name = value;
+                this.HasName = true;
             }
         }
 
         public bool HasDescription { get; private set; }
         public string Description
         {
-            get { return description; }
+            get
+            {
+                return _description;
+            }
             set
             {
-                description = value;
-                HasDescription = true;
+                _description = value;
+                this.HasDescription = true;
             }
         }
+
+        public Guid? RequestorId { get; set; }
     }
 }

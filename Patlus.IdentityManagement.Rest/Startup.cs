@@ -11,8 +11,10 @@ using Patlus.Common.UseCase.Behaviours;
 using Patlus.Common.UseCase.Services;
 using Patlus.IdentityManagement.Persistence.Contexts;
 using Patlus.IdentityManagement.Rest.Extensions;
+using Patlus.IdentityManagement.Rest.Filters.Actions;
 using Patlus.IdentityManagement.Rest.Filters.Exceptions;
 using Patlus.IdentityManagement.Rest.Services;
+using Patlus.IdentityManagement.Rest.StartupExtensions;
 using Patlus.IdentityManagement.UseCase;
 using Patlus.IdentityManagement.UseCase.Services;
 
@@ -20,59 +22,52 @@ namespace Patlus.IdentityManagement.Rest
 {
     public class Startup
     {
-        public IConfiguration Configuration { get; }
-        public IWebHostEnvironment HostEnvironment { get; }
+        private readonly IConfiguration _configuration;
+        private readonly IWebHostEnvironment _hostEnvironment;
 
         public Startup(IConfiguration configuration, IWebHostEnvironment hostEnvironment)
         {
-            Configuration = configuration;
-            HostEnvironment = hostEnvironment;
+            _configuration = configuration;
+            _hostEnvironment = hostEnvironment;
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers(opt => {
-                    opt.Filters.Add(new NotFoundExceptionFilter());
-                    opt.Filters.Add(new ValidationExceptionFilter());
-                });
-
-            services.AddCors(opt =>
+            services.AddControllers(opt =>
             {
-                opt.AddDefaultPolicy(builder =>
-                {
-                    builder.AllowAnyOrigin();
-                    builder.AllowAnyMethod();
-                    builder.AllowAnyHeader();
-                });
+                opt.Filters.Add(new NotFoundExceptionFilter());
+                opt.Filters.Add(new ValidationExceptionFilter());
             });
+
+            services.AddScoped<ValidPoolFilter>();
 
             services.AddMediatR(ModuleProfile.GetBundles());
             services.AddValidatorsFromAssemblies(ModuleProfile.GetBundles());
             services.AddAutoMapper(GetType().Assembly);
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
-            services.AddSingleton<ITimeService>(new TimeService());
+            services.AddSingleton<ITimeService, TimeService>();
             services.AddSingleton<ITokenCacheService, TokenCacheService>();
-            services.AddSingleton<ITokenService>(new JwtTokenService(Configuration.GetSection("Authentication:Token")));
-            services.AddSingleton<IPasswordService>(new HMACSHA1PasswordService(Configuration.GetSection("Authentication:Password")));
+            services.AddSingleton<ITokenService>(new JwtTokenService(_configuration.GetSection("Authentication:Token")));
+            services.AddSingleton<IPasswordService>(new HMACSHA1PasswordService(_configuration.GetSection("Authentication:Password")));
 
-            services.AddHttpContextAccessor();
-            services.AddScoped<IPoolResolver, PoolResolver>();
-
-            services.AddDbContext<IMasterDbContext, MasterDbContext>(opt => {
+            services.AddDbContext<IMasterDbContext, MasterDbContext>(opt =>
+            {
                 opt.UseSqlServer(
-                    Configuration["Database:Connection"], 
+                    _configuration["Database:Connection"],
                     optBuilder => optBuilder.MigrationsAssembly("Patlus.IdentityManagement.Persistence")
                 );
             });
 
-            services.ConfigureDistributedCacheService(Configuration, HostEnvironment);
+            services.ConfigureCorsService(_configuration);
 
-            services.ConfigureAuthenticationService(this.Configuration);
+            services.ConfigureDistributedCacheService(_configuration, _hostEnvironment);
 
-            services.ConfigureAuthroizationService(this.Configuration);
+            services.ConfigureAuthenticationService(_configuration);
 
-            services.ConfigureSwaggerService(this.Configuration);
+            services.ConfigureAuthroizationService(_configuration);
+
+            services.ConfigureSwaggerService(_configuration);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -82,22 +77,22 @@ namespace Patlus.IdentityManagement.Rest
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseCors();
+            app.ConfigureCors(env);
 
             app.UseHttpsRedirection();
 
             app.UseRouting();
 
-            app.UseAuthenticationFeature(env);
+            app.ConfigureAuthentication(env);
 
-            app.UseAuthorizationFeature(env);
+            app.ConfigureAuthorization(env);
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
 
-            app.UseSwaggerFeature(env);
+            app.ConfigureSwagger(env);
         }
     }
 }

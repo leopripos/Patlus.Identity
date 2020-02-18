@@ -16,76 +16,71 @@ namespace Patlus.IdentityManagement.UseCase.Features.Pools.Update
 {
     public class UpdateCommandHandler : ICommandFeatureHandler<UpdateCommand, Pool>
     {
-        private readonly ILogger<UpdateCommand> logger;
-        private readonly IMasterDbContext dbService;
-        private readonly ITimeService timeService;
-        private readonly IMediator mediator;
+        private readonly ILogger<UpdateCommandHandler> _logger;
+        private readonly IMasterDbContext _dbService;
+        private readonly ITimeService _timeService;
+        private readonly IMediator _mediator;
 
-        public UpdateCommandHandler(ILogger<UpdateCommand> logger, IMasterDbContext dbService, ITimeService timeService, IMediator mediator)
+        public UpdateCommandHandler(ILogger<UpdateCommandHandler> logger, IMasterDbContext dbService, ITimeService timeService, IMediator mediator)
         {
-            this.logger = logger;
-            this.dbService = dbService;
-            this.timeService = timeService;
-            this.mediator = mediator;
+            this._logger = logger;
+            this._dbService = dbService;
+            this._timeService = timeService;
+            this._mediator = mediator;
 
         }
         public async Task<Pool> Handle(UpdateCommand request, CancellationToken cancellationToken)
         {
-            var currentTime = timeService.Now;
+            if (request.Id is null) throw new ArgumentNullException(nameof(request.Id));
+            if (request.RequestorId is null) throw new ArgumentNullException(nameof(request.RequestorId));
+            if (!request.HasName && !request.HasDescription) throw new ArgumentException($"One of {nameof(request.Name)} or {nameof(request.Description)} should be filled.");
 
-            var entity = dbService.Pools.Where(e => e.Id == request.Id).SingleOrDefault();
+            var currentTime = _timeService.Now;
+
+            var entity = _dbService.Pools.Where(e => e.Id == request.Id).SingleOrDefault();
 
             if (entity == null)
             {
-                throw new NotFoundException(nameof(Pool), request.Id);
+                throw new NotFoundException(nameof(Pool), new { request.Id });
             }
 
             var valueChanges = new Dictionary<string, ValueChanged>();
 
             if (request.HasName)
             {
-                valueChanges.Add(nameof(request.Name), new ValueChanged()
-                {
-                    Old = entity.Name,
-                    New = request.Name
-                });
-
+                valueChanges.Add(nameof(request.Name), new ValueChanged(entity.Name, request.Name));
                 entity.Name = request.Name;
             }
 
             if (request.HasDescription)
             {
-                valueChanges.Add(nameof(request.Description), new ValueChanged()
-                {
-                    Old = entity.Description,
-                    New = request.Description
-                });
-
-                entity.Name = request.Name;
+                valueChanges.Add(nameof(request.Description), new ValueChanged(entity.Description, request.Description));
+                entity.Description = request.Description;
             }
 
-            var notification = new UpdatedNotification
-            {
-                Entity = entity,
-                Values = valueChanges,
-                By = request.RequestorId.Value,
-                Time = currentTime
-            };
-            
+            var notification = new UpdatedNotification(
+                entity,
+                valueChanges,
+                request.RequestorId.Value,
+                currentTime
+            );
+
             entity.LastModifiedTime = currentTime;
 
-            dbService.Update(entity);
+            _dbService.Update(entity);
 
-            await dbService.SaveChangesAsync(cancellationToken);
+            await _dbService.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
             try
             {
-                await mediator.Publish(notification, cancellationToken);
+                await _mediator.Publish(notification, cancellationToken).ConfigureAwait(false);
             }
+#pragma warning disable CA1031 // Do not catch general exception types
             catch (Exception e)
             {
-                logger.LogError(e, $"Error publish { nameof(UpdatedNotification) } when handle { nameof(UpdateCommand) } at { nameof(UpdateCommandHandler) }");
+                _logger.LogError(e, $"Error publish { nameof(UpdatedNotification) } when handle { nameof(UpdateCommand) } at { nameof(UpdateCommandHandler) }");
             }
+#pragma warning restore CA1031 // Do not catch general exception types
 
             return entity;
         }

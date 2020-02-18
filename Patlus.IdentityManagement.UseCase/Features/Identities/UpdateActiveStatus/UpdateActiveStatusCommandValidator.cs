@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Patlus.Common.UseCase;
+using Patlus.Common.UseCase.Validators;
 
 namespace Patlus.IdentityManagement.UseCase.Features.Identities.UpdateActiveStatus
 {
@@ -8,13 +9,13 @@ namespace Patlus.IdentityManagement.UseCase.Features.Identities.UpdateActiveStat
         public UpdateActiveStatusCommandValidator()
         {
             RuleFor(r => r.Id)
-                .NotEmpty();
+                .NotEmpty().WithErrorCode(ValidationErrorCodes.NotEmpty);
 
             RuleFor(r => r.Active)
-                .NotEmpty();
+                .NotEmpty().WithErrorCode(ValidationErrorCodes.NotEmpty);
 
             RuleFor(r => r.RequestorId)
-                .NotEmpty();
+                .NotEmpty().WithErrorCode(ValidationErrorCodes.NotEmpty);
         }
     }
 }

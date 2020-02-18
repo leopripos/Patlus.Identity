@@ -4,11 +4,11 @@ using System;
 
 namespace Patlus.IdentityManagement.UseCase.Features.Identities.UpdateOwnPassword
 {
-    public class UpdateOwnPasswordCommand : ICommandFeature<HostedAccount>
+    public class UpdateOwnPasswordCommand : ICommandFeature<Identity>
     {
-        public string OldPassword { get; set; }
-        public string NewPassword { get; set; }
-        public string RetypeNewPassword { get; set; }
+        public string OldPassword { get; set; } = null!;
+        public string NewPassword { get; set; } = null!;
+        public string RetypeNewPassword { get; set; } = null!;
         public Guid? RequestorId { get; set; }
     }
 }

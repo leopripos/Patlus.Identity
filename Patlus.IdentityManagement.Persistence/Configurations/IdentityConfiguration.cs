@@ -35,6 +35,10 @@ namespace Patlus.IdentityManagement.Persistence.Configurations
 
             builder.HasKey(e => e.Id);
 
+            builder.HasIndex(e => e.AuthKey).IsUnique();
+
+            builder.HasIndex(e => e.Name).IsUnique();
+
             builder.HasOne(e => e.Pool)
                 .WithOne()
                 .HasForeignKey<Identity>(e => e.PoolId)

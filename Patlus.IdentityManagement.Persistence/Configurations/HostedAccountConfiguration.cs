@@ -9,7 +9,8 @@ namespace Patlus.IdentityManagement.Persistence.Configurations
         public void Configure(EntityTypeBuilder<HostedAccount> builder)
         {
             builder.Property(e => e.Id)
-                .IsRequired();
+                .IsRequired()
+                .ValueGeneratedNever();
 
             builder.Property(e => e.Name)
                 .IsRequired();
@@ -30,6 +31,8 @@ namespace Patlus.IdentityManagement.Persistence.Configurations
                 .IsRequired();
 
             builder.HasKey(e => e.Id);
+
+            builder.HasIndex(e => e.Name).IsUnique();
 
             builder.HasOne(e => e.Identity)
                 .WithOne(account => account.HostedAccount)

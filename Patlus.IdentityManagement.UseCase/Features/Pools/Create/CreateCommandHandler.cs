@@ -12,22 +12,27 @@ namespace Patlus.IdentityManagement.UseCase.Features.Pools.Create
 {
     public class CreateCommandHandler : ICommandFeatureHandler<CreateCommand, Pool>
     {
-        private readonly ILogger<CreateCommand> logger;
-        private readonly IMasterDbContext dbService;
-        private readonly ITimeService timeService;
-        private readonly IMediator mediator;
+        private readonly ILogger<CreateCommandHandler> _logger;
+        private readonly IMasterDbContext _dbService;
+        private readonly ITimeService _timeService;
+        private readonly IMediator _mediator;
 
-        public CreateCommandHandler(ILogger<CreateCommand> logger, IMasterDbContext dbService, ITimeService timeService, IMediator mediator)
+        public CreateCommandHandler(ILogger<CreateCommandHandler> logger, IMasterDbContext dbService, ITimeService timeService, IMediator mediator)
         {
-            this.logger = logger;
-            this.dbService = dbService;
-            this.timeService = timeService;
-            this.mediator = mediator;
+            _logger = logger;
+            _dbService = dbService;
+            _timeService = timeService;
+            _mediator = mediator;
         }
 
         public async Task<Pool> Handle(CreateCommand request, CancellationToken cancellationToken)
         {
-            var currentTime = timeService.Now;
+            if (request.Name is null) throw new ArgumentNullException(nameof(request.Name));
+            if (request.Description is null) throw new ArgumentNullException(nameof(request.Description));
+            if (request.Active is null) throw new ArgumentNullException(nameof(request.Active));
+            if (request.RequestorId is null) throw new ArgumentNullException(nameof(request.RequestorId));
+
+            var currentTime = _timeService.Now;
 
             var entity = new Pool()
             {
@@ -40,24 +45,22 @@ namespace Patlus.IdentityManagement.UseCase.Features.Pools.Create
                 LastModifiedTime = currentTime,
             };
 
-            dbService.Add(entity);
+            _dbService.Add(entity);
 
-            await dbService.SaveChangesAsync(cancellationToken);
+            await _dbService.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-            var notification = new CreatedNotification
-            {
-                Entity = entity,
-                By = request.RequestorId.Value,
-                Time = currentTime
-            };
+            var notification = new CreatedNotification(entity, request.RequestorId.Value, currentTime);
 
             try
             {
-                await mediator.Publish(notification, cancellationToken);
+                await _mediator.Publish(notification, cancellationToken).ConfigureAwait(false);
             }
-            catch(Exception e) {
-                logger.LogError(e, $"Error publish {nameof(CreatedNotification)} when handle { nameof(CreateCommand) } at { nameof(CreateCommandHandler) }");
+#pragma warning disable CA1031 // Do not catch general exception types, Justification: Error when publishing notification cannot be predicted, but it should not interup action
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error publish {nameof(CreatedNotification)} when handle { nameof(CreateCommand) } at { nameof(CreateCommandHandler) }");
             }
+#pragma warning restore CA1031 // Do not catch general exception types
 
             return entity;
         }

@@ -81,7 +81,7 @@ namespace Patlus.IdentityManagement.Persistence.Contexts
                 }
             });
 
-            modelBuilder.Entity<HostedAccount>().HasData(new HostedAccount [] {
+            modelBuilder.Entity<HostedAccount>().HasData(new HostedAccount[] {
                 new HostedAccount(){
                     Id = identityId,
                     Name = identityName,

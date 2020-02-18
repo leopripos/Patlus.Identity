@@ -7,9 +7,9 @@ namespace Patlus.IdentityManagement.Rest.Features.Pools
     {
         public Guid Id { get; set; }
         public bool Active { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public string Name { get; set; } = null!;
+        public string Description { get; set; } = null!;
         public Guid CreatorId { get; set; }
-        public DateTime CreatedTime { get; set; }
+        public DateTimeOffset CreatedTime { get; set; }
     }
 }

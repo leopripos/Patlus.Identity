@@ -28,7 +28,7 @@ namespace Patlus.IdentityManagement.Rest.Services
 
         public bool ValidatePasswordHash(string passwordHash, string password)
         {
-            return passwordHash.Equals(GeneratePasswordHash(password));
+            return passwordHash.Equals(GeneratePasswordHash(password), StringComparison.Ordinal);
         }
     }
 }
