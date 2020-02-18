@@ -8,7 +8,7 @@
             <summary>
             Get all identities in specific pool
             </summary>
-            <returns>List of identity</returns>
+            <returns>List of identities</returns>
         </member>
         <member name="M:Patlus.IdentityManagement.Rest.Features.Identities.IdentitiesController.GetById(System.Guid,System.Guid)">
             <summary>
@@ -16,7 +16,24 @@
             </summary>
             <param name="poolId">Pool Id</param>
             <param name="identityId">Identity Id</param>
-            <returns></returns>
+            <returns>Requested Identity</returns>
+        </member>
+        <member name="M:Patlus.IdentityManagement.Rest.Features.Identities.IdentitiesController.Create(System.Guid,Patlus.IdentityManagement.Rest.Features.Identities.CreateForm)">
+            <summary>
+            Create new identity 
+            </summary>
+            <param name="poolId">Pool Id</param>
+            <param name="form">Create Form</param>
+            <returns>Created Identity</returns>
+        </member>
+        <member name="M:Patlus.IdentityManagement.Rest.Features.Identities.IdentitiesController.UpdateActiveStatus(System.Guid,System.Guid,Patlus.IdentityManagement.Rest.Features.Identities.UpdateActiveStatusForm)">
+            <summary>
+            Update active status of specific identity
+            </summary>
+            <param name="poolId">Pool Id</param>
+            <param name="identityId">Identity Id</param>
+            <param name="form">Update Active Status Form</param>
+            <returns>Updated Identity</returns>
         </member>
         <member name="M:Patlus.IdentityManagement.Rest.Features.Pools.PoolsController.GetAll">
             <summary>

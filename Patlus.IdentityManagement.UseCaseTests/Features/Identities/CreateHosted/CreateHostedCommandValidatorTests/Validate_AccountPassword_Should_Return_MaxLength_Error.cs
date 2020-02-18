@@ -9,11 +9,11 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.CreateHoste
 {
     public class Validate_AccountPassword_Should_Return_MaxLength_Error
     {
-        private Mock<IMasterDbContext> mockMasterDbContext;
+        private readonly Mock<IMasterDbContext> _mockMasterDbContext;
 
         public Validate_AccountPassword_Should_Return_MaxLength_Error()
         {
-            this.mockMasterDbContext = new Mock<IMasterDbContext>();
+            _mockMasterDbContext = new Mock<IMasterDbContext>();
         }
 
         [Theory]
@@ -21,7 +21,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.CreateHoste
         public void Theory(string expectedPropertyName, CreateHostedCommand query)
         {
             // Arrange
-            var validator = new CreateHostedCommandValidator(this.mockMasterDbContext.Object);
+            var validator = new CreateHostedCommandValidator(_mockMasterDbContext.Object);
 
             // Act
             var result = validator.Validate(query);

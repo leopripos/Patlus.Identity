@@ -1,0 +1,52 @@
+﻿using FluentAssertions;
+using Moq;
+using Patlus.Common.UseCase.Validators;
+using Patlus.IdentityManagement.UseCase.Features.Pools.Update;
+using Patlus.IdentityManagement.UseCase.Services;
+using Xunit;
+
+namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.GetOne.UpdateCommandValidatorTests
+{
+    public class Validate_Id_Should_Return_NotEmpty_Error
+    {
+        private readonly Mock<IMasterDbContext> _mockMasterDbContext;
+
+        public Validate_Id_Should_Return_NotEmpty_Error()
+        {
+            _mockMasterDbContext = new Mock<IMasterDbContext>();
+        }
+
+        [Theory]
+        [ClassData(typeof(TestData))]
+        public void Theory(string expectedPropertyName, UpdateCommand command)
+        {
+            // Arrange
+            var validator = new UpdateCommandValidator(_mockMasterDbContext.Object);
+
+            // Act
+            var result = validator.Validate(command);
+
+            // Assert
+            result.IsValid.Should().BeFalse();
+            result.Errors.Should()
+                .NotBeEmpty()
+                .And
+                .Contain(e => e.PropertyName == expectedPropertyName && e.ErrorCode == ValidationErrorCodes.NotEmpty);
+        }
+
+        class TestData : TheoryData<string, UpdateCommand>
+        {
+            public TestData()
+            {
+                Add(
+                    nameof(UpdateCommand.Id),
+                    new UpdateCommand()
+                    {
+                        Id = null,
+                    }
+                );
+            }
+        }
+    }
+
+}

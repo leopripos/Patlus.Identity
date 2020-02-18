@@ -18,13 +18,13 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.Count.Count
 
         public Handle_Should_Return_Total_Requested_Identities()
         {
-            this._dataSource = IdentitiesFaker.CreateIdentities().Values.AsQueryable();
-            this._mockMasterDbContext = new Mock<IMasterDbContext>();
+            _dataSource = IdentitiesFaker.CreateIdentities().Values.AsQueryable();
+            _mockMasterDbContext = new Mock<IMasterDbContext>();
         }
 
         public void Dispose()
         {
-            this._mockMasterDbContext.Reset();
+            _mockMasterDbContext.Reset();
         }
 
         [Theory]
@@ -32,9 +32,9 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.Count.Count
         public async void Theory(int expectedResult, CountQuery query)
         {
             // Arrange
-            this._mockMasterDbContext.Setup(e => e.Identities).Returns(_dataSource);
+            _mockMasterDbContext.Setup(e => e.Identities).Returns(_dataSource);
 
-            var handler = new CountQueryHandler(this._mockMasterDbContext.Object);
+            var handler = new CountQueryHandler(_mockMasterDbContext.Object);
 
             // Act
             var actualResult = await handler.Handle(query, default);

@@ -20,15 +20,15 @@ using Patlus.IdentityManagement.UseCase.Services;
 
 namespace Patlus.IdentityManagement.Rest
 {
-    public partial class Startup
+    public class Startup
     {
-        private IConfiguration configuration { get; }
-        private IWebHostEnvironment hostEnvironment { get; }
+        private readonly IConfiguration _configuration;
+        private readonly IWebHostEnvironment _hostEnvironment;
 
         public Startup(IConfiguration configuration, IWebHostEnvironment hostEnvironment)
         {
-            this.configuration = configuration;
-            this.hostEnvironment = hostEnvironment;
+            _configuration = configuration;
+            _hostEnvironment = hostEnvironment;
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -46,28 +46,28 @@ namespace Patlus.IdentityManagement.Rest
             services.AddAutoMapper(GetType().Assembly);
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
-            services.AddSingleton<ITimeService>(new TimeService());
+            services.AddSingleton<ITimeService, TimeService>();
             services.AddSingleton<ITokenCacheService, TokenCacheService>();
-            services.AddSingleton<ITokenService>(new JwtTokenService(configuration.GetSection("Authentication:Token")));
-            services.AddSingleton<IPasswordService>(new HMACSHA1PasswordService(configuration.GetSection("Authentication:Password")));
+            services.AddSingleton<ITokenService>(new JwtTokenService(_configuration.GetSection("Authentication:Token")));
+            services.AddSingleton<IPasswordService>(new HMACSHA1PasswordService(_configuration.GetSection("Authentication:Password")));
 
             services.AddDbContext<IMasterDbContext, MasterDbContext>(opt =>
             {
                 opt.UseSqlServer(
-                    configuration["Database:Connection"],
+                    _configuration["Database:Connection"],
                     optBuilder => optBuilder.MigrationsAssembly("Patlus.IdentityManagement.Persistence")
                 );
             });
 
-            services.ConfigureCorsService(configuration);
+            services.ConfigureCorsService(_configuration);
 
-            services.ConfigureDistributedCacheService(configuration, hostEnvironment);
+            services.ConfigureDistributedCacheService(_configuration, _hostEnvironment);
 
-            services.ConfigureAuthenticationService(this.configuration);
+            services.ConfigureAuthenticationService(_configuration);
 
-            services.ConfigureAuthroizationService(this.configuration);
+            services.ConfigureAuthroizationService(_configuration);
 
-            services.ConfigureSwaggerService(this.configuration);
+            services.ConfigureSwaggerService(_configuration);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

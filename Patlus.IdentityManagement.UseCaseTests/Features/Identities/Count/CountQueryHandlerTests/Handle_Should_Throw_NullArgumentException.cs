@@ -9,16 +9,16 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.Count.Count
 {
     public class Handle_Should_Throw_NullArgumentException : IDisposable
     {
-        private Mock<IMasterDbContext> mockMasterDbContext;
+        private readonly Mock<IMasterDbContext> _mockMasterDbContext;
 
         public Handle_Should_Throw_NullArgumentException()
         {
-            this.mockMasterDbContext = new Mock<IMasterDbContext>();
+            this._mockMasterDbContext = new Mock<IMasterDbContext>();
         }
 
         public void Dispose()
         {
-            this.mockMasterDbContext.Reset();
+            this._mockMasterDbContext.Reset();
         }
 
         [Theory]
@@ -26,7 +26,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.Count.Count
         public void Theory(string expectedParamName, CountQuery query)
         {
             // Arrange
-            var handler = new CountQueryHandler(this.mockMasterDbContext.Object);
+            var handler = new CountQueryHandler(this._mockMasterDbContext.Object);
 
             // Act
             Action action = () => handler.Handle(query, default);

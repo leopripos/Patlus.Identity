@@ -9,11 +9,11 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.CreateHoste
 {
     public class Validate_RequestorId_Should_Return_NotEmpty_Error
     {
-        private Mock<IMasterDbContext> mockMasterDbContext;
+        private readonly Mock<IMasterDbContext> _mockMasterDbContext;
 
         public Validate_RequestorId_Should_Return_NotEmpty_Error()
         {
-            this.mockMasterDbContext = new Mock<IMasterDbContext>();
+            _mockMasterDbContext = new Mock<IMasterDbContext>();
         }
 
         [Theory]
@@ -21,7 +21,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.CreateHoste
         public void Theory(string expectedPropertyName, CreateHostedCommand query)
         {
             // Arrange
-            var validator = new CreateHostedCommandValidator(this.mockMasterDbContext.Object);
+            var validator = new CreateHostedCommandValidator(this._mockMasterDbContext.Object);
 
             // Act
             var result = validator.Validate(query);
@@ -36,7 +36,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.CreateHoste
             public TestData()
             {
                 Add(
-                    nameof(CreateHostedCommand.PoolId),
+                    nameof(CreateHostedCommand.RequestorId),
                     new CreateHostedCommand()
                     {
                         RequestorId = null,

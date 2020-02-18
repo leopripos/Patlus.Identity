@@ -46,7 +46,7 @@ namespace Patlus.IdentityManagement.UseCase.Features.Identities.UpdateActiveStat
 
             if (entity == null)
             {
-                throw new NotFoundException(nameof(Identity), request.Id);
+                throw new NotFoundException(nameof(Identity), new { request.PoolId, request.Id });
             }
 
             var notification = new ActiveStatusUpdatedNotification(entity, entity.Active, request.Active.Value, request.RequestorId.Value, currentTime);
@@ -62,7 +62,7 @@ namespace Patlus.IdentityManagement.UseCase.Features.Identities.UpdateActiveStat
             {
                 await _mediator.Publish(notification, cancellationToken).ConfigureAwait(false);
             }
-#pragma warning disable CA1031 // Do not catch general exception types, Justification: Error publishing notification unknown, but it should not interup action
+#pragma warning disable CA1031 // Do not catch general exception types, Justification: Error when publishing notification cannot be predicted, but it should not interup action
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error publish { nameof(ActiveStatusUpdatedNotification) } when handle { nameof(UpdateActiveStatusCommand) } at { nameof(UpdateActiveStatusCommandHandler) }");

@@ -9,11 +9,11 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.GetOneBySec
 {
     public class Validate_PoolId_Should_Return_NotEmpty_Error
     {
-        private Mock<IMasterDbContext> mockMasterDbContext;
+        private readonly Mock<IMasterDbContext> _mockMasterDbContext;
 
         public Validate_PoolId_Should_Return_NotEmpty_Error()
         {
-            this.mockMasterDbContext = new Mock<IMasterDbContext>();
+            _mockMasterDbContext = new Mock<IMasterDbContext>();
         }
 
         [Theory]
@@ -21,7 +21,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.GetOneBySec
         public void Theory(string expectedPropertyName, GetOneBySecretQuery query)
         {
             // Arrange
-            var validator = new GetOneBySecretQueryValidator(this.mockMasterDbContext.Object);
+            var validator = new GetOneBySecretQueryValidator(_mockMasterDbContext.Object);
 
             // Act
             var result = validator.Validate(query);

@@ -9,14 +9,14 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.UpdateOwnPa
 {
     public class Validate_RetypeNewPassword_Should_Return_Equal_Error
     {
-        private Mock<IMasterDbContext> mockMasterDbContext;
-        private Mock<IPasswordService> mockPasswordService;
+        private readonly Mock<IMasterDbContext> _mockMasterDbContext;
+        private readonly Mock<IPasswordService> _mockPasswordService;
 
 
         public Validate_RetypeNewPassword_Should_Return_Equal_Error()
         {
-            this.mockMasterDbContext = new Mock<IMasterDbContext>();
-            this.mockPasswordService = new Mock<IPasswordService>();
+            _mockMasterDbContext = new Mock<IMasterDbContext>();
+            _mockPasswordService = new Mock<IPasswordService>();
         }
 
         [Theory]
@@ -25,8 +25,8 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.UpdateOwnPa
         {
             // Arrange
             var validator = new UpdateOwnPasswordCommandValidator(
-                dbService: this.mockMasterDbContext.Object,
-                passwordService: this.mockPasswordService.Object
+                dbService: _mockMasterDbContext.Object,
+                passwordService: _mockPasswordService.Object
             );
 
             // Act
