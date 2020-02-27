@@ -7,6 +7,8 @@ using Xunit;
 
 namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.UpdateOwnPassword.UpdateOwnPasswordCommandValidatorTests
 {
+    [Trait("UT-Feature", "Identities/UpdateOwnPassword")]
+    [Trait("UT-Class", "Identities/UpdateOwnPassword/UpdateOwnPasswordCommandValidatorTests")]
     public class Validate_NewPassword_Should_Return_MinLength_Error
     {
         private readonly Mock<IMasterDbContext> _mockMasterDbContext;
@@ -19,7 +21,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.UpdateOwnPa
             _mockPasswordService = new Mock<IPasswordService>();
         }
 
-        [Theory]
+        [Theory(DisplayName = nameof(Validate_NewPassword_Should_Return_MinLength_Error))]
         [ClassData(typeof(TestData))]
         public void Theory(string expectedPropertyName, UpdateOwnPasswordCommand command)
         {

@@ -12,6 +12,8 @@ using Xunit;
 
 namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.UpdateOwnPassword.UpdateOwnPasswordCommandHandlerTests
 {
+    [Trait("UT-Feature", "Identities/UpdateOwnPassword")]
+    [Trait("UT-Class", "Identities/UpdateOwnPassword/UpdateOwnPasswordCommandHandlerTests")]
     public class Handle_Should_Throw_NullArgumentException : IDisposable
     {
         private readonly Mock<ILogger<UpdateOwnPasswordCommandHandler>> _mockLogger;
@@ -38,7 +40,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.UpdateOwnPa
             _mockPasswordService.Reset();
         }
 
-        [Theory]
+        [Theory(DisplayName = nameof(Handle_Should_Throw_NullArgumentException))]
         [ClassData(typeof(TestData))]
         public void Theory(string expectedParamName, UpdateOwnPasswordCommand command)
         {

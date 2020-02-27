@@ -14,6 +14,8 @@ using Xunit;
 
 namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.UpdateActiveStatus.UpdateActiveStatusCommandHandlerTests
 {
+    [Trait("UT-Feature", "Pools/UpdateActiveStatus")]
+    [Trait("UT-Class", "Pools/UpdateActiveStatus/UpdateActiveStatusCommandHandlerTests")]
     public class Handle_Should_Throw_NotFoundException : IDisposable
     {
         private readonly Mock<ILogger<UpdateActiveStatusCommandHandler>> _mockLogger;
@@ -37,7 +39,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.UpdateActiveStat
             _mockMediator.Reset();
         }
 
-        [Theory]
+        [Theory(DisplayName = nameof(Handle_Should_Throw_NotFoundException))]
         [ClassData(typeof(TestData))]
         public void Theory(string expectedEntityName, object expectedEntityValue, UpdateActiveStatusCommand command)
         {

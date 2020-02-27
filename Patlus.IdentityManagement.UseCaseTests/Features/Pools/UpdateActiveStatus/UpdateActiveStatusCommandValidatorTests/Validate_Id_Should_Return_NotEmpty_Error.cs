@@ -3,11 +3,13 @@ using Patlus.Common.UseCase.Validators;
 using Patlus.IdentityManagement.UseCase.Features.Pools.UpdateActiveStatus;
 using Xunit;
 
-namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.GetOne.UpdateActiveStatusCommandValidatorTests
+namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.UpdateActiveStatus.UpdateActiveStatusCommandValidatorTests
 {
+    [Trait("UT-Feature", "Pools/UpdateActiveStatus")]
+    [Trait("UT-Class", "Pools/UpdateActiveStatus/UpdateActiveStatusCommandValidatorTests")]
     public class Validate_Id_Should_Return_NotEmpty_Error
     {
-        [Theory]
+        [Theory(DisplayName = nameof(Validate_Id_Should_Return_NotEmpty_Error))]
         [ClassData(typeof(TestData))]
         public void Theory(string expectedPropertyName, UpdateActiveStatusCommand command)
         {

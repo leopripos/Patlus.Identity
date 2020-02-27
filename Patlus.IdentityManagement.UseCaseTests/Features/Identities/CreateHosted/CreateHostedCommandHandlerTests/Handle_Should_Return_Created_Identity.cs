@@ -14,6 +14,8 @@ using Xunit;
 
 namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.CreateHosted.CreateHostedCommandHandlerTests
 {
+    [Trait("UT-Feature", "Identities/CreateHosted")]
+    [Trait("UT-Class", "Identities/CreateHosted/CreateHostedCommandHandlerTests")]
     public class Handle_Should_Return_Created_Identity : IDisposable
     {
         private readonly IQueryable<Identity> _identitiesDataSource;
@@ -77,7 +79,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.CreateHoste
             // Act
             var actualResult = await handler.Handle(query, default);
 
-            //Asert
+            // Assert
             actualResult.Should().BeEquivalentTo(expectedResult, options =>
             {
                 options.IgnoringCyclicReferences();

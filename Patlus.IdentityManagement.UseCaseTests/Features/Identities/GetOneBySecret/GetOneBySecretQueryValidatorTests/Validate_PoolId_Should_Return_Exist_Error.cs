@@ -11,6 +11,8 @@ using Xunit;
 
 namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.GetOneBySecret.GetOneBySecretQueryValidatorTests
 {
+    [Trait("UT-Feature", "Identities/GetOneBySecret")]
+    [Trait("UT-Class", "Identities/GetOneBySecret/GetOneBySecretQueryValidatorTests")]
     public class Validate_PoolId_Should_Return_Exist_Error
     {
         private readonly IQueryable<Pool> _poolsDataSource;
@@ -36,7 +38,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.GetOneBySec
             _mockMasterDbContext = new Mock<IMasterDbContext>();
         }
 
-        [Theory]
+        [Theory(DisplayName = nameof(Validate_PoolId_Should_Return_Exist_Error))]
         [ClassData(typeof(TestData))]
         public void Theory(string expectedPropertyName, GetOneBySecretQuery query)
         {

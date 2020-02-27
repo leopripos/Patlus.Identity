@@ -10,8 +10,10 @@ using System.Threading.Tasks;
 using Xunit;
 
 
-namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.CreateHosted.CreateCommandHandlerTests
+namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.Create.CreateCommandHandlerTests
 {
+    [Trait("UT-Feature", "Pools/Create")]
+    [Trait("UT-Class", "Pools/Create/CreateCommandHandlerTests")]
     public class Handle_Should_Throw_NullArgumentException : IDisposable
     {
         private readonly Mock<ILogger<CreateCommandHandler>> _mockLogger;
@@ -35,7 +37,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.CreateHosted.Cre
             _mockMediator.Reset();
         }
 
-        [Theory]
+        [Theory(DisplayName = nameof(Handle_Should_Throw_NullArgumentException))]
         [ClassData(typeof(TestData))]
         public void Theory(string expectedParamName, CreateCommand command)
         {

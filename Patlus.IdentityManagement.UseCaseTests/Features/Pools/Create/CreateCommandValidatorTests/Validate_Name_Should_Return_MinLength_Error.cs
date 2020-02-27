@@ -7,8 +7,10 @@ using Patlus.IdentityManagement.UseCase.Services;
 using System.Linq;
 using Xunit;
 
-namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.CreateHosted.CreateHostedCommandValidatorTests
+namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.Create.CreateCommandValidatorTests
 {
+    [Trait("UT-Feature", "Pools/Create")]
+    [Trait("UT-Class", "Pools/Create/CreateCommandValidatorTests")]
     public class Validate_Name_Should_Return_MinLength_Error
     {
         private readonly Mock<IMasterDbContext> _mockMasterDbContext;
@@ -18,7 +20,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.CreateHosted.Cre
             _mockMasterDbContext = new Mock<IMasterDbContext>();
         }
 
-        [Theory]
+        [Theory(DisplayName = nameof(Validate_Name_Should_Return_MinLength_Error))]
         [ClassData(typeof(TestData))]
         public void Theory(string expectedPropertyName, CreateCommand query)
         {

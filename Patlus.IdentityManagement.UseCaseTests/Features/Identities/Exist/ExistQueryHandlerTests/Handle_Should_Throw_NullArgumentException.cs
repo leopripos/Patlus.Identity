@@ -7,6 +7,8 @@ using Xunit;
 
 namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.Exist.ExistQueryHandlerTests
 {
+    [Trait("UT-Feature", "Identities/Exist")]
+    [Trait("UT-Class", "Identities/Exist/ExistQueryHandlerTests")]
     public class Handle_Should_Throw_NullArgumentException : IDisposable
     {
         private readonly Mock<IMasterDbContext> _mockMasterDbContext;
@@ -21,7 +23,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.Exist.Exist
             _mockMasterDbContext.Reset();
         }
 
-        [Theory]
+        [Theory(DisplayName = nameof(Handle_Should_Throw_NullArgumentException))]
         [ClassData(typeof(TestData))]
         public void Theory(string expectedParamName, ExistQuery query)
         {

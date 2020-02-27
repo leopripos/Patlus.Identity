@@ -10,8 +10,10 @@ using System.Threading.Tasks;
 using Xunit;
 
 
-namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.UpdateActiveStatus.UpdateCommandHandlerTests
+namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.Update.UpdateCommandHandlerTests
 {
+    [Trait("UT-Feature", "Pools/Update")]
+    [Trait("UT-Class", "Pools/Update/UpdateCommandHandlerTests")]
     public class Handle_Should_Throw_NullArgumentException : IDisposable
     {
         private readonly Mock<ILogger<UpdateCommandHandler>> _mockLogger;
@@ -35,7 +37,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.UpdateActiveStat
             _mockMediator.Reset();
         }
 
-        [Theory]
+        [Theory(DisplayName = nameof(Handle_Should_Throw_NullArgumentException))]
         [ClassData(typeof(TestData))]
         public void Theory(string expectedParamName, UpdateCommand command)
         {

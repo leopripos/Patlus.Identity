@@ -5,8 +5,10 @@ using Patlus.IdentityManagement.UseCase.Features.Pools.Update;
 using Patlus.IdentityManagement.UseCase.Services;
 using Xunit;
 
-namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.GetOne.UpdateCommandValidatorTests
+namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.Update.UpdateCommandValidatorTests
 {
+    [Trait("UT-Feature", "Pools/Update")]
+    [Trait("UT-Class", "Pools/Update/UpdateCommandValidatorTests")]
     public class Validate_RequestorId_Should_Return_NotEmpty_Error
     {
         private readonly Mock<IMasterDbContext> _mockMasterDbContext;
@@ -16,7 +18,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.GetOne.UpdateCom
             _mockMasterDbContext = new Mock<IMasterDbContext>();
         }
 
-        [Theory]
+        [Theory(DisplayName = nameof(Validate_RequestorId_Should_Return_NotEmpty_Error))]
         [ClassData(typeof(TestData))]
         public void Theory(string expectedPropertyName, UpdateCommand command)
         {

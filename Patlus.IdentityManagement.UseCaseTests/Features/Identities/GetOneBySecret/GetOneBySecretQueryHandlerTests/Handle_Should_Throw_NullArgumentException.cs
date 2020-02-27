@@ -7,6 +7,8 @@ using Xunit;
 
 namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.GetOneBySecret.GetOneBySecretQueryHandlerTests
 {
+    [Trait("UT-Feature", "Identities/GetOneBySecret")]
+    [Trait("UT-Class", "Identities/GetOneBySecret/GetOneBySecretQueryHandlerTests")]
     public class Handle_Should_Throw_NullArgumentException : IDisposable
     {
         private readonly Mock<IMasterDbContext> _mockMasterDbContext;
@@ -23,7 +25,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.GetOneBySec
             _mockMasterDbContext.Reset();
         }
 
-        [Theory]
+        [Theory(DisplayName = nameof(Handle_Should_Throw_NullArgumentException))]
         [ClassData(typeof(TestData))]
         public void Theory(string expectedParamName, GetOneBySecretQuery query)
         {

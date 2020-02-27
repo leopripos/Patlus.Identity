@@ -10,6 +10,8 @@ using Xunit;
 
 namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.GetOneBySecret.GetOneBySecretQueryValidatorTests
 {
+    [Trait("UT-Feature", "Identities/GetOneBySecret")]
+    [Trait("UT-Class", "Identities/GetOneBySecret/GetOneBySecretQueryValidatorTests")]
     public class Validate_Should_Return_Valid
     {
         private readonly IQueryable<Pool> _poolsDataSource;
@@ -30,8 +32,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.GetOneBySec
             _mockMasterDbContext = new Mock<IMasterDbContext>();
         }
 
-
-        [Theory]
+        [Theory(DisplayName = nameof(Validate_Should_Return_Valid))]
         [ClassData(typeof(TestData))]
         public void Theory(GetOneBySecretQuery query)
         {

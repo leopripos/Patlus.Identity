@@ -12,6 +12,8 @@ using Xunit;
 
 namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.CreateHosted.CreateHostedCommandHandlerTests
 {
+    [Trait("UT-Feature", "Identities/CreateHosted")]
+    [Trait("UT-Class", "Identities/CreateHosted/CreateHostedCommandHandlerTests")]
     public class Handle_Should_Throw_NullArgumentException : IDisposable
     {
         private readonly Mock<ILogger<CreateHostedCommandHandler>> _mockLogger;
