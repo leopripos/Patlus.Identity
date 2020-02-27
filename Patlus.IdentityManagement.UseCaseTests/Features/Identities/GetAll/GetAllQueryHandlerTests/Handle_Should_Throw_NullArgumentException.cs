@@ -7,6 +7,8 @@ using Xunit;
 
 namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.GetAll.GetAllQueryHandlerTests
 {
+    [Trait("UT-Feature", "Identities/GetAll")]
+    [Trait("UT-Class", "Identities/GetAll/GetAllQueryHandlerTests")]
     public class Handle_Should_Throw_NullArgumentException : IDisposable
     {
         private Mock<IMasterDbContext> mockMasterDbContext;
@@ -21,7 +23,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.GetAll.GetA
             this.mockMasterDbContext.Reset();
         }
 
-        [Theory]
+        [Theory(DisplayName = nameof(Handle_Should_Throw_NullArgumentException))]
         [ClassData(typeof(TestData))]
         public void Theory(string expectedParamName, GetAllQuery query)
         {

@@ -16,7 +16,8 @@ using Xunit;
 
 namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.CreateHosted.CreateHostedCommandHandlerTests
 {
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1063:Implement IDisposable Correctly", Justification = "Not Important in xUnit")]
+    [Trait("UT-Feature", "Identities/CreateHosted")]
+    [Trait("UT-Class", "Identities/CreateHosted/CreateHostedCommandHandlerTests")]
     public class Handle_Should_Throw_NotFoundException : IDisposable
     {
         private readonly IQueryable<Pool> _poolsDataSource;

@@ -13,6 +13,8 @@ using Xunit;
 
 namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.UpdateActiveStatus.UpdateActiveStatusCommandHandlerTests
 {
+    [Trait("UT-Feature", "Pools/UpdateActiveStatus")]
+    [Trait("UT-Class", "Pools/UpdateActiveStatus/UpdateActiveStatusCommandHandlerTests")]
     public class Handle_Should_Return_Updated_Identitity : IDisposable
     {
         private readonly IQueryable<Pool> _dataSource;
@@ -40,7 +42,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.UpdateActiveStat
             _mockMediator.Reset();
         }
 
-        [Theory]
+        [Theory(DisplayName = nameof(Handle_Should_Return_Updated_Identitity))]
         [ClassData(typeof(TestData))]
         public async void Theory(Pool previousValue, UpdateActiveStatusCommand command)
         {
@@ -59,7 +61,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.UpdateActiveStat
             // Act
             var actualResult = await handler.Handle(command, default);
 
-            //Asert
+            // Assert
             actualResult.Should().BeEquivalentTo(previousValue, opt =>
             {
                 opt = opt.IgnoringCyclicReferences();

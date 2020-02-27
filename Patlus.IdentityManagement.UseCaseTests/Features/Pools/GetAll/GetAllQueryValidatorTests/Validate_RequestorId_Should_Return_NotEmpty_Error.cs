@@ -5,9 +5,11 @@ using Xunit;
 
 namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.GetAll.GetAllQueryValidatorTests
 {
+    [Trait("UT-Feature", "Pools/GetAll")]
+    [Trait("UT-Class", "Pools/GetAll/GetAllQueryValidatorTests")]
     public class Validate_RequestorId_Should_Return_NotEmpty_Error
     {
-        [Theory]
+        [Theory(DisplayName = nameof(Validate_RequestorId_Should_Return_NotEmpty_Error))]
         [ClassData(typeof(TestData))]
         public void Theory(string expectedPropertyName, GetAllQuery query)
         {

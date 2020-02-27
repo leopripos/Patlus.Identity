@@ -10,6 +10,8 @@ using Xunit;
 
 namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.GetOneBySecret.GetOneBySecretQueryHandlerTests
 {
+    [Trait("UT-Feature", "Identities/GetOneBySecret")]
+    [Trait("UT-Class", "Identities/GetOneBySecret/GetOneBySecretQueryHandlerTests")]
     public class Handle_Should_Return_Requested_Identities : IDisposable
     {
         private readonly IQueryable<Identity> _dataSource;
@@ -29,7 +31,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.GetOneBySec
             _mockMasterDbContext.Reset();
         }
 
-        [Theory]
+        [Theory(DisplayName = nameof(Handle_Should_Return_Requested_Identities))]
         [ClassData(typeof(TestData))]
         public async void Handle_Should_Return_Total_Requested_Identities(Identity expectedResult, GetOneBySecretQuery query)
         {
@@ -45,7 +47,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.GetOneBySec
             // Act
             var actualResult = await handler.Handle(query, default);
 
-            //Asert
+            // Assert
             actualResult.Should().BeEquivalentTo(expectedResult, opt => opt.IgnoringCyclicReferences());
         }
 

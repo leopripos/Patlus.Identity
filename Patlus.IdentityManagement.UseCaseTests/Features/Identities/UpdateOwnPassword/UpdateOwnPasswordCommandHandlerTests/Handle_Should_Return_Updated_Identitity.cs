@@ -13,6 +13,8 @@ using Xunit;
 
 namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.UpdateOwnPassword.UpdateOwnPasswordCommandHandlerTests
 {
+    [Trait("UT-Feature", "Identities/UpdateOwnPassword")]
+    [Trait("UT-Class", "Identities/UpdateOwnPassword/UpdateOwnPasswordCommandHandlerTests")]
     public class Handle_Should_Return_Updated_Identitity : IDisposable
     {
         private readonly IQueryable<Identity> _dataSource;
@@ -43,7 +45,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.UpdateOwnPa
             _mockPasswordService.Reset();
         }
 
-        [Theory]
+        [Theory(DisplayName = nameof(Handle_Should_Return_Updated_Identitity))]
         [ClassData(typeof(TestData))]
         public async void Theory(Identity previousValue, UpdateOwnPasswordCommand command)
         {
@@ -65,7 +67,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.UpdateOwnPa
             // Act
             var actualResult = await handler.Handle(command, default);
 
-            //Asert
+            // Assert
             actualResult.Should().BeEquivalentTo(previousValue, opt =>
             {
                 opt = opt.IgnoringCyclicReferences();

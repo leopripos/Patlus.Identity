@@ -7,6 +7,8 @@ using Xunit;
 
 namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.Count.CountQueryHandlerTests
 {
+    [Trait("UT-Feature", "Pools/Count")]
+    [Trait("UT-Class", "Pools/Count/CountQueryHandlerTests")]
     public class Handle_Should_Throw_NullArgumentException : IDisposable
     {
         private readonly Mock<IMasterDbContext> _mockMasterDbContext;
@@ -21,7 +23,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.Count.CountQuery
             _mockMasterDbContext.Reset();
         }
 
-        [Theory]
+        [Theory(DisplayName = nameof(Handle_Should_Throw_NullArgumentException))]
         [ClassData(typeof(TestData))]
         public void Theory(string expectedParamName, CountQuery query)
         {

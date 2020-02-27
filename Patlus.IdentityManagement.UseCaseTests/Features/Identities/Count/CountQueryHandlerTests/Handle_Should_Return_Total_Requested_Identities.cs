@@ -10,10 +10,11 @@ using Xunit;
 
 namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.Count.CountQueryHandlerTests
 {
+    [Trait("UT-Feature", "Identities/Count")]
+    [Trait("UT-Class", "Identities/Count/CountQueryHandlerTests")]
     public class Handle_Should_Return_Total_Requested_Identities : IDisposable
     {
         private readonly IQueryable<Identity> _dataSource;
-
         private readonly Mock<IMasterDbContext> _mockMasterDbContext;
 
         public Handle_Should_Return_Total_Requested_Identities()
@@ -27,7 +28,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.Count.Count
             _mockMasterDbContext.Reset();
         }
 
-        [Theory]
+        [Theory(DisplayName = nameof(Handle_Should_Return_Total_Requested_Identities))]
         [ClassData(typeof(TestData))]
         public async void Theory(int expectedResult, CountQuery query)
         {
@@ -39,7 +40,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.Count.Count
             // Act
             var actualResult = await handler.Handle(query, default);
 
-            //Asert
+            // Assert
             actualResult.Should().Be(expectedResult);
         }
 

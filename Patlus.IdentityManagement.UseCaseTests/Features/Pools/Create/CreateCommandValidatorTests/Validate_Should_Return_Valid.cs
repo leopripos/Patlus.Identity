@@ -5,8 +5,10 @@ using Patlus.IdentityManagement.UseCase.Services;
 using System;
 using Xunit;
 
-namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.GetOne.CreateCommandValidatorTests
+namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.Create.CreateCommandValidatorTests
 {
+    [Trait("UT-Feature", "Pools/Create")]
+    [Trait("UT-Class", "Pools/Create/CreateCommandValidatorTests")]
     public class Validate_Should_Return_Valid
     {
         private readonly Mock<IMasterDbContext> _mockMasterDbContext;
@@ -16,12 +18,12 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.GetOne.CreateCom
             _mockMasterDbContext = new Mock<IMasterDbContext>();
         }
 
-        [Theory]
+        [Theory(DisplayName = nameof(Validate_Should_Return_Valid))]
         [ClassData(typeof(TestData))]
         public void Theory(CreateCommand command)
         {
             // Arrange
-            var validator = new CreateCommandValidator(this._mockMasterDbContext.Object);
+            var validator = new UseCase.Features.Pools.Create.CreateCommandValidator(this._mockMasterDbContext.Object);
 
             // Act
             var result = validator.Validate(command);

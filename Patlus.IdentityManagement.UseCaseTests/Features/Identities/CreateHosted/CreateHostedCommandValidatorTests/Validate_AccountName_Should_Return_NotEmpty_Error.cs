@@ -7,6 +7,8 @@ using Xunit;
 
 namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.CreateHosted.CreateHostedCommandValidatorTests
 {
+    [Trait("UT-Feature", "Identities/CreateHosted")]
+    [Trait("UT-Class", "Identities/CreateHosted/CreateHostedCommandValidatorTests")]
     public class Validate_AccountName_Should_Return_NotEmpty_Error
     {
         private readonly Mock<IMasterDbContext> _mockMasterDbContext;
@@ -16,7 +18,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.CreateHoste
             _mockMasterDbContext = new Mock<IMasterDbContext>();
         }
 
-        [Theory]
+        [Theory(DisplayName = nameof(Validate_AccountName_Should_Return_NotEmpty_Error))]
         [ClassData(typeof(TestData))]
         public void Theory(string expectedPropertyName, CreateHostedCommand query)
         {

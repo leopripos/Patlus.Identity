@@ -5,9 +5,11 @@ using Xunit;
 
 namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.Count.CountQueryValidatorTests
 {
+    [Trait("UT-Feature", "Identities/Count")]
+    [Trait("UT-Class", "Identities/Count/CountQueryValidatorTests")]
     public class Validate_RequestorId_Should_Return_NotEmpty_Error
     {
-        [Theory]
+        [Theory(DisplayName = nameof(Validate_RequestorId_Should_Return_NotEmpty_Error))]
         [ClassData(typeof(TestData))]
         public void Theory(string expectedPropertyName, CountQuery query)
         {

@@ -10,6 +10,8 @@ using Xunit;
 
 namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.GetAll.GetAllQueryHandlerTests
 {
+    [Trait("UT-Feature", "Identities/GetAll")]
+    [Trait("UT-Class", "Identities/GetAll/GetAllQueryHandlerTests")]
     public class Handle_Should_Return_Requested_Indentities : IDisposable
     {
         private readonly IQueryable<Identity> dataSource;
@@ -27,7 +29,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.GetAll.GetA
             this.mockMasterDbContext.Reset();
         }
 
-        [Theory]
+        [Theory(DisplayName = nameof(Handle_Should_Return_Requested_Indentities))]
         [ClassData(typeof(TestData))]
         public async void Theory(Identity[] expectedResult, GetAllQuery query)
         {
@@ -39,7 +41,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.GetAll.GetA
             // Act
             var actualResult = await handler.Handle(query, default);
 
-            //Asert
+            // Assert
             actualResult.Should().BeEquivalentTo(expectedResult, option => option.IgnoringCyclicReferences());
         }
 

@@ -11,6 +11,8 @@ using Xunit;
 
 namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.CreateHosted.CreateHostedCommandValidatorTests
 {
+    [Trait("UT-Feature", "Identities/CreateHosted")]
+    [Trait("UT-Class", "Identities/CreateHosted/CreateHostedCommandValidatorTests")]
     public class Validate_PoolId_Should_Return_Exist_Error
     {
         private readonly IQueryable<Pool> _dataSource;
@@ -30,7 +32,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.CreateHoste
             _mockMasterDbContext = new Mock<IMasterDbContext>();
         }
 
-        [Theory]
+        [Theory(DisplayName = nameof(Validate_PoolId_Should_Return_Exist_Error))]
         [ClassData(typeof(TestData))]
         public void Theory(string expectedPropertyName, CreateHostedCommand query)
         {

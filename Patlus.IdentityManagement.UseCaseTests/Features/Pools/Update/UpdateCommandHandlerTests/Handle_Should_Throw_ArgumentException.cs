@@ -2,9 +2,7 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Moq;
-using Patlus.Common.UseCase.Exceptions;
 using Patlus.Common.UseCase.Services;
-using Patlus.IdentityManagement.UseCase.Entities;
 using Patlus.IdentityManagement.UseCase.Features.Pools.Update;
 using Patlus.IdentityManagement.UseCase.Services;
 using System;
@@ -12,8 +10,10 @@ using System.Threading.Tasks;
 using Xunit;
 
 
-namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.Upda.UpdateCommandHandlerTests
+namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.Update.UpdateCommandHandlerTests
 {
+    [Trait("UT-Feature", "Pools/Update")]
+    [Trait("UT-Class", "Pools/Update/UpdateCommandHandlerTests")]
     public class Handle_Should_Throw_ArgumentException : IDisposable
     {
         private readonly Mock<ILogger<UpdateCommandHandler>> _mockLogger;
@@ -37,7 +37,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.Upda.UpdateComma
             _mockMediator.Reset();
         }
 
-        [Theory]
+        [Theory(DisplayName = nameof(Handle_Should_Throw_ArgumentException))]
         [ClassData(typeof(TestData))]
         public void Theory(UpdateCommand command)
         {

@@ -5,9 +5,11 @@ using Xunit;
 
 namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.Exist.ExistQueryValidatorTests
 {
+    [Trait("UT-Feature", "Pools/Exist")]
+    [Trait("UT-Class", "Pools/Exist/ExistQueryValidatorTests")]
     public class Validate_Should_Return_Valid
     {
-        [Theory]
+        [Theory(DisplayName = nameof(Validate_Should_Return_Valid))]
         [ClassData(typeof(TestData))]
         public void Theory(ExistQuery query)
         {

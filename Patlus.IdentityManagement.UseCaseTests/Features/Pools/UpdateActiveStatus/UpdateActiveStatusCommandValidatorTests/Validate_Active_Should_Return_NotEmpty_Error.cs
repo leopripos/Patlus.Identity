@@ -5,9 +5,11 @@ using Xunit;
 
 namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.UpdateActiveStatus.UpdateActiveStatusCommandValidatorTests
 {
+    [Trait("UT-Feature", "Pools/UpdateActiveStatus")]
+    [Trait("UT-Class", "Pools/UpdateActiveStatus/UpdateActiveStatusCommandValidatorTests")]
     public class Validate_Active_Should_Return_NotEmpty_Error
     {
-        [Theory]
+        [Theory(DisplayName = nameof(Validate_Active_Should_Return_NotEmpty_Error))]
         [ClassData(typeof(TestData))]
         public void Theory(string expectedPropertyName, UpdateActiveStatusCommand command)
         {

@@ -21,19 +21,19 @@ namespace Patlus.IdentityManagement.Rest.Features.Tokens
     [Route("tokens")]
     public class TokensController : ControllerBase
     {
-        private readonly IConfiguration configuration;
-        private readonly IMediator mediator;
-        private readonly ITimeService timeService;
-        private readonly ITokenService tokenService;
-        private readonly ITokenCacheService tokenCacheService;
+        private readonly IConfiguration _configuration;
+        private readonly IMediator _mediator;
+        private readonly ITimeService _timeService;
+        private readonly ITokenService _tokenService;
+        private readonly ITokenCacheService _tokenCacheService;
 
         public TokensController(IConfiguration configuration, IMediator mediator, ITimeService timeService, ITokenService tokenService, ITokenCacheService tokenCacheService)
         {
-            this.configuration = configuration;
-            this.mediator = mediator;
-            this.timeService = timeService;
-            this.tokenService = tokenService;
-            this.tokenCacheService = tokenCacheService;
+            _configuration = configuration;
+            _mediator = mediator;
+            _timeService = timeService;
+            _tokenService = tokenService;
+            _tokenCacheService = tokenCacheService;
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace Patlus.IdentityManagement.Rest.Features.Tokens
 
             try
             {
-                var identity = await mediator.Send(command).ConfigureAwait(false);
+                var identity = await _mediator.Send(command).ConfigureAwait(false);
 
                 if (identity.Pool is null) throw new Exception($"{nameof(identity.Pool)} is null");
 
@@ -86,7 +86,7 @@ namespace Patlus.IdentityManagement.Rest.Features.Tokens
         {
             if (form.RefreshToken is null) throw new ArgumentNullException(nameof(form.RefreshToken));
 
-            if (tokenService.ValidateRefreshToken(form.RefreshToken, out ClaimsPrincipal? principal))
+            if (_tokenService.ValidateRefreshToken(form.RefreshToken, out ClaimsPrincipal? principal))
             {
                 if (principal is null) throw new Exception($"{nameof(principal)} is null.");
 
@@ -105,11 +105,11 @@ namespace Patlus.IdentityManagement.Rest.Features.Tokens
 
                 try
                 {
-                    var identity = await mediator.Send(command).ConfigureAwait(false);
+                    var identity = await _mediator.Send(command).ConfigureAwait(false);
 
                     if (identity.Pool is null) throw new Exception($"{nameof(identity.Pool)} is null");
 
-                    if (tokenCacheService.HasToken(identity.Id, currentTokenId, identity.AuthKey.ToString()))
+                    if (_tokenCacheService.HasToken(identity.Id, currentTokenId, identity.AuthKey.ToString()))
                     {
                         ModelState.AddModelError(nameof(form.RefreshToken), "Invalid refresh token");
                     }
@@ -160,14 +160,14 @@ namespace Patlus.IdentityManagement.Rest.Features.Tokens
                 new Claim(TokenClaimType.Pool, poolId.ToString())
             };
 
-            var accessTokenExpiredTime = timeService.Now.AddMinutes(configuration.GetValue<int>("Authentication:Token:AccessTokenTime"));
-            var refreshTokenExpiredTime = timeService.Now.AddMinutes(configuration.GetValue<int>("Authentication:Token:RefreshTokenTime"));
+            var accessTokenExpiredTime = _timeService.Now.AddMinutes(_configuration.GetValue<int>("Authentication:Token:AccessTokenTime"));
+            var refreshTokenExpiredTime = _timeService.Now.AddMinutes(_configuration.GetValue<int>("Authentication:Token:RefreshTokenTime"));
 
             var tokenDto = new TokenDto()
             {
                 Scheme = "Bearer",
-                AccessToken = tokenService.GenerateAccessToken(accessClaims, accessTokenExpiredTime, timeService.Now),
-                RefreshToken = tokenService.GenerateRefreshToken(refreshClaims, refreshTokenExpiredTime, timeService.Now),
+                AccessToken = _tokenService.GenerateAccessToken(accessClaims, accessTokenExpiredTime, _timeService.Now),
+                RefreshToken = _tokenService.GenerateRefreshToken(refreshClaims, refreshTokenExpiredTime, _timeService.Now),
             };
 
             return new TokenGenerated(tokenId, refreshTokenExpiredTime, tokenDto);
@@ -175,9 +175,9 @@ namespace Patlus.IdentityManagement.Rest.Features.Tokens
 
         private void RefreshToken(Identity identity, TokenGenerated newToken, Guid currentTokenId)
         {
-            tokenCacheService.Remove(identity.Id, currentTokenId);
+            _tokenCacheService.Remove(identity.Id, currentTokenId);
 
-            tokenCacheService.Set(identity.Id, newToken.TokenId, identity.AuthKey.ToString(), newToken.RefreshExpiredTime);
+            _tokenCacheService.Set(identity.Id, newToken.TokenId, identity.AuthKey.ToString(), newToken.RefreshExpiredTime);
         }
 
         class TokenGenerated

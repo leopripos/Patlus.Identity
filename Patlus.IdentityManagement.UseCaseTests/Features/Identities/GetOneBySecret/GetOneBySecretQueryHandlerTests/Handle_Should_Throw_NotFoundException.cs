@@ -11,6 +11,8 @@ using Xunit;
 
 namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.GetOneBySecret.GetOneBySecretQueryHandlerTests
 {
+    [Trait("UT-Feature", "Identities/GetOneBySecret")]
+    [Trait("UT-Class", "Identities/GetOneBySecret/GetOneBySecretQueryHandlerTests")]
     public class Handle_Should_Throw_NotFoundException : IDisposable
     {
         private readonly IQueryable<Pool> _poolDataSource;
@@ -120,7 +122,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.GetOneBySec
             _mockMasterDbContext.Reset();
         }
 
-        [Theory]
+        [Theory(DisplayName = nameof(Handle_Should_Throw_NotFoundException))]
         [ClassData(typeof(TestData))]
         public void Theory(string expectedEntityName, object expectedEntityValue, GetOneBySecretQuery query)
         {

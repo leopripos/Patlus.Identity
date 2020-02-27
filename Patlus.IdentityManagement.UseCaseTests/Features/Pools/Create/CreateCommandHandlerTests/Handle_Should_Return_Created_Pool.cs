@@ -10,8 +10,10 @@ using System;
 using System.Threading;
 using Xunit;
 
-namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.CreateHosted.CreateCommandHandlerTests
+namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.Create.CreateCommandHandlerTests
 {
+    [Trait("UT-Feature", "Pools/Create")]
+    [Trait("UT-Class", "Pools/Create/CreateCommandHandlerTests")]
     public class Handle_Should_Return_Created_Pool : IDisposable
     {
         private readonly Mock<ILogger<CreateCommandHandler>> _mockLogger;
@@ -35,7 +37,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.CreateHosted.Cre
             _mockMediator.Reset();
         }
 
-        [Theory]
+        [Theory(DisplayName = nameof(Handle_Should_Return_Created_Pool))]
         [ClassData(typeof(TestData))]
         public async void Theory(Pool expectedResult, CreateCommand query)
         {
@@ -52,7 +54,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.CreateHosted.Cre
             // Act
             var actualResult = await handler.Handle(query, default);
 
-            //Asert
+            // Assert
             actualResult.Should().BeEquivalentTo(expectedResult, options =>
             {
                 options.IgnoringCyclicReferences();
