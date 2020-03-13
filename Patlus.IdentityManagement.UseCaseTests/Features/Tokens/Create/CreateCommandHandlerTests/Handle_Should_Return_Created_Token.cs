@@ -75,7 +75,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Tokens.Create.CreateCo
 
                 return options;
             });
-;
+            ;
             _mockMediator.Verify(
                 e => e.Publish(
                     It.Is<CreatedNotification>(e => (
@@ -93,7 +93,8 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Tokens.Create.CreateCo
             public TestData()
             {
                 Add(
-                    new Token() { 
+                    new Token()
+                    {
                         Scheme = "Bearer",
                         Access = "jwtAccessTokenDummy",
                         Refresh = "jwtRefreshTokenTokenDummy",

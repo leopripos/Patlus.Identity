@@ -30,7 +30,7 @@ namespace Patlus.IdentityManagement.Rest.Services
         {
             var id = Guid.NewGuid();
 
-            var token =  new Token()
+            var token = new Token()
             {
                 Id = id,
                 Scheme = SecurityTokenTypes.Bearer,
@@ -79,7 +79,7 @@ namespace Patlus.IdentityManagement.Rest.Services
                 || e is SecurityTokenReplayAddFailedException
                 || e is SecurityTokenReplayDetectedException
                )
-            {}
+            { }
 
             principal = null!;
             return false;

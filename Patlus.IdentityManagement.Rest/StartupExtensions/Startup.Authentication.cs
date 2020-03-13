@@ -17,7 +17,8 @@ namespace Patlus.IdentityManagement.Rest.Extensions
             var options = new ApplicationAuthenticationOptions();
             configuration.GetSection("Authentication").Bind(options);
 
-            services.Configure<ApplicationAuthenticationOptions>(options => {
+            services.Configure<ApplicationAuthenticationOptions>(options =>
+            {
                 configuration.GetSection("Authentication").Bind(options);
             });
 

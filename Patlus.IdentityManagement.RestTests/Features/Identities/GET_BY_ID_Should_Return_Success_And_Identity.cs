@@ -40,7 +40,7 @@ namespace Patlus.IdentityManagement.RestTests.Features.Identities
             response.StatusCode.Should().Be(HttpStatusCode.OK);
 
             var content = await response.Content.ReadAsStringAsync();
-            var identity = DeserializeJson <IdentityDto>(content);
+            var identity = DeserializeJson<IdentityDto>(content);
 
             identity.Should().NotBeEquivalentTo(expectedResult);
         }

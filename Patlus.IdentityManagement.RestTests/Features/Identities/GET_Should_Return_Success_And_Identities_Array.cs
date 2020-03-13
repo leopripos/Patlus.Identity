@@ -41,7 +41,7 @@ namespace Patlus.IdentityManagement.RestTests.Features.Identities
             response.StatusCode.Should().Be(HttpStatusCode.OK);
 
             var content = await response.Content.ReadAsStringAsync();
-            var identities = DeserializeJson <IdentityDto[]>(content);
+            var identities = DeserializeJson<IdentityDto[]>(content);
 
             identities.Should().NotBeNullOrEmpty();
             identities.Should().BeEquivalentTo(expectedResult);

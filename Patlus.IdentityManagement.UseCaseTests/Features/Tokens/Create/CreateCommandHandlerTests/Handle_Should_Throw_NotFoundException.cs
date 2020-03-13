@@ -77,7 +77,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Tokens.Create.CreateCo
                     nameof(Identity),
                     new
                     {
-                        PoolId = new Guid("7c9e6679-7425-40de-944b-e07fc1f90ae7"), 
+                        PoolId = new Guid("7c9e6679-7425-40de-944b-e07fc1f90ae7"),
                         Name = "sysadmin0",
                         Password = "****"
                     },

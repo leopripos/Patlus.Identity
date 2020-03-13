@@ -81,7 +81,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Tokens.Refresh.Refresh
 
                 return options;
             });
-;
+            ;
             _mockMediator.Verify(
                 e => e.Publish(
                     It.Is<RefreshedNotification>(e => (
@@ -99,7 +99,8 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Tokens.Refresh.Refresh
             public TestData()
             {
                 Add(
-                    new Token() { 
+                    new Token()
+                    {
                         Scheme = "Bearer",
                         Access = "jwtAccessTokenDummy",
                         Refresh = "jwtRefreshTokenTokenDummy",

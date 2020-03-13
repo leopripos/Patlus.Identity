@@ -91,7 +91,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.Update.UpdateCom
                     It.Is<UpdatedNotification>(notif => (
                         notif.Entity == actualResult
                         && (
-                            command.HasName == false 
+                            command.HasName == false
                             || (
                                 ((string)notif.Values[nameof(actualResult.Name)].OldValue) == previousValue.Name
                                 && ((string)notif.Values[nameof(actualResult.Name)].NewValue) == command.Name

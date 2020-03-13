@@ -25,7 +25,7 @@ namespace Patlus.IdentityManagement.RestTests.Features.Pools
             {
                 Name = "New Name",
                 Description = "New Pool Description",
-                Active =  true
+                Active = true
             };
 
             var httpContent = new StringContent(
