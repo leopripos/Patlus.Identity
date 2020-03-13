@@ -68,8 +68,9 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.UpdateActiv
             {
                 Add(
                     nameof(Identity),
-                    new { 
-                        PoolId = (Guid?) null,
+                    new
+                    {
+                        PoolId = (Guid?)null,
                         Id = new Guid("7c9e6679-7425-40de-944b-e07fc1f90ae7")
                     },
                     new UpdateActiveStatusCommand()

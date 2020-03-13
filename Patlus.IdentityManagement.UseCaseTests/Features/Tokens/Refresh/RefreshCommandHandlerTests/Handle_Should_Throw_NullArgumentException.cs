@@ -6,7 +6,6 @@ using Patlus.Common.UseCase.Services;
 using Patlus.IdentityManagement.UseCase.Features.Tokens.Refresh;
 using Patlus.IdentityManagement.UseCase.Services;
 using System;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -69,8 +68,8 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Tokens.Refresh.Refresh
                     nameof(RefreshCommand.RefreshToken),
                     new RefreshCommand()
                     {
-                        RefreshToken =  null,
-                        RequestorId =  null
+                        RefreshToken = null,
+                        RequestorId = null
                     }
                 );
             }

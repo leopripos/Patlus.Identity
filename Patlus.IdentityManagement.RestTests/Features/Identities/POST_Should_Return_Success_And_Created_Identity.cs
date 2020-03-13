@@ -2,7 +2,6 @@
 using Patlus.IdentityManagement.Rest;
 using Patlus.IdentityManagement.Rest.Features.Identities;
 using System;
-using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;

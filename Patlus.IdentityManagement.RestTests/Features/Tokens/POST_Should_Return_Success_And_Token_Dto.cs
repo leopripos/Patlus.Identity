@@ -44,7 +44,7 @@ namespace Patlus.IdentityManagement.RestTests.Features.Tokens
             var content = await response.Content.ReadAsStringAsync();
             var tokenDto = DeserializeJson<TokenDto>(content);
 
-            (await CreateAutheticatedClient(tokenDto.Scheme, tokenDto.Access).GetAsync("/me/profile")).StatusCode.Should().Be(HttpStatusCode.OK) ;
+            (await CreateAutheticatedClient(tokenDto.Scheme, tokenDto.Access).GetAsync("/me/profile")).StatusCode.Should().Be(HttpStatusCode.OK);
         }
     }
 }

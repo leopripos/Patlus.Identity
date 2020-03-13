@@ -8,7 +8,7 @@ namespace Patlus.IdentityManagement.UseCase.Features.Identities.UpdateOwnPasswor
     {
         public string? OldPassword { get; set; }
         public string? NewPassword { get; set; }
-        public string? RetypeNewPassword { get; set; } 
+        public string? RetypeNewPassword { get; set; }
         public Guid? RequestorId { get; set; }
     }
 }

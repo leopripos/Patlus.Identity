@@ -39,7 +39,7 @@ namespace Patlus.IdentityManagement.RestTests.Features.Pools
             response.StatusCode.Should().Be(HttpStatusCode.OK);
 
             var content = await response.Content.ReadAsStringAsync();
-            var pools = DeserializeJson <PoolDto[]>(content);
+            var pools = DeserializeJson<PoolDto[]>(content);
 
             pools.Should().BeEquivalentTo(expectedResult);
         }

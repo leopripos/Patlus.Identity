@@ -1,7 +1,6 @@
 ﻿using Patlus.IdentityManagement.UseCase.Entities;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools
 {
@@ -37,7 +36,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools
             };
 
             return new Dictionary<Guid, Pool>() {
-                { 
+                {
                     sysAdminPool.Id,
                     sysAdminPool
                 },

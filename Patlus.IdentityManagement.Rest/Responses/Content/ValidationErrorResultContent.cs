@@ -17,7 +17,7 @@ namespace Patlus.IdentityManagement.Rest.Responses.Content
 
         public ValidationErrorDto(Dictionary<string, string[]> details)
             : this("One or more validation errors occurred", details)
-        {}
+        { }
 
         public ValidationErrorDto(string message) : this(message, new Dictionary<string, string[]>())
         { }

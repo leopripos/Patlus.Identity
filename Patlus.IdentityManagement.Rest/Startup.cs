@@ -48,11 +48,12 @@ namespace Patlus.IdentityManagement.Rest
                     options.Filters.Add<AcceptCaseHeaderActionFilter>();
                     options.Filters.Add<NotFoundExceptionFilter>();
                     options.Filters.Add<ValidationExceptionFilter>();
-                    
+
                     options.OutputFormatters.RemoveType<SystemTextJsonOutputFormatter>();
                     options.OutputFormatters.Add(new DynamicCaseJsonOutputFormater());
                 })
-                .AddJsonOptions(options => {
+                .AddJsonOptions(options =>
+                {
                     options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
                     options.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
                 })
@@ -63,7 +64,7 @@ namespace Patlus.IdentityManagement.Rest
                         var jsonOptions = context.HttpContext.RequestServices.GetRequiredService<IOptionsSnapshot<JsonOptions>>();
 
                         var errors = context.ModelState.ToDictionary(
-                            /// TO-DO: Temporary solution for https://github.com/dotnet/runtime/issues/33508
+                            //// TO-DO: Temporary solution for https://github.com/dotnet/runtime/issues/33508
                             item => jsonOptions.Value.JsonSerializerOptions.DictionaryKeyPolicy.ConvertName(item.Key),
                             item => item.Value.Errors.Select(e => e.ErrorMessage).ToArray()
                         );

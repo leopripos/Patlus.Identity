@@ -18,7 +18,7 @@ namespace Patlus.IdentityManagement.RestTests
         {
             Factory = factory;
         }
-        
+
         protected HttpClient CreateClient()
         {
             var client = Factory.CreateClient();

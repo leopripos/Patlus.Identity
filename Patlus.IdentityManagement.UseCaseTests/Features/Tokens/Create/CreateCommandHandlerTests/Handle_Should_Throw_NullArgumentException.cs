@@ -72,9 +72,9 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Tokens.Create.CreateCo
                     nameof(CreateCommand.PoolId),
                     new CreateCommand()
                     {
-                        PoolId =  null,
+                        PoolId = null,
                         Name = "root",
-                        Password ="password",
+                        Password = "password",
                         RequestorId = null
                     }
                 );
