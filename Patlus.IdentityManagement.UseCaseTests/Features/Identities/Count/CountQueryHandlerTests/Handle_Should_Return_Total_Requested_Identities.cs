@@ -12,7 +12,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.Count.Count
 {
     [Trait("UT-Feature", "Identities/Count")]
     [Trait("UT-Class", "Identities/Count/CountQueryHandlerTests")]
-    public class Handle_Should_Return_Total_Requested_Identities : IDisposable
+    public sealed class Handle_Should_Return_Total_Requested_Identities : IDisposable
     {
         private readonly IQueryable<Identity> _dataSource;
         private readonly Mock<IMasterDbContext> _mockMasterDbContext;

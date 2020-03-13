@@ -12,15 +12,12 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.Exist.ExistQuery
 {
     [Trait("UT-Feature", "Pools/Exist")]
     [Trait("UT-Class", "Pools/Exist/ExistQueryHandlerTests")]
-    public class Handle_Should_Check_Requested_Pools : IDisposable
+    public sealed class Handle_Should_Check_Requested_Pools : IDisposable
     {
-        private readonly IQueryable<Pool> _dataSource;
-
         private readonly Mock<IMasterDbContext> _mockMasterDbContext;
 
         public Handle_Should_Check_Requested_Pools()
         {
-            _dataSource = PoolsFaker.CreatePools().Values.AsQueryable();
             _mockMasterDbContext = new Mock<IMasterDbContext>();
         }
 
@@ -34,7 +31,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.Exist.ExistQuery
         public async void Theory(bool expectedResult, ExistQuery query)
         {
             // Arrange
-            _mockMasterDbContext.Setup(e => e.Pools).Returns(_dataSource);
+            _mockMasterDbContext.Setup(e => e.Pools).Returns(PoolsFaker.CreatePools().Values.AsQueryable());
 
             var handler = new ExistQueryHandler(_mockMasterDbContext.Object);
 

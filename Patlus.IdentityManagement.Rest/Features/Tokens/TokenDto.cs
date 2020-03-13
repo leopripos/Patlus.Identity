@@ -1,9 +1,12 @@
-﻿namespace Patlus.IdentityManagement.Rest.Features.Tokens
+﻿using System;
+
+namespace Patlus.IdentityManagement.Rest.Features.Tokens
 {
     public class TokenDto
     {
         public string Scheme { get; set; } = null!;
-        public string AccessToken { get; set; } = null!;
-        public string RefreshToken { get; set; } = null!;
+        public string Access { get; set; } = null!;
+        public string Refresh { get; set; } = null!;
+        public DateTimeOffset CreatedTime { get; set; }
     }
 }

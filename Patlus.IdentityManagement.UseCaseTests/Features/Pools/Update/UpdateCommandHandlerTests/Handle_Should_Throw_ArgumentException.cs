@@ -14,7 +14,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.Update.UpdateCom
 {
     [Trait("UT-Feature", "Pools/Update")]
     [Trait("UT-Class", "Pools/Update/UpdateCommandHandlerTests")]
-    public class Handle_Should_Throw_ArgumentException : IDisposable
+    public sealed class Handle_Should_Throw_ArgumentException : IDisposable
     {
         private readonly Mock<ILogger<UpdateCommandHandler>> _mockLogger;
         private readonly Mock<IMasterDbContext> _mockMasterDbContext;

@@ -12,7 +12,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.GetAll.GetAllQue
 {
     [Trait("UT-Feature", "Pools/GetAll")]
     [Trait("UT-Class", "Pools/GetAll/GetAllQueryHandlerTests")]
-    public class Handle_Should_Return_Requested_Pools : IDisposable
+    public sealed class Handle_Should_Return_Requested_Pools : IDisposable
     {
         private readonly IQueryable<Pool> _poolsDataSource;
 

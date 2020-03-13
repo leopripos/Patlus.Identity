@@ -16,7 +16,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.UpdateActiveStat
 {
     [Trait("UT-Feature", "Pools/UpdateActiveStatus")]
     [Trait("UT-Class", "Pools/UpdateActiveStatus/UpdateActiveStatusCommandHandlerTests")]
-    public class Handle_Should_Throw_NotFoundException : IDisposable
+    public sealed class Handle_Should_Throw_NotFoundException : IDisposable
     {
         private readonly Mock<ILogger<UpdateActiveStatusCommandHandler>> _mockLogger;
         private readonly Mock<IMasterDbContext> _mockMasterDbContext;

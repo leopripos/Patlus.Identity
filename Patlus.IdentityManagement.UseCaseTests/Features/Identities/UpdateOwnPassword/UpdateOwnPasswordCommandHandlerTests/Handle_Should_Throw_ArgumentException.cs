@@ -14,7 +14,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.UpdateOwnPa
 {
     [Trait("UT-Feature", "Identities/UpdateOwnPassword")]
     [Trait("UT-Class", "Identities/UpdateOwnPassword/UpdateOwnPasswordCommandHandlerTests")]
-    public class Handle_Should_Throw_ArgumentException : IDisposable
+    public sealed class Handle_Should_Throw_ArgumentException : IDisposable
     {
         private readonly Mock<ILogger<UpdateOwnPasswordCommandHandler>> _mockLogger;
         private readonly Mock<IMasterDbContext> _mockMasterDbContext;

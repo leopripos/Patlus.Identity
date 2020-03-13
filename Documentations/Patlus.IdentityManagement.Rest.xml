@@ -4,6 +4,12 @@
         <name>Patlus.IdentityManagement.Rest</name>
     </assembly>
     <members>
+        <member name="M:Patlus.IdentityManagement.Rest.Features.ApiControllerBase.ValidationProblem">
+            <inheritdoc/>
+        </member>
+        <member name="M:Patlus.IdentityManagement.Rest.Features.ApiControllerBase.ValidationProblem(Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary)">
+            <inheritdoc/>
+        </member>
         <member name="M:Patlus.IdentityManagement.Rest.Features.Identities.IdentitiesController.GetAll(System.Guid)">
             <summary>
             Get all identities in specific pool
@@ -57,12 +63,10 @@
         </member>
         <member name="M:Patlus.IdentityManagement.Rest.Features.Pools.PoolsController.Update(System.Guid,Patlus.IdentityManagement.Rest.Features.Pools.UpdateForm)">
             <summary>
-            Update the detail of specific pool
-            </summary>
-            <remarks>
+            Update the detail of specific pool.
             Updating pool using partial update, so you have to update which field you want to update.
             No need to pass all value
-            </remarks>
+            </summary>
             <param name="poolId">Pool Id</param>
             <param name="form">Updated Pool Form</param>
             <returns>Pool Updated</returns>
@@ -88,6 +92,11 @@
             </summary>
             <param name="form">Refresh Form</param>
             <returns>Authentication token</returns>
+        </member>
+        <member name="T:Patlus.IdentityManagement.Rest.Filters.Actions.PascalCaseNamingPolicy">
+            <summary>
+            Addapted from <see href="https://github.com/dotnet/corefx/blob/master/src/System.Text.Json/src/System/Text/Json/Serialization/JsonCamelCaseNamingPolicy.cs">JsonCamelCaseNamingPolic</see>
+            </summary>
         </member>
     </members>
 </doc>

@@ -14,7 +14,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.UpdateActiv
 {
     [Trait("UT-Feature", "Identities/UpdateActiveStatus")]
     [Trait("UT-Class", "Identities/UpdateActiveStatus/UpdateActiveStatusCommandHandlerTests")]
-    public class Handle_Should_Throw_NullArgumentException : IDisposable
+    public sealed class Handle_Should_Throw_NullArgumentException : IDisposable
     {
         private readonly Mock<ILogger<UpdateActiveStatusCommandHandler>> _mockLogger;
         private readonly Mock<IMasterDbContext> _mockMasterDbContext;

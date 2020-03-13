@@ -12,7 +12,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.GetOne.GetO
 {
     [Trait("UT-Feature", "Identities/GetOne")]
     [Trait("UT-Class", "Identities/GetOne/GetOneQueryHandlerTests")]
-    public class Handle_Should_Return_Requested_Identities : IDisposable
+    public sealed class Handle_Should_Return_Requested_Identities : IDisposable
     {
         private readonly IQueryable<Identity> _dataSource;
 

@@ -14,7 +14,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.Create.CreateCom
 {
     [Trait("UT-Feature", "Pools/Create")]
     [Trait("UT-Class", "Pools/Create/CreateCommandHandlerTests")]
-    public class Handle_Should_Throw_NullArgumentException : IDisposable
+    public sealed class Handle_Should_Throw_NullArgumentException : IDisposable
     {
         private readonly Mock<ILogger<CreateCommandHandler>> _mockLogger;
         private readonly Mock<IMasterDbContext> _mockMasterDbContext;

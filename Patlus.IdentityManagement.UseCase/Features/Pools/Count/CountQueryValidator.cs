@@ -9,6 +9,7 @@ namespace Patlus.IdentityManagement.UseCase.Features.Pools.Count
         public CountQueryValidator()
         {
             RuleFor(r => r.RequestorId)
+                .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithErrorCode(ValidationErrorCodes.NotEmpty);
         }
     }

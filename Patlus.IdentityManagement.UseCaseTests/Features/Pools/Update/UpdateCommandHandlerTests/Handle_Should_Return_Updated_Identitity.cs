@@ -15,10 +15,8 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.Update.UpdateCom
 {
     [Trait("UT-Feature", "Pools/Update")]
     [Trait("UT-Class", "Pools/Update/UpdateCommandHandlerTests")]
-    public class Handle_Should_Return_Updated_Identitity : IDisposable
+    public sealed class Handle_Should_Return_Updated_Identitity : IDisposable
     {
-        private readonly IQueryable<Pool> _dataSource;
-
         private readonly Mock<ILogger<UpdateCommandHandler>> _mockLogger;
         private readonly Mock<IMasterDbContext> _mockMasterDbContext;
         private readonly Mock<ITimeService> _mockTimeService;
@@ -26,8 +24,6 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.Update.UpdateCom
 
         public Handle_Should_Return_Updated_Identitity()
         {
-            _dataSource = PoolsFaker.CreatePools().Values.AsQueryable();
-
             _mockLogger = new Mock<ILogger<UpdateCommandHandler>>();
             _mockMasterDbContext = new Mock<IMasterDbContext>();
             _mockTimeService = new Mock<ITimeService>();
@@ -48,7 +44,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.Update.UpdateCom
         {
             // Arrange
             var currentTime = DateTimeOffset.Now;
-            _mockMasterDbContext.Setup(e => e.Pools).Returns(_dataSource);
+            _mockMasterDbContext.Setup(e => e.Pools).Returns(PoolsFaker.CreatePools().Values.AsQueryable());
             _mockTimeService.Setup(e => e.Now).Returns(currentTime);
 
             var handler = new UpdateCommandHandler(

@@ -20,18 +20,22 @@ namespace Patlus.IdentityManagement.UseCase.Features.Identities.UpdateOwnPasswor
             _passwordService = passwordService;
 
             RuleFor(r => r.RequestorId)
+                .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithErrorCode(ValidationErrorCodes.NotEmpty);
 
             RuleFor(r => r.OldPassword)
+                .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithErrorCode(ValidationErrorCodes.NotEmpty)
-                .MustAsync(CorrectOldPassword).WithMessage(e => $"Invalid { nameof(e.OldPassword) } password").WithErrorCode(ValidationErrorCodes.Invalid);
+                .MustAsync(CorrectOldPassword!).WithMessage(e => $"Invalid { nameof(e.OldPassword) } password").WithErrorCode(ValidationErrorCodes.Invalid);
 
             RuleFor(r => r.NewPassword)
+                .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithErrorCode(ValidationErrorCodes.NotEmpty)
                 .MinimumLength(6).WithErrorCode(ValidationErrorCodes.MinLength)
                 .MaximumLength(20).WithErrorCode(ValidationErrorCodes.MaxLength);
 
             RuleFor(r => r.RetypeNewPassword)
+                .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithErrorCode(ValidationErrorCodes.NotEmpty)
                 .Equal(e => e.NewPassword).WithErrorCode(ValidationErrorCodes.Equal);
         }
@@ -47,7 +51,7 @@ namespace Patlus.IdentityManagement.UseCase.Features.Identities.UpdateOwnPasswor
                 return Task.FromResult(false);
             }
 
-            return Task.FromResult(_passwordService.ValidatePasswordHash(entity.HostedAccount.Password, oldPassword));
+            return Task.FromResult(_passwordService.ValidatePasswordHash(entity.HostedAccount.Password, oldPassword!));
         }
     }
 }

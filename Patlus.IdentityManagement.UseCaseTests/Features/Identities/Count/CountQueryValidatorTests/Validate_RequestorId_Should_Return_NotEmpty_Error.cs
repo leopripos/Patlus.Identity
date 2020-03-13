@@ -7,7 +7,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.Count.Count
 {
     [Trait("UT-Feature", "Identities/Count")]
     [Trait("UT-Class", "Identities/Count/CountQueryValidatorTests")]
-    public class Validate_RequestorId_Should_Return_NotEmpty_Error
+    public sealed class Validate_RequestorId_Should_Return_NotEmpty_Error
     {
         [Theory(DisplayName = nameof(Validate_RequestorId_Should_Return_NotEmpty_Error))]
         [ClassData(typeof(TestData))]

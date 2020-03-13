@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Patlus.Common.UseCase.Security;
 using Patlus.IdentityManagement.Rest.Auhtorization.Policies;
-using Patlus.IdentityManagement.Rest.Authentication.Token;
 
 namespace Patlus.IdentityManagement.Rest.Extensions
 {
@@ -30,20 +30,26 @@ namespace Patlus.IdentityManagement.Rest.Extensions
         {
             opt.AddPolicy(PoolPolicy.Read, policy =>
             {
-                policy.RequireClaim(TokenClaimType.Subject);
-                policy.RequireClaim(TokenClaimType.Pool);
+                policy.RequireClaim(SecurityClaimTypes.Subject);
+                policy.RequireClaim(SecurityClaimTypes.Pool);
             });
 
             opt.AddPolicy(PoolPolicy.Create, policy =>
             {
-                policy.RequireClaim(TokenClaimType.Subject);
-                policy.RequireClaim(TokenClaimType.Pool);
+                policy.RequireClaim(SecurityClaimTypes.Subject);
+                policy.RequireClaim(SecurityClaimTypes.Pool);
+            });
+
+            opt.AddPolicy(PoolPolicy.Update, policy =>
+            {
+                policy.RequireClaim(SecurityClaimTypes.Subject);
+                policy.RequireClaim(SecurityClaimTypes.Pool);
             });
 
             opt.AddPolicy(PoolPolicy.UpdateActiveStatus, policy =>
             {
-                policy.RequireClaim(TokenClaimType.Subject);
-                policy.RequireClaim(TokenClaimType.Pool);
+                policy.RequireClaim(SecurityClaimTypes.Subject);
+                policy.RequireClaim(SecurityClaimTypes.Pool);
             });
         }
 
@@ -51,26 +57,26 @@ namespace Patlus.IdentityManagement.Rest.Extensions
         {
             opt.AddPolicy(IdentityPolicy.Read, policy =>
             {
-                policy.RequireClaim(TokenClaimType.Subject);
-                policy.RequireClaim(TokenClaimType.Pool);
+                policy.RequireClaim(SecurityClaimTypes.Subject);
+                policy.RequireClaim(SecurityClaimTypes.Pool);
             });
 
             opt.AddPolicy(IdentityPolicy.Create, policy =>
             {
-                policy.RequireClaim(TokenClaimType.Subject);
-                policy.RequireClaim(TokenClaimType.Pool);
+                policy.RequireClaim(SecurityClaimTypes.Subject);
+                policy.RequireClaim(SecurityClaimTypes.Pool);
             });
 
             opt.AddPolicy(IdentityPolicy.UpdateActiveStatus, policy =>
             {
-                policy.RequireClaim(TokenClaimType.Subject);
-                policy.RequireClaim(TokenClaimType.Pool);
+                policy.RequireClaim(SecurityClaimTypes.Subject);
+                policy.RequireClaim(SecurityClaimTypes.Pool);
             });
 
             opt.AddPolicy(TokenPolicy.Refresh, policy =>
             {
-                policy.RequireClaim(TokenClaimType.Subject);
-                policy.RequireClaim(TokenClaimType.Pool);
+                policy.RequireClaim(SecurityClaimTypes.Subject);
+                policy.RequireClaim(SecurityClaimTypes.Pool);
             });
         }
 
@@ -78,17 +84,23 @@ namespace Patlus.IdentityManagement.Rest.Extensions
         {
             opt.AddPolicy(TokenPolicy.Refresh, policy =>
             {
-                policy.RequireClaim(TokenClaimType.Subject);
-                policy.RequireClaim(TokenClaimType.Pool);
+                policy.RequireClaim(SecurityClaimTypes.Subject);
+                policy.RequireClaim(SecurityClaimTypes.Pool);
             });
         }
 
         private static void AddMePolicies(this AuthorizationOptions opt)
         {
+            opt.AddPolicy(MePolicy.GetProfie, policy =>
+            {
+                policy.RequireClaim(SecurityClaimTypes.Subject);
+                policy.RequireClaim(SecurityClaimTypes.Pool);
+            });
+
             opt.AddPolicy(MePolicy.UpdatePassword, policy =>
             {
-                policy.RequireClaim(TokenClaimType.Subject);
-                policy.RequireClaim(TokenClaimType.Pool);
+                policy.RequireClaim(SecurityClaimTypes.Subject);
+                policy.RequireClaim(SecurityClaimTypes.Pool);
             });
         }
     }

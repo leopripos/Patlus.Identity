@@ -1,37 +1,31 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Patlus.IdentityManagement.Rest.Responses.Content;
-using System.Collections.Generic;
-using System.Text.Json;
+using Microsoft.Extensions.Options;
 
 namespace Patlus.IdentityManagement.Rest.Filters.Exceptions
 {
     public class ValidationExceptionFilter : IActionFilter, IOrderedFilter
     {
+        private readonly IOptions<ApiBehaviorOptions> _apiBehaviourOptions;
+
         public int Order { get; set; } = int.MaxValue - 10;
+
+        public ValidationExceptionFilter(IOptions<ApiBehaviorOptions> apiBehaviourOptions)
+        {
+            _apiBehaviourOptions = apiBehaviourOptions;
+        }
 
         public void OnActionExecuted(ActionExecutedContext context)
         {
-            if (context.Exception is ValidationException exception && context.Controller is ControllerBase)
+            if (context.Exception is ValidationException exception)
             {
-                var details = new Dictionary<string, List<string>>();
-
-                foreach (var validationsfailures in exception.Errors)
+                foreach (var failure in exception.Errors)
                 {
-                    var fieldName = JsonNamingPolicy.CamelCase.ConvertName(validationsfailures.PropertyName);
-
-                    if (!details.ContainsKey(fieldName))
-                    {
-                        details.Add(fieldName, new List<string>(1));
-                    }
-
-                    details[fieldName].Add(validationsfailures.ErrorMessage);
+                    context.ModelState.AddModelError(failure.PropertyName, failure.ErrorMessage);
                 }
 
-                context.Result = new BadRequestObjectResult(
-                    new ValidationErrorResultContent("Validation error", details)
-                );
+                context.Result = _apiBehaviourOptions.Value.InvalidModelStateResponseFactory(context);
 
                 context.ExceptionHandled = true;
             }

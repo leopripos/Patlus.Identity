@@ -23,10 +23,10 @@ namespace Patlus.IdentityManagement.UseCase.Features.Pools.Update
 
         public UpdateCommandHandler(ILogger<UpdateCommandHandler> logger, IMasterDbContext dbService, ITimeService timeService, IMediator mediator)
         {
-            this._logger = logger;
-            this._dbService = dbService;
-            this._timeService = timeService;
-            this._mediator = mediator;
+            _logger = logger;
+            _dbService = dbService;
+            _timeService = timeService;
+            _mediator = mediator;
 
         }
         public async Task<Pool> Handle(UpdateCommand request, CancellationToken cancellationToken)
@@ -48,14 +48,14 @@ namespace Patlus.IdentityManagement.UseCase.Features.Pools.Update
 
             if (request.HasName)
             {
-                valueChanges.Add(nameof(request.Name), new ValueChanged(entity.Name, request.Name));
-                entity.Name = request.Name;
+                valueChanges.Add(nameof(request.Name), new ValueChanged(entity.Name, request.Name!));
+                entity.Name = request.Name!;
             }
 
             if (request.HasDescription)
             {
-                valueChanges.Add(nameof(request.Description), new ValueChanged(entity.Description, request.Description));
-                entity.Description = request.Description;
+                valueChanges.Add(nameof(request.Description), new ValueChanged(entity.Description, request.Description!));
+                entity.Description = request.Description!;
             }
 
             var notification = new UpdatedNotification(

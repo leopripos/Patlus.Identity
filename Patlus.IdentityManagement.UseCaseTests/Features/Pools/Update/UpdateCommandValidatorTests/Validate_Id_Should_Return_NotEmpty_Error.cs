@@ -9,7 +9,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.Update.UpdateCom
 {
     [Trait("UT-Feature", "Pools/Update")]
     [Trait("UT-Class", "Pools/Update/UpdateCommandValidatorTests")]
-    public class Validate_Id_Should_Return_NotEmpty_Error
+    public sealed class Validate_Id_Should_Return_NotEmpty_Error
     {
         private readonly Mock<IMasterDbContext> _mockMasterDbContext;
 

@@ -10,14 +10,14 @@ namespace Patlus.IdentityManagement.Persistence.Contexts
 {
     public class MasterDbContext : DbContext, IMasterDbContext
     {
-        private readonly ITimeService timeService;
-        private readonly IPasswordService passwordService;
+        protected readonly ITimeService TimeService;
+        protected readonly IPasswordService PasswordService;
 
         public MasterDbContext(DbContextOptions<MasterDbContext> options, ITimeService timeService, IPasswordService passwordService)
             : base(options)
         {
-            this.timeService = timeService;
-            this.passwordService = passwordService;
+            TimeService = timeService;
+            PasswordService = passwordService;
         }
 
         public IQueryable<Pool> Pools
@@ -60,11 +60,11 @@ namespace Patlus.IdentityManagement.Persistence.Contexts
                 new Pool() {
                     Id = poolId,
                     Active = true,
-                    Name = "System Administrator",
+                    Name = "Root Administrator",
                     Description = "Default identity pool for system administrator.",
                     CreatorId = identityId,
-                    CreatedTime = timeService.Now,
-                    LastModifiedTime = timeService.Now,
+                    CreatedTime = TimeService.Now,
+                    LastModifiedTime = TimeService.Now,
                 }
             });
 
@@ -76,8 +76,8 @@ namespace Patlus.IdentityManagement.Persistence.Contexts
                     Name = identityName,
                     Active = true,
                     CreatorId = identityId,
-                    CreatedTime = timeService.Now,
-                    LastModifiedTime = timeService.Now,
+                    CreatedTime = TimeService.Now,
+                    LastModifiedTime = TimeService.Now,
                 }
             });
 
@@ -85,10 +85,10 @@ namespace Patlus.IdentityManagement.Persistence.Contexts
                 new HostedAccount(){
                     Id = identityId,
                     Name = identityName,
-                    Password = passwordService.GeneratePasswordHash(identityPassword),
+                    Password = PasswordService.GeneratePasswordHash(identityPassword),
                     CreatorId = identityId,
-                    CreatedTime = timeService.Now,
-                    LastModifiedTime = timeService.Now,
+                    CreatedTime = TimeService.Now,
+                    LastModifiedTime = TimeService.Now,
                 }
             });
         }

@@ -7,7 +7,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.GetOne.GetO
 {
     [Trait("UT-Feature", "Identities/GetOne")]
     [Trait("UT-Class", "Identities/GetOne/GetOneQueryValidatorTests")]
-    public class Validate_Condition_Should_Return_NotEmpty_Error
+    public sealed class Validate_Condition_Should_Return_NotEmpty_Error
     {
         [Theory(DisplayName = nameof(Validate_Condition_Should_Return_NotEmpty_Error))]
         [ClassData(typeof(TestData))]

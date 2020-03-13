@@ -15,10 +15,8 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.UpdateOwnPa
 {
     [Trait("UT-Feature", "Identities/UpdateOwnPassword")]
     [Trait("UT-Class", "Identities/UpdateOwnPassword/UpdateOwnPasswordCommandHandlerTests")]
-    public class Handle_Should_Return_Updated_Identitity : IDisposable
+    public sealed class Handle_Should_Return_Updated_Identitity : IDisposable
     {
-        private readonly IQueryable<Identity> _dataSource;
-
         private readonly Mock<ILogger<UpdateOwnPasswordCommandHandler>> _mockLogger;
         private readonly Mock<IMasterDbContext> _mockMasterDbContext;
         private readonly Mock<ITimeService> _mockTimeService;
@@ -27,8 +25,6 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.UpdateOwnPa
 
         public Handle_Should_Return_Updated_Identitity()
         {
-            _dataSource = IdentitiesFaker.CreateIdentities().Values.AsQueryable();
-
             _mockLogger = new Mock<ILogger<UpdateOwnPasswordCommandHandler>>();
             _mockMasterDbContext = new Mock<IMasterDbContext>();
             _mockTimeService = new Mock<ITimeService>();
@@ -51,7 +47,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.UpdateOwnPa
         {
             // Arrange
             var currentTime = DateTimeOffset.Now;
-            _mockMasterDbContext.Setup(e => e.Identities).Returns(_dataSource);
+            _mockMasterDbContext.Setup(e => e.Identities).Returns(IdentitiesFaker.CreateIdentities().Values.AsQueryable());
             _mockTimeService.Setup(e => e.Now).Returns(currentTime);
             _mockPasswordService.Setup(e => e.GeneratePasswordHash("newpassword")).Returns("newpasswordhash");
             _mockPasswordService.Setup(e => e.ValidatePasswordHash(It.IsAny<string>(), "rightpassword")).Returns(true);

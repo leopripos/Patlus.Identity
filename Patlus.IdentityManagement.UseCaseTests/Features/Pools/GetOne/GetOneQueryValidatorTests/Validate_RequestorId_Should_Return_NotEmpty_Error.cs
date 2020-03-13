@@ -7,7 +7,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.GetOne.GetOneQue
 {
     [Trait("UT-Feature", "Pools/GetOne")]
     [Trait("UT-Class", "Pools/GetOne/GetOneQueryValidatorTests")]
-    public class Validate_RequestorId_Should_Return_NotEmpty_Error
+    public sealed class Validate_RequestorId_Should_Return_NotEmpty_Error
     {
         [Theory(DisplayName = nameof(Validate_RequestorId_Should_Return_NotEmpty_Error))]
         [ClassData(typeof(TestData))]

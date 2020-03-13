@@ -12,7 +12,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.Exist.Exist
 {
     [Trait("UT-Feature", "Identities/Exist")]
     [Trait("UT-Class", "Identities/Exist/ExistQueryHandlerTests")]
-    public class Handle_Should_Check_Requested_Identities : IDisposable
+    public sealed class Handle_Should_Check_Requested_Identities : IDisposable
     {
         private readonly IQueryable<Identity> _dataSource;
         private readonly Mock<IMasterDbContext> _mockMasterDbContext;

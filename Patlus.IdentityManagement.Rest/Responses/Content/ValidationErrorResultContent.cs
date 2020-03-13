@@ -2,18 +2,24 @@
 
 namespace Patlus.IdentityManagement.Rest.Responses.Content
 {
-    public class ValidationErrorResultContent
+    public class ValidationErrorDto
     {
-        public readonly string Message;
-        public readonly IReadOnlyDictionary<string, List<string>> Details;
+        public string Message { get; set; }
+        public IDictionary<string, string[]> Details { get; set; }
 
-        public ValidationErrorResultContent(string message, IReadOnlyDictionary<string, List<string>> details)
+        public ValidationErrorDto() { }
+
+        public ValidationErrorDto(string message, IDictionary<string, string[]> details)
         {
             this.Message = message;
             this.Details = details;
         }
 
-        public ValidationErrorResultContent(string message) : this(message, new Dictionary<string, List<string>>())
+        public ValidationErrorDto(Dictionary<string, string[]> details)
+            : this("One or more validation errors occurred", details)
+        {}
+
+        public ValidationErrorDto(string message) : this(message, new Dictionary<string, string[]>())
         { }
     }
 }

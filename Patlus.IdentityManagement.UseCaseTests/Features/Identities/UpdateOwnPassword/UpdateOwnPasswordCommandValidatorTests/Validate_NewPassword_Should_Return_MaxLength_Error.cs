@@ -9,7 +9,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.UpdateOwnPa
 {
     [Trait("UT-Feature", "Identities/UpdateOwnPassword")]
     [Trait("UT-Class", "Identities/UpdateOwnPassword/UpdateOwnPasswordCommandValidatorTests")]
-    public class Validate_NewPassword_Should_Return_MaxLength_Error
+    public sealed class Validate_NewPassword_Should_Return_MaxLength_Error
     {
         private readonly Mock<IMasterDbContext> _mockMasterDbContext;
         private readonly Mock<IPasswordService> _mockPasswordService;
@@ -17,8 +17,8 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.UpdateOwnPa
 
         public Validate_NewPassword_Should_Return_MaxLength_Error()
         {
-            this._mockMasterDbContext = new Mock<IMasterDbContext>();
-            this._mockPasswordService = new Mock<IPasswordService>();
+            _mockMasterDbContext = new Mock<IMasterDbContext>();
+            _mockPasswordService = new Mock<IPasswordService>();
         }
 
         [Theory(DisplayName = nameof(Validate_NewPassword_Should_Return_MaxLength_Error))]
@@ -27,8 +27,8 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.UpdateOwnPa
         {
             // Arrange
             var validator = new UpdateOwnPasswordCommandValidator(
-                dbService: this._mockMasterDbContext.Object,
-                passwordService: this._mockPasswordService.Object
+                dbService: _mockMasterDbContext.Object,
+                passwordService: _mockPasswordService.Object
             );
 
             // Act

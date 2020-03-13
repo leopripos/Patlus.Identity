@@ -9,7 +9,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.Exist.Exist
 {
     [Trait("UT-Feature", "Identities/Exist")]
     [Trait("UT-Class", "Identities/Exist/ExistQueryHandlerTests")]
-    public class Handle_Should_Throw_NullArgumentException : IDisposable
+    public sealed class Handle_Should_Throw_NullArgumentException : IDisposable
     {
         private readonly Mock<IMasterDbContext> _mockMasterDbContext;
 

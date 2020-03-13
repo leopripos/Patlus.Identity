@@ -18,7 +18,7 @@ namespace Patlus.IdentityManagement.Rest.Features.Pools
     [ApiController]
     [Route("pools")]
     [Authorize]
-    public class PoolsController : ControllerBase
+    public class PoolsController : ApiControllerBase
     {
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
@@ -54,13 +54,18 @@ namespace Patlus.IdentityManagement.Rest.Features.Pools
         /// <returns>Pool</returns>
         [HttpGet("{poolId}")]
         [Authorize(Policy = PoolPolicy.Read)]
-        public async Task<PoolDto> GetById(Guid poolId)
+        public async Task<ActionResult<PoolDto>> GetById(Guid poolId)
         {
             var pool = await _mediator.Send(new GetOneQuery()
             {
                 Condition = (e => e.Id == poolId),
                 RequestorId = _userResolver.Current.Id
             });
+
+            if (pool == null)
+            {
+                return NotFound();
+            }
 
             return _mapper.Map<Pool, PoolDto>(pool);
         }
@@ -74,9 +79,6 @@ namespace Patlus.IdentityManagement.Rest.Features.Pools
         [Authorize(Policy = PoolPolicy.Create)]
         public async Task<ActionResult<PoolDto>> Create([FromBody] CreateForm form)
         {
-            if (form.Name is null) throw new ArgumentNullException(nameof(form.Name));
-            if (form.Description is null) throw new ArgumentNullException(nameof(form.Description));
-
             var command = new CreateCommand
             {
                 Active = form.Active,
@@ -91,12 +93,10 @@ namespace Patlus.IdentityManagement.Rest.Features.Pools
         }
 
         /// <summary>
-        /// Update the detail of specific pool
-        /// </summary>
-        /// <remarks>
+        /// Update the detail of specific pool.
         /// Updating pool using partial update, so you have to update which field you want to update.
         /// No need to pass all value
-        /// </remarks>
+        /// </summary>
         /// <param name="poolId">Pool Id</param>
         /// <param name="form">Updated Pool Form</param>
         /// <returns>Pool Updated</returns>

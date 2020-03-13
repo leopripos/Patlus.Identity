@@ -18,7 +18,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.CreateHoste
 {
     [Trait("UT-Feature", "Identities/CreateHosted")]
     [Trait("UT-Class", "Identities/CreateHosted/CreateHostedCommandHandlerTests")]
-    public class Handle_Should_Throw_NotFoundException : IDisposable
+    public sealed class Handle_Should_Throw_NotFoundException : IDisposable
     {
         private readonly IQueryable<Pool> _poolsDataSource;
 

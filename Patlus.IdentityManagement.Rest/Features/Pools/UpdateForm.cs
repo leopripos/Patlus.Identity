@@ -2,27 +2,27 @@
 {
     public class UpdateForm
     {
-        private string name = null!;
-        private string description = null!;
+        private string? _name;
+        private string? _description;
 
         public bool HasName { get; private set; }
-        public string Name
+        public string? Name
         {
-            get { return name; }
+            get { return _name; }
             set
             {
-                name = Name;
+                _name = value;
                 HasName = true;
             }
         }
 
         public bool HasDescription { get; private set; }
-        public string Description
+        public string? Description
         {
-            get { return description; }
+            get { return _description; }
             set
             {
-                description = value;
+                _description = value;
                 HasDescription = true;
             }
         }
