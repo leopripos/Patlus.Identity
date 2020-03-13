@@ -7,7 +7,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.Exist.ExistQuery
 {
     [Trait("UT-Feature", "Pools/Exist")]
     [Trait("UT-Class", "Pools/Exist/ExistQueryValidatorTests")]
-    public class Validate_Should_Return_Valid
+    public sealed class Validate_Should_Return_Valid
     {
         [Theory(DisplayName = nameof(Validate_Should_Return_Valid))]
         [ClassData(typeof(TestData))]

@@ -9,7 +9,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.Create.CreateCom
 {
     [Trait("UT-Feature", "Pools/Create")]
     [Trait("UT-Class", "Pools/Create/CreateCommandValidatorTests")]
-    public class Validate_Active_Should_Return_NotEmpty_Error
+    public sealed class Validate_Active_Should_Return_NotEmpty_Error
     {
         private readonly Mock<IMasterDbContext> _mockMasterDbContext;
 
@@ -23,7 +23,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.Create.CreateCom
         public void Theory(string expectedPropertyName, CreateCommand query)
         {
             // Arrange
-            var validator = new CreateCommandValidator(this._mockMasterDbContext.Object);
+            var validator = new CreateCommandValidator(_mockMasterDbContext.Object);
 
             // Act
             var result = validator.Validate(query);

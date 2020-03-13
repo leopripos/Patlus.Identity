@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using Patlus.IdentityManagement.Rest.Authentication;
 using Patlus.IdentityManagement.UseCase.Services;
 using System;
 using System.Text;
@@ -8,17 +9,19 @@ namespace Patlus.IdentityManagement.Rest.Services
 {
     public class HMACSHA1PasswordService : IPasswordService
     {
-        private readonly IConfiguration passwordConfiguration;
-        public HMACSHA1PasswordService(IConfigurationSection passwordConfiguration)
+        private readonly IOptions<ApplicationAuthenticationOptions> _authOptions;
+
+        public HMACSHA1PasswordService(IOptions<ApplicationAuthenticationOptions> authOptions)
         {
-            this.passwordConfiguration = passwordConfiguration;
+            _authOptions = authOptions;
         }
+
         public string GeneratePasswordHash(string password)
         {
             return Convert.ToBase64String(
                 KeyDerivation.Pbkdf2(
                     password: password,
-                    salt: Encoding.ASCII.GetBytes(passwordConfiguration.GetValue<string>("Salt")),
+                    salt: Encoding.ASCII.GetBytes(_authOptions.Value.Password.Salt),
                     prf: KeyDerivationPrf.HMACSHA1,
                     iterationCount: 10000,
                     numBytesRequested: 256 / 8

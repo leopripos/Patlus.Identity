@@ -11,6 +11,7 @@ namespace Patlus.IdentityManagement.Rest.Features.Identities
                 .ReverseMap();
 
             CreateMap<HostedAccount, HostedAccountDto>()
+                .ForMember(e => e.CreatedTime, e => e.Ignore())
                 .ReverseMap();
         }
     }

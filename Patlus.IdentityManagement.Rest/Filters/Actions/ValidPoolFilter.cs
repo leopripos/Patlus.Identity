@@ -1,22 +1,26 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Routing;
+using Patlus.IdentityManagement.Rest.Authentication;
 using Patlus.IdentityManagement.Rest.Responses.Content;
 using Patlus.IdentityManagement.UseCase.Features.Pools.Exist;
 using System;
 
 namespace Patlus.IdentityManagement.Rest.Filters.Actions
 {
-    public class ValidPoolFilter : ActionFilterAttribute, IResourceFilter
+    public sealed class ValidPoolFilter : ActionFilterAttribute, IResourceFilter
     {
+        private readonly IMediator _mediator;
+        private readonly IUserResolver _userResolver;
+
         public string RouteKey = "poolId";
 
-        private readonly IMediator mediator;
-
-        public ValidPoolFilter(IMediator mediator)
+        public ValidPoolFilter(IMediator mediator, IUserResolver userResolver)
         {
-            this.mediator = mediator;
+            _mediator = mediator;
+            _userResolver = userResolver;
         }
 
         public void OnResourceExecuted(ResourceExecutedContext context)
@@ -31,16 +35,18 @@ namespace Patlus.IdentityManagement.Rest.Filters.Actions
 
             if (Guid.TryParse(routeData.Values[RouteKey].ToString(), out Guid poolId))
             {
-                isValid = await mediator.Send(new ExistQuery()
+                isValid = await _mediator.Send(new ExistQuery()
                 {
-                    Condition = (e => e.Id == poolId)
+                    Condition = (e => e.Id == poolId),
+                    RequestorId = _userResolver.Current.Id
                 });
             }
 
             if (!isValid)
             {
+                context.HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
                 context.Result = new NotFoundObjectResult(
-                    new NotFoundResultContent($"Pool with id `{(routeData.Values[RouteKey])}` not found.")
+                    new NotFoundResultDto($"Pool with id `{(routeData.Values[RouteKey])}` not found.")
                 );
             }
         }

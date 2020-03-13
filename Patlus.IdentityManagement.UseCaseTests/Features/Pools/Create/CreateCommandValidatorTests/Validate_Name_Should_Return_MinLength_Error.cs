@@ -11,7 +11,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.Create.CreateCom
 {
     [Trait("UT-Feature", "Pools/Create")]
     [Trait("UT-Class", "Pools/Create/CreateCommandValidatorTests")]
-    public class Validate_Name_Should_Return_MinLength_Error
+    public sealed class Validate_Name_Should_Return_MinLength_Error
     {
         private readonly Mock<IMasterDbContext> _mockMasterDbContext;
 

@@ -9,7 +9,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.CreateHoste
 {
     [Trait("UT-Feature", "Identities/CreateHosted")]
     [Trait("UT-Class", "Identities/CreateHosted/CreateHostedCommandValidatorTests")]
-    public class Validate_RequestorId_Should_Return_NotEmpty_Error
+    public sealed class Validate_RequestorId_Should_Return_NotEmpty_Error
     {
         private readonly Mock<IMasterDbContext> _mockMasterDbContext;
 
@@ -23,7 +23,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.CreateHoste
         public void Theory(string expectedPropertyName, CreateHostedCommand query)
         {
             // Arrange
-            var validator = new CreateHostedCommandValidator(this._mockMasterDbContext.Object);
+            var validator = new CreateHostedCommandValidator(_mockMasterDbContext.Object);
 
             // Act
             var result = validator.Validate(query);

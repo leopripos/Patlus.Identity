@@ -7,7 +7,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.GetOne.GetO
 {
     [Trait("UT-Feature", "Identities/GetOne")]
     [Trait("UT-Class", "Identities/GetOne/GetOneQueryValidatorTests")]
-    public class Validate_Should_Return_Valid
+    public sealed class Validate_Should_Return_Valid
     {
         [Theory(DisplayName = nameof(Validate_Should_Return_Valid))]
         [ClassData(typeof(TestData))]

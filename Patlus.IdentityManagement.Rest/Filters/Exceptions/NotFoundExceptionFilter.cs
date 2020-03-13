@@ -14,7 +14,7 @@ namespace Patlus.IdentityManagement.Rest.Filters.Exceptions
             if (context.Exception is NotFoundException exception)
             {
                 context.Result = new NotFoundObjectResult(
-                    new NotFoundResultContent(exception.Message)
+                    new NotFoundResultDto(exception.Message)
                 );
 
                 context.ExceptionHandled = true;

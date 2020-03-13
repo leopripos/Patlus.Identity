@@ -35,7 +35,7 @@ namespace Patlus.IdentityManagement.Persistence.Configurations
             builder.HasIndex(e => e.Name).IsUnique();
 
             builder.HasOne(e => e.Identity)
-                .WithOne(account => account.HostedAccount)
+                .WithOne(account => account.HostedAccount!)
                 .HasPrincipalKey<HostedAccount>(e => e.Id)
                 .OnDelete(DeleteBehavior.Restrict);
         }

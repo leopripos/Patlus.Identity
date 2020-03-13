@@ -12,15 +12,12 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.Count.CountQuery
 {
     [Trait("UT-Feature", "Pools/Count")]
     [Trait("UT-Class", "Pools/Count/CountQueryHandlerTests")]
-    public class Handle_Should_Return_Total_Requested_Pools : IDisposable
+    public sealed class Handle_Should_Return_Total_Requested_Pools : IDisposable
     {
-        private readonly IQueryable<Pool> _dataSource;
-
         private readonly Mock<IMasterDbContext> _mockMasterDbContext;
 
         public Handle_Should_Return_Total_Requested_Pools()
         {
-            _dataSource = PoolsFaker.CreatePools().Values.AsQueryable();
             _mockMasterDbContext = new Mock<IMasterDbContext>();
         }
 
@@ -34,7 +31,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.Count.CountQuery
         public async void Theory(int expectedResult, CountQuery query)
         {
             // Arrange
-            _mockMasterDbContext.Setup(e => e.Pools).Returns(_dataSource);
+            _mockMasterDbContext.Setup(e => e.Pools).Returns(PoolsFaker.CreatePools().Values.AsQueryable());
 
             var handler = new CountQueryHandler(_mockMasterDbContext.Object);
 

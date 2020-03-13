@@ -33,9 +33,14 @@ namespace Patlus.IdentityManagement.Persistence.Configurations
             builder.Property(e => e.Archived)
                 .IsRequired();
 
+            builder.Property(e => e.PoolId)
+                .IsRequired();
+
             builder.HasKey(e => e.Id);
 
             builder.HasIndex(e => e.AuthKey).IsUnique();
+
+            builder.HasIndex(e => e.PoolId).IsUnique(false);
 
             builder.HasIndex(e => e.Name).IsUnique();
 

@@ -16,7 +16,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.CreateHoste
 {
     [Trait("UT-Feature", "Identities/CreateHosted")]
     [Trait("UT-Class", "Identities/CreateHosted/CreateHostedCommandHandlerTests")]
-    public class Handle_Should_Return_Created_Identity : IDisposable
+    public sealed class Handle_Should_Return_Created_Identity : IDisposable
     {
         private readonly IQueryable<Identity> _identitiesDataSource;
         private readonly IQueryable<Pool> _poolsDataSource;

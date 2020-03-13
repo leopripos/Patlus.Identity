@@ -9,12 +9,15 @@ namespace Patlus.IdentityManagement.UseCase.Features.Pools.UpdateActiveStatus
         public UpdateActiveStatusCommandValidator()
         {
             RuleFor(e => e.Id)
+                .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithErrorCode(ValidationErrorCodes.NotEmpty);
 
             RuleFor(e => e.Active)
+                .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithErrorCode(ValidationErrorCodes.NotEmpty);
 
             RuleFor(e => e.RequestorId)
+                .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithErrorCode(ValidationErrorCodes.NotEmpty);
         }
     }

@@ -9,7 +9,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.CreateHoste
 {
     [Trait("UT-Feature", "Identities/CreateHosted")]
     [Trait("UT-Class", "Identities/CreateHosted/CreateHostedCommandValidatorTests")]
-    public class Validate_AccountName_Should_Return_MaxLength_Error
+    public sealed class Validate_AccountName_Should_Return_MaxLength_Error
     {
         private readonly Mock<IMasterDbContext> _mockMasterDbContext;
 

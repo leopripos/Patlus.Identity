@@ -12,21 +12,18 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.GetAll.GetA
 {
     [Trait("UT-Feature", "Identities/GetAll")]
     [Trait("UT-Class", "Identities/GetAll/GetAllQueryHandlerTests")]
-    public class Handle_Should_Return_Requested_Indentities : IDisposable
+    public sealed class Handle_Should_Return_Requested_Indentities : IDisposable
     {
-        private readonly IQueryable<Identity> dataSource;
-
-        private Mock<IMasterDbContext> mockMasterDbContext;
+        private readonly Mock<IMasterDbContext> _mockMasterDbContext;
 
         public Handle_Should_Return_Requested_Indentities()
         {
-            this.dataSource = IdentitiesFaker.CreateIdentities().Values.AsQueryable();
-            this.mockMasterDbContext = new Mock<IMasterDbContext>();
+            _mockMasterDbContext = new Mock<IMasterDbContext>();
         }
 
         public void Dispose()
         {
-            this.mockMasterDbContext.Reset();
+            _mockMasterDbContext.Reset();
         }
 
         [Theory(DisplayName = nameof(Handle_Should_Return_Requested_Indentities))]
@@ -34,9 +31,9 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.GetAll.GetA
         public async void Theory(Identity[] expectedResult, GetAllQuery query)
         {
             // Arrange
-            this.mockMasterDbContext.Setup(e => e.Identities).Returns(dataSource);
+            _mockMasterDbContext.Setup(e => e.Identities).Returns(IdentitiesFaker.CreateIdentities().Values.AsQueryable());
 
-            var handler = new GetAllQueryHandler(this.mockMasterDbContext.Object);
+            var handler = new GetAllQueryHandler(_mockMasterDbContext.Object);
 
             // Act
             var actualResult = await handler.Handle(query, default);

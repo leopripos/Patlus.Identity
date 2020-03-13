@@ -9,9 +9,11 @@ namespace Patlus.IdentityManagement.UseCase.Features.Identities.GetOne
         public GetOneQueryValidator()
         {
             RuleFor(r => r.Condition)
+                .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithErrorCode(ValidationErrorCodes.NotEmpty);
 
             RuleFor(r => r.RequestorId)
+                .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithErrorCode(ValidationErrorCodes.NotEmpty);
         }
     }

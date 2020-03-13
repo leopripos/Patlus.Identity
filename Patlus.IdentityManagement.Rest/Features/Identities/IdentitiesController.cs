@@ -19,7 +19,7 @@ namespace Patlus.IdentityManagement.Rest.Features.Identities
     [ValidPool("poolId")]
     [Route("pools/{poolId}/identities")]
     [Authorize]
-    public class IdentitiesController : ControllerBase
+    public class IdentitiesController : ApiControllerBase
     {
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
@@ -59,13 +59,18 @@ namespace Patlus.IdentityManagement.Rest.Features.Identities
         /// <returns>Requested Identity</returns>
         [HttpGet("{identityId}")]
         [Authorize(Policy = IdentityPolicy.Read)]
-        public async Task<IdentityDto> GetById(Guid poolId, Guid identityId)
+        public async Task<ActionResult<IdentityDto>> GetById(Guid poolId, Guid identityId)
         {
             var identity = await _mediator.Send(new GetOneQuery()
             {
                 Condition = (e => e.PoolId == poolId && e.Id == identityId),
                 RequestorId = _userResolver.Current.Id
             });
+
+            if (identity == null)
+            {
+                return NotFound();
+            }
 
             return _mapper.Map<Identity, IdentityDto>(identity);
         }
@@ -86,6 +91,7 @@ namespace Patlus.IdentityManagement.Rest.Features.Identities
                 Name = form.Name,
                 AccountName = form.AccountName,
                 AccountPassword = form.AccountPassword,
+                Active = true,
                 RequestorId = _userResolver.Current.Id
             };
 

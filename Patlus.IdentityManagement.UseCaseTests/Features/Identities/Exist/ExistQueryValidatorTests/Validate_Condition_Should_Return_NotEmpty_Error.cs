@@ -7,7 +7,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.Exist.Exist
 {
     [Trait("UT-Feature", "Identities/Exist")]
     [Trait("UT-Class", "Identities/Exist/ExistQueryValidatorTests")]
-    public class Validate_Condition_Should_Return_NotEmpty_Error
+    public sealed class Validate_Condition_Should_Return_NotEmpty_Error
     {
         [Theory(DisplayName = nameof(Validate_Should_Return_Valid))]
         [ClassData(typeof(TestData))]

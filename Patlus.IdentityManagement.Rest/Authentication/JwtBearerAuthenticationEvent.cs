@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Patlus.IdentityManagement.Rest.Authentication.Token;
+using Patlus.Common.UseCase.Security;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -9,28 +9,27 @@ namespace Patlus.IdentityManagement.Rest.Authentication
 {
     public class JwtBearerAuthenticationEvent : JwtBearerEvents
     {
-        private readonly IUserResolver userResolver;
+        private readonly IUserResolver _userResolver;
 
         public JwtBearerAuthenticationEvent(IUserResolver userResolver)
         {
-            this.userResolver = userResolver;
+            _userResolver = userResolver;
         }
+
 
         public override Task TokenValidated(TokenValidatedContext context)
         {
-            var accessToken = context.SecurityToken as JwtSecurityToken;
+            var accessToken = (context.SecurityToken as JwtSecurityToken)!;
 
             if (accessToken != null)
             {
-                var identity = context.Principal.Identity as ClaimsIdentity;
-
-                if (identity == null)
+                if (!(context.Principal.Identity is ClaimsIdentity identity))
                 {
                     context.Fail("Identity not found");
                 }
                 else
                 {
-                    var subjectClaim = identity.FindFirst(TokenClaimType.Subject);
+                    var subjectClaim = identity.FindFirst(SecurityClaimTypes.Subject);
 
                     if (subjectClaim == null)
                     {
@@ -38,7 +37,7 @@ namespace Patlus.IdentityManagement.Rest.Authentication
                     }
                     else if (Guid.TryParse(subjectClaim.Value, out Guid userId))
                     {
-                        this.userResolver.Initialize(new User(userId));
+                        _userResolver.Initialize(new User(userId));
                     }
                     else
                     {

@@ -208,3 +208,6 @@ dotnet_naming_style._fieldname.required_prefix = _
 dotnet_naming_style._fieldname.required_suffix = 
 dotnet_naming_style._fieldname.word_separator = 
 dotnet_naming_style._fieldname.capitalization = camel_case
+
+# CS8618: Non-nullable field is uninitialized. Consider declaring as nullable.
+dotnet_diagnostic.CS8618.severity = none

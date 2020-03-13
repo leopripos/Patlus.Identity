@@ -1,10 +1,10 @@
 ﻿namespace Patlus.IdentityManagement.Rest.Responses.Content
 {
-    public class NotFoundResultContent
+    public class NotFoundResultDto
     {
         public readonly string Message;
 
-        public NotFoundResultContent(string message)
+        public NotFoundResultDto(string message)
         {
             this.Message = message;
         }

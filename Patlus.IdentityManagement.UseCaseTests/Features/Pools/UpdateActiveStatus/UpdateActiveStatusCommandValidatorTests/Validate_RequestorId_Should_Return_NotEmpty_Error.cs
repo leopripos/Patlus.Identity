@@ -7,7 +7,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.UpdateActiveStat
 {
     [Trait("UT-Feature", "Pools/UpdateActiveStatus")]
     [Trait("UT-Class", "Pools/UpdateActiveStatus/UpdateActiveStatusCommandValidatorTests")]
-    public class Validate_RequestorId_Should_Return_NotEmpty_Error
+    public sealed class Validate_RequestorId_Should_Return_NotEmpty_Error
     {
         [Theory(DisplayName = nameof(Validate_RequestorId_Should_Return_NotEmpty_Error))]
         [ClassData(typeof(TestData))]

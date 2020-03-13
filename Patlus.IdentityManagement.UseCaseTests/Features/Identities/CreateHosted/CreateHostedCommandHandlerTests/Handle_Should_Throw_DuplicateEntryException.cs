@@ -18,7 +18,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.CreateHoste
 {
     [Trait("UT-Feature", "Identities/CreateHosted")]
     [Trait("UT-Class", "Identities/CreateHosted/CreateHostedCommandHandlerTests")]
-    public class Handle_Should_Throw_DuplicateEntryException : IDisposable
+    public sealed class Handle_Should_Throw_DuplicateEntryException : IDisposable
     {
         private readonly IQueryable<Pool> _poolsDataSource;
         private readonly IQueryable<Identity> _identitiesDataSource;

@@ -9,7 +9,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.GetOne.GetOneQue
 {
     [Trait("UT-Feature", "Pools/GetOne")]
     [Trait("UT-Class", "Pools/GetOne/GetOneQueryHandlerTests")]
-    public class Handle_Should_Throw_NullArgumentException : IDisposable
+    public sealed class Handle_Should_Throw_NullArgumentException : IDisposable
     {
         private readonly Mock<IMasterDbContext> _mockMasterDbContext;
 

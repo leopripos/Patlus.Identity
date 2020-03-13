@@ -7,7 +7,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.Exist.ExistQuery
 {
     [Trait("UT-Feature", "Pools/Exist")]
     [Trait("UT-Class", "Pools/Exist/ExistQueryValidatorTests")]
-    public class Validate_RequestorId_Should_Return_NotEmpty_Error
+    public sealed class Validate_RequestorId_Should_Return_NotEmpty_Error
     {
         [Theory(DisplayName = nameof(Validate_RequestorId_Should_Return_NotEmpty_Error))]
         [ClassData(typeof(TestData))]

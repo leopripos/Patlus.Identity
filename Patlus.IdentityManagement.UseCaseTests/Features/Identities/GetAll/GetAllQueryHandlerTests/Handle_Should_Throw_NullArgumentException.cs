@@ -9,18 +9,18 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.GetAll.GetA
 {
     [Trait("UT-Feature", "Identities/GetAll")]
     [Trait("UT-Class", "Identities/GetAll/GetAllQueryHandlerTests")]
-    public class Handle_Should_Throw_NullArgumentException : IDisposable
+    public sealed class Handle_Should_Throw_NullArgumentException : IDisposable
     {
-        private Mock<IMasterDbContext> mockMasterDbContext;
+        private readonly Mock<IMasterDbContext> _mockMasterDbContext;
 
         public Handle_Should_Throw_NullArgumentException()
         {
-            this.mockMasterDbContext = new Mock<IMasterDbContext>();
+            _mockMasterDbContext = new Mock<IMasterDbContext>();
         }
 
         public void Dispose()
         {
-            this.mockMasterDbContext.Reset();
+            _mockMasterDbContext.Reset();
         }
 
         [Theory(DisplayName = nameof(Handle_Should_Throw_NullArgumentException))]
@@ -28,7 +28,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.GetAll.GetA
         public void Theory(string expectedParamName, GetAllQuery query)
         {
             // Arrange
-            var handler = new GetAllQueryHandler(this.mockMasterDbContext.Object);
+            var handler = new GetAllQueryHandler(_mockMasterDbContext.Object);
 
             // Act
             Action action = () => handler.Handle(query, default);

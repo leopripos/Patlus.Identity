@@ -12,15 +12,12 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.GetOne.GetOneQue
 {
     [Trait("UT-Feature", "Pools/GetOne")]
     [Trait("UT-Class", "Pools/GetOne/GetOneQueryHandlerTests")]
-    public class Handle_Should_Return_Requested_Pools : IDisposable
+    public sealed class Handle_Should_Return_Requested_Pools : IDisposable
     {
-        private readonly IQueryable<Pool> _dataSource;
-
         private readonly Mock<IMasterDbContext> _mockMasterDbContext;
 
         public Handle_Should_Return_Requested_Pools()
         {
-            _dataSource = PoolsFaker.CreatePools().Values.AsQueryable();
             _mockMasterDbContext = new Mock<IMasterDbContext>();
         }
 
@@ -34,7 +31,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.GetOne.GetOneQue
         public async void Handle_Should_Return_Total_Requested_Identities(Pool expectedResult, GetOneQuery query)
         {
             // Arrange
-            _mockMasterDbContext.Setup(e => e.Pools).Returns(_dataSource);
+            _mockMasterDbContext.Setup(e => e.Pools).Returns(PoolsFaker.CreatePools().Values.AsQueryable());
 
             var handler = new GetOneQueryHandler(_mockMasterDbContext.Object);
 

@@ -10,7 +10,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.UpdateOwnPa
 {
     [Trait("UT-Feature", "Identities/UpdateOwnPassword")]
     [Trait("UT-Class", "Identities/UpdateOwnPassword/UpdateOwnPasswordCommandValidatorTests")]
-    public class Validate_OldPassword_Should_Return_Invalid_Error
+    public sealed class Validate_OldPassword_Should_Return_Invalid_Error
     {
         private readonly Mock<IMasterDbContext> _mockMasterDbContext;
         private readonly Mock<IPasswordService> _mockPasswordService;

@@ -15,7 +15,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.UpdateActiv
 {
     [Trait("UT-Feature", "Identities/UpdateActiveStatus")]
     [Trait("UT-Class", "Identities/UpdateActiveStatus/UpdateActiveStatusCommandHandlerTests")]
-    public class Handle_Should_Return_Updated_Identitity : IDisposable
+    public sealed class Handle_Should_Return_Updated_Identitity : IDisposable
     {
         private readonly IQueryable<Identity> _dataSource;
 
