@@ -45,10 +45,13 @@ namespace Patlus.IdentityManagement.RestTests.Features.Identities
             var content = await response.Content.ReadAsStringAsync();
             var errorResult = DeserializeJson<ValidationErrorDto>(content);
 
-            errorResult.Message.Should().NotBeNullOrEmpty();
+            errorResult.Should().NotBeNull();
+            errorResult!.Message.Should().NotBeNullOrEmpty();
 
-            errorResult.Details.Should().ContainKey(nameof(form.Active));
-            errorResult.Details[nameof(form.Active)].Should().NotBeNullOrEmpty();
+            errorResult!.Details.Should().NotBeNull();
+
+            errorResult!.Details!.Should().ContainKey(nameof(form.Active));
+            errorResult!.Details![nameof(form.Active)].Should().NotBeNullOrEmpty();
         }
 
     }

@@ -44,8 +44,11 @@ namespace Patlus.IdentityManagement.RestTests.Features.Identities
             var content = await response.Content.ReadAsStringAsync();
             var identity = DeserializeJson<IdentityDto>(content);
 
-            identity.Name.Should().Be(form.Name);
-            identity.HostedAccount.Name.Should().Be(form.AccountName);
+            identity.Should().NotBeNull();
+            identity!.Name.Should().Be(form.Name);
+
+            identity!.HostedAccount.Should().NotBeNull();
+            identity!.HostedAccount!.Name.Should().Be(form.AccountName);
         }
 
     }

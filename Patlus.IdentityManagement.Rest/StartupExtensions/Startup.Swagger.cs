@@ -1,16 +1,16 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Patlus.IdentityManagement.Rest.Extensions
 {
     public static class StartupSwagger
     {
-        public static void ConfigureSwaggerService(this IServiceCollection services, IConfiguration configuration)
+        public static void ConfigureSwaggerService(this IServiceCollection services, IWebHostEnvironment env)
         {
             services.AddSwaggerGen(c =>
             {
@@ -51,12 +51,12 @@ namespace Patlus.IdentityManagement.Rest.Extensions
                     }
                 });
 
-                var xmlFile = $"../Documentations/{typeof(StartupSwagger).Assembly.GetName().Name}.xml";
+                var xmlFile = Path.Combine(AppContext.BaseDirectory, $"{typeof(StartupSwagger).Assembly.GetName().Name}.xml");
                 c.IncludeXmlComments(xmlFile);
             });
         }
 
-        public static void ConfigureSwagger(this IApplicationBuilder app, IWebHostEnvironment env)
+        public static void ConfigureSwagger(this IApplicationBuilder app)
         {
             app.UseSwagger();
 

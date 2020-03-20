@@ -94,33 +94,33 @@ namespace Patlus.IdentityManagement.Rest
                 );
             });
 
-            services.ConfigureCorsService(_configuration);
+            services.ConfigureCorsService();
 
-            services.ConfigureDistributedCacheService(_configuration, _hostEnvironment);
+            services.ConfigureDistributedCacheService();
 
             services.ConfigureAuthenticationService(_configuration);
 
-            services.ConfigureAuthroizationService(_configuration);
+            services.ConfigureAuthroizationService();
 
             if (_hostEnvironment.IsDevelopment())
             {
-                services.ConfigureSwaggerService(_configuration);
+                services.ConfigureSwaggerService(_hostEnvironment);
             }
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMapper mapper)
+        public void Configure(IApplicationBuilder app, IMapper mapper)
         {
             mapper.ConfigurationProvider.AssertConfigurationIsValid();
 
-            app.ConfigureCors(env);
+            app.ConfigureCors();
 
             app.UseHttpsRedirection();
 
             app.UseRouting();
 
-            app.ConfigureAuthentication(env);
+            app.ConfigureAuthentication();
 
-            app.ConfigureAuthorization(env);
+            app.ConfigureAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
@@ -130,7 +130,7 @@ namespace Patlus.IdentityManagement.Rest
             if (_hostEnvironment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.ConfigureSwagger(env);
+                app.ConfigureSwagger();
             }
         }
     }

@@ -45,16 +45,19 @@ namespace Patlus.IdentityManagement.RestTests.Features.Me
             var content = await response.Content.ReadAsStringAsync();
             var errorResult = DeserializeJson<ValidationErrorDto>(content);
 
-            errorResult.Message.Should().NotBeNullOrEmpty();
+            errorResult.Should().NotBeNull();
+            errorResult!.Message.Should().NotBeNullOrEmpty();
 
-            errorResult.Details.Should().ContainKey(nameof(form.OldPassword));
-            errorResult.Details[nameof(form.OldPassword)].Should().NotBeNullOrEmpty();
+            errorResult!.Details.Should().NotBeNull();
 
-            errorResult.Details.Should().ContainKey(nameof(form.NewPassword));
-            errorResult.Details[nameof(form.NewPassword)].Should().NotBeNullOrEmpty();
+            errorResult!.Details!.Should().ContainKey(nameof(form.OldPassword));
+            errorResult!.Details![nameof(form.OldPassword)].Should().NotBeNullOrEmpty();
 
-            errorResult.Details.Should().ContainKey(nameof(form.RetypeNewPassword));
-            errorResult.Details[nameof(form.RetypeNewPassword)].Should().NotBeNullOrEmpty();
+            errorResult!.Details!.Should().ContainKey(nameof(form.NewPassword));
+            errorResult!.Details![nameof(form.NewPassword)].Should().NotBeNullOrEmpty();
+
+            errorResult!.Details!.Should().ContainKey(nameof(form.RetypeNewPassword));
+            errorResult!.Details![nameof(form.RetypeNewPassword)].Should().NotBeNullOrEmpty();
         }
     }
 }
