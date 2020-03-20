@@ -4,8 +4,8 @@ namespace Patlus.IdentityManagement.Rest.Responses.Content
 {
     public class ValidationErrorDto
     {
-        public string Message { get; set; }
-        public IDictionary<string, string[]> Details { get; set; }
+        public string? Message { get; set; }
+        public IDictionary<string, string[]>? Details { get; set; }
 
         public ValidationErrorDto() { }
 

@@ -4,19 +4,19 @@ namespace Patlus.IdentityManagement.Rest.Authentication
 {
     public class UserResolver : IUserResolver
     {
-        private IUser? user;
+        private IUser? _user;
 
         public IUser Current
         {
             get
             {
-                return user ?? throw new InvalidOperationException("Uninitialized property: " + nameof(user));
+                return _user ?? throw new InvalidOperationException("Uninitialized property: " + nameof(_user));
             }
         }
 
         public void Initialize(IUser user)
         {
-            this.user = user;
+            _user = user;
         }
     }
 

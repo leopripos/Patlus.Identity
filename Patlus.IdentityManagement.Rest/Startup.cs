@@ -64,8 +64,7 @@ namespace Patlus.IdentityManagement.Rest
                         var jsonOptions = context.HttpContext.RequestServices.GetRequiredService<IOptionsSnapshot<JsonOptions>>();
 
                         var errors = context.ModelState.ToDictionary(
-                            //// TO-DO: Temporary solution for https://github.com/dotnet/runtime/issues/33508
-                            item => jsonOptions.Value.JsonSerializerOptions.DictionaryKeyPolicy.ConvertName(item.Key),
+                            item => item.Key,
                             item => item.Value.Errors.Select(e => e.ErrorMessage).ToArray()
                         );
 
@@ -95,33 +94,33 @@ namespace Patlus.IdentityManagement.Rest
                 );
             });
 
-            services.ConfigureCorsService(_configuration);
+            services.ConfigureCorsService();
 
-            services.ConfigureDistributedCacheService(_configuration, _hostEnvironment);
+            services.ConfigureDistributedCacheService();
 
             services.ConfigureAuthenticationService(_configuration);
 
-            services.ConfigureAuthroizationService(_configuration);
+            services.ConfigureAuthroizationService();
 
             if (_hostEnvironment.IsDevelopment())
             {
-                services.ConfigureSwaggerService(_configuration);
+                services.ConfigureSwaggerService(_hostEnvironment);
             }
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMapper mapper)
+        public void Configure(IApplicationBuilder app, IMapper mapper)
         {
             mapper.ConfigurationProvider.AssertConfigurationIsValid();
 
-            app.ConfigureCors(env);
+            app.ConfigureCors();
 
             app.UseHttpsRedirection();
 
             app.UseRouting();
 
-            app.ConfigureAuthentication(env);
+            app.ConfigureAuthentication();
 
-            app.ConfigureAuthorization(env);
+            app.ConfigureAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
@@ -131,7 +130,7 @@ namespace Patlus.IdentityManagement.Rest
             if (_hostEnvironment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.ConfigureSwagger(env);
+                app.ConfigureSwagger();
             }
         }
     }

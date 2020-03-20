@@ -44,7 +44,8 @@ namespace Patlus.IdentityManagement.RestTests.Features.Identities
             var content = await response.Content.ReadAsStringAsync();
             var identity = DeserializeJson<IdentityDto>(content);
 
-            identity.Active.Should().Be(form.Active.Value);
+            identity.Should().NotBeNull();
+            identity!.Active.Should().Be(form.Active.Value);
         }
 
     }

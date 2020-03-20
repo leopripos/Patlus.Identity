@@ -43,7 +43,8 @@ namespace Patlus.IdentityManagement.RestTests.Features.Pools
             var content = await response.Content.ReadAsStringAsync();
             var pool = DeserializeJson<PoolDto>(content);
 
-            pool.Active.Should().Be(form.Active.Value);
+            pool.Should().NotBeNull();
+            pool!.Active.Should().Be(form.Active.Value);
         }
 
     }

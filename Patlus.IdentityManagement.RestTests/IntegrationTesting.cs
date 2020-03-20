@@ -1,6 +1,7 @@
 ﻿using Patlus.IdentityManagement.Rest;
 using Patlus.IdentityManagement.Rest.Features.Tokens;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -33,6 +34,7 @@ namespace Patlus.IdentityManagement.RestTests
             return JsonSerializer.Serialize(model);
         }
 
+        [return: MaybeNull]
         protected static T DeserializeJson<T>(string jsonString)
         {
             return JsonSerializer.Deserialize<T>(jsonString);
@@ -55,7 +57,7 @@ namespace Patlus.IdentityManagement.RestTests
 
             var response = await CreateClient().PostAsync("/tokens", httpContent);
 
-            var tokenResult = DeserializeJson<TokenDto>(await response.Content.ReadAsStringAsync());
+            var tokenResult = DeserializeJson<TokenDto>(await response.Content.ReadAsStringAsync())!;
 
             return CreateAutheticatedClient(tokenResult.Scheme, tokenResult.Access);
         }
@@ -68,12 +70,12 @@ namespace Patlus.IdentityManagement.RestTests
             return client;
         }
 
-        protected Task<TokenDto> CreateToken()
+        protected Task<TokenDto?> CreateToken()
         {
             return CreateToken(new Guid("c73d72b1-326d-4213-ab11-ba47d83b9ccf"), "root", "root");
         }
 
-        protected async Task<TokenDto> CreateToken(Guid poolId, string name, string password)
+        protected async Task<TokenDto?> CreateToken(Guid poolId, string name, string password)
         {
             var form = new CreateForm
             {

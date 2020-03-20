@@ -44,16 +44,19 @@ namespace Patlus.IdentityManagement.RestTests.Features.Tokens
             var content = await response.Content.ReadAsStringAsync();
             var errorResult = DeserializeJson<ValidationErrorDto>(content);
 
-            errorResult.Message.Should().NotBeNullOrEmpty();
+            errorResult.Should().NotBeNull();
+            errorResult!.Message.Should().NotBeNullOrEmpty();
 
-            errorResult.Details.Should().ContainKey(nameof(form.PoolId));
-            errorResult.Details[nameof(form.PoolId)].Should().NotBeNullOrEmpty();
+            errorResult!.Details.Should().NotBeNull();
 
-            errorResult.Details.Should().ContainKey(nameof(form.Name));
-            errorResult.Details[nameof(form.Name)].Should().NotBeNullOrEmpty();
+            errorResult!.Details!.Should().ContainKey(nameof(form.PoolId));
+            errorResult!.Details![nameof(form.PoolId)].Should().NotBeNullOrEmpty();
 
-            errorResult.Details.Should().ContainKey(nameof(form.Password));
-            errorResult.Details[nameof(form.Password)].Should().NotBeNullOrEmpty();
+            errorResult!.Details!.Should().ContainKey(nameof(form.Name));
+            errorResult!.Details![nameof(form.Name)].Should().NotBeNullOrEmpty();
+
+            errorResult!.Details!.Should().ContainKey(nameof(form.Password));
+            errorResult!.Details![nameof(form.Password)].Should().NotBeNullOrEmpty();
         }
     }
 }

@@ -43,7 +43,7 @@ namespace Patlus.IdentityManagement.RestTests
 #pragma warning restore IDE0063 // Use simple 'using' statement
                 {
                     var scopedServices = scope.ServiceProvider;
-                    var db = scopedServices.GetRequiredService<IMasterDbContext>() as MasterTestDbContext;
+                    var db = (scopedServices.GetRequiredService<IMasterDbContext>() as MasterTestDbContext)!;
                     var logger = scopedServices.GetRequiredService<ILogger<TestWebApplicationFactory<TStartup>>>();
 
                     // Ensure the database is created.
