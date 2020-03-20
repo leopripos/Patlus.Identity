@@ -12,7 +12,7 @@ namespace Patlus.IdentityManagement.Rest.Extensions
             services.AddDistributedMemoryCache();
         }
 
-        public static void ConfigureDistributedCache(this IApplicationBuilder app, IWebHostEnvironment env)
+        public static void ConfigureDistributedCache(this IApplicationBuilder app)
         { }
     }
 }

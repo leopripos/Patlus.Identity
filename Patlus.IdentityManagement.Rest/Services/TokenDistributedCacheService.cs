@@ -16,7 +16,7 @@ namespace Patlus.IdentityManagement.Rest.Services
 
         public bool HasToken(Guid tokenId, Guid authKey)
         {
-            var key = $"{tokenId.ToString()}";
+            var key = $"{tokenId}";
             var value = _distributedCache.GetString(key);
 
             return value == authKey.ToString();
@@ -24,7 +24,7 @@ namespace Patlus.IdentityManagement.Rest.Services
 
         public Task Set(Guid tokenId, Guid authKey, DateTimeOffset expiredTime)
         {
-            var key = $"{tokenId.ToString()}";
+            var key = $"{tokenId}";
 
             var options = new DistributedCacheEntryOptions
             {
@@ -36,7 +36,7 @@ namespace Patlus.IdentityManagement.Rest.Services
 
         public Task Remove(Guid tokenId)
         {
-            var key = $"{tokenId.ToString()}";
+            var key = $"{tokenId}";
 
             return _distributedCache.RemoveAsync(key);
         }

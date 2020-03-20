@@ -8,7 +8,7 @@ namespace Patlus.IdentityManagement.Rest.StartupExtensions
 {
     public static class StartupCors
     {
-        public static void ConfigureCorsService(this IServiceCollection services, IConfiguration configuration)
+        public static void ConfigureCorsService(this IServiceCollection services)
         {
             services.AddCors(opt =>
             {
@@ -21,7 +21,7 @@ namespace Patlus.IdentityManagement.Rest.StartupExtensions
             });
         }
 
-        public static void ConfigureCors(this IApplicationBuilder app, IWebHostEnvironment env)
+        public static void ConfigureCors(this IApplicationBuilder app)
         {
             app.UseCors();
         }

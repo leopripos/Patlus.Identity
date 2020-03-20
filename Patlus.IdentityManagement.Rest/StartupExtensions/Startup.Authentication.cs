@@ -54,7 +54,7 @@ namespace Patlus.IdentityManagement.Rest.Extensions
                 });
         }
 
-        public static void ConfigureAuthentication(this IApplicationBuilder app, IWebHostEnvironment env)
+        public static void ConfigureAuthentication(this IApplicationBuilder app)
         {
             app.UseAuthentication();
         }

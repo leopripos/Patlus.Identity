@@ -89,9 +89,16 @@ namespace Patlus.IdentityManagement.Rest.Services
         {
             var tokenIdClaim = principal.FindFirst(SecurityClaimTypes.TokenId);
 
-            var currentTokenId = Guid.Parse(tokenIdClaim.Value);
+            if (tokenIdClaim is null)
+            {
+                return false;
+            }
+            else
+            {
+                var currentTokenId = Guid.Parse(tokenIdClaim.Value);
 
-            return _tokenCacheService.HasToken(currentTokenId, authKey);
+                return _tokenCacheService.HasToken(currentTokenId, authKey);
+            }
         }
 
         private string CreateAccessToken(Guid id, IList<Claim> claims)

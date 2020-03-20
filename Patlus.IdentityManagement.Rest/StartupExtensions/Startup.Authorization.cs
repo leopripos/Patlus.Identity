@@ -10,7 +10,7 @@ namespace Patlus.IdentityManagement.Rest.Extensions
 {
     public static class StartupAuthorization
     {
-        public static void ConfigureAuthroizationService(this IServiceCollection services, IConfiguration configuration)
+        public static void ConfigureAuthroizationService(this IServiceCollection services)
         {
             services.AddAuthorization(opt =>
             {
@@ -21,7 +21,7 @@ namespace Patlus.IdentityManagement.Rest.Extensions
             });
         }
 
-        public static void ConfigureAuthorization(this IApplicationBuilder app, IWebHostEnvironment env)
+        public static void ConfigureAuthorization(this IApplicationBuilder app)
         {
             app.UseAuthorization();
         }

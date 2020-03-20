@@ -40,7 +40,6 @@ namespace Patlus.IdentityManagement.RestTests.Features.Identities
             var response = await (await CreateAutheticatedClient()).PostAsync($"/pools/{poolId}/identities", httpContent);
 
             // Assert
-            var content = await response.Content.ReadAsStringAsync();
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
     }
