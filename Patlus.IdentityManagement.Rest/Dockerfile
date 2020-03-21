@@ -8,6 +8,9 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/core/sdk:5.0-buster AS build
 WORKDIR /src
 COPY ["Patlus.IdentityManagement.Rest/Patlus.IdentityManagement.Rest.csproj", "Patlus.IdentityManagement.Rest/"]
+COPY ["Patlus.IdentityManagement.UseCase/Patlus.IdentityManagement.UseCase.csproj", "Patlus.IdentityManagement.UseCase/"]
+COPY ["Patlus.Common.UseCase/Patlus.Common.UseCase.csproj", "Patlus.Common.UseCase/"]
+COPY ["Patlus.IdentityManagement.Persistence/Patlus.IdentityManagement.Persistence.csproj", "Patlus.IdentityManagement.Persistence/"]
 RUN dotnet restore "Patlus.IdentityManagement.Rest/Patlus.IdentityManagement.Rest.csproj"
 COPY . .
 WORKDIR "/src/Patlus.IdentityManagement.Rest"

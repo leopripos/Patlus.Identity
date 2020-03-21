@@ -1,0 +1,20 @@
+version: '3.4'
+
+services:
+  patlus.identitymanagement.rest:
+    container_name: patlus.identitymanagement.rest
+    image: ${DOCKER_REGISTRY-}patlusidentitymanagementrest
+    build:
+      context: .
+      dockerfile: Patlus.IdentityManagement.Rest/Dockerfile
+    depends_on:
+      - patlus.identitymanagement.db
+  patlus.identitymanagement.db:
+    container_name: patlus.identitymanagement.db
+    image: mcr.microsoft.com/mssql/server:2019-CU3-ubuntu-16.04
+    environment:
+        SA_PASSWORD: "Th1sIsStrongPass"
+        ACCEPT_EULA: "Y"
+        MSSQL_PID: "Developer"
+    ports:
+        - "1433:1433"
