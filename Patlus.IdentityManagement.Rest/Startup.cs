@@ -131,6 +131,11 @@ namespace Patlus.IdentityManagement.Rest
             {
                 app.UseDeveloperExceptionPage();
                 app.ConfigureSwagger();
+
+                using (var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope()) {
+                    var dbContext = scope.ServiceProvider.GetRequiredService<IMasterDbContext>() as MasterDbContext;
+                    dbContext!.Database.Migrate();
+                }
             }
         }
     }

@@ -5,11 +5,9 @@ using Patlus.IdentityManagement.Rest.Responses.Content;
 
 namespace Patlus.IdentityManagement.Rest.Filters.Exceptions
 {
-    public class NotFoundExceptionFilter : IActionFilter, IOrderedFilter
+    public class NotFoundExceptionFilter : IExceptionFilter
     {
-        public int Order { get; set; } = int.MaxValue - 9;
-
-        public void OnActionExecuted(ActionExecutedContext context)
+        public void OnException(ExceptionContext context)
         {
             if (context.Exception is NotFoundException exception)
             {
@@ -20,8 +18,5 @@ namespace Patlus.IdentityManagement.Rest.Filters.Exceptions
                 context.ExceptionHandled = true;
             }
         }
-
-        public void OnActionExecuting(ActionExecutingContext context)
-        { }
     }
 }
