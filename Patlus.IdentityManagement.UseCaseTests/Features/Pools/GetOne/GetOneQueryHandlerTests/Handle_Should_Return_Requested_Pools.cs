@@ -42,7 +42,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.GetOne.GetOneQue
             actualResult.Should().BeEquivalentTo(expectedResult, opt => opt.IgnoringCyclicReferences());
         }
 
-        class TestData : TheoryData<Pool, GetOneQuery>
+        class TestData : TheoryData<Pool?, GetOneQuery>
         {
             public TestData()
             {

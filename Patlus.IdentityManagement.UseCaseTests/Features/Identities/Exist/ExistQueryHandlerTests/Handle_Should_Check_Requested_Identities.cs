@@ -213,7 +213,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.Exist.Exist
                     }
                 );
 
-                condition = e => e.Pool.Id == new Guid("29899885-bbf1-430f-b9d6-613066b4021a");
+                condition = e => e.Pool!.Id == new Guid("29899885-bbf1-430f-b9d6-613066b4021a");
                 Add(
                     dataSource.Count(condition) > 0,
                     new ExistQuery()
@@ -223,7 +223,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.Exist.Exist
                     }
                 );
 
-                condition = e => e.HostedAccount.Name == "systemadmin0";
+                condition = e => e.HostedAccount!.Name == "systemadmin0";
                 Add(
                     dataSource.Count(condition) > 0,
                     new ExistQuery()
@@ -233,7 +233,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.Exist.Exist
                     }
                 );
 
-                condition = e => e.HostedAccount.Name.Contains("systemadmin");
+                condition = e => e.HostedAccount!.Name.Contains("systemadmin");
                 Add(
                     dataSource.Count(condition) > 0,
                     new ExistQuery()
@@ -243,7 +243,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.Exist.Exist
                     }
                 );
 
-                condition = e => e.HostedAccount.Name.Length == 5;
+                condition = e => e.HostedAccount!.Name.Length == 5;
                 Add(
                     dataSource.Count(condition) > 0,
                     new ExistQuery()
@@ -253,7 +253,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.Exist.Exist
                     }
                 );
 
-                condition = e => e.HostedAccount.Archived == false;
+                condition = e => e.HostedAccount!.Archived == false;
                 Add(
                     dataSource.Count(condition) > 0,
                     new ExistQuery()

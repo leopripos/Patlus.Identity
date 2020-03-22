@@ -10,7 +10,7 @@ namespace Patlus.IdentityManagement.Rest.Extensions
 {
     public static class StartupSwagger
     {
-        public static void ConfigureSwaggerService(this IServiceCollection services, IWebHostEnvironment env)
+        public static void ConfigureSwaggerService(this IServiceCollection services)
         {
             services.AddSwaggerGen(c =>
             {

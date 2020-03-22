@@ -109,13 +109,13 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.Update.UpdateCom
                 ), Times.Once);
         }
 
-        class TestData : TheoryData<Pool, UpdateCommand>
+        class TestData : TheoryData<Pool?, UpdateCommand>
         {
             public TestData()
             {
                 var dataSource = PoolsFaker.CreatePools().Values.AsQueryable();
                 Add(
-                    dataSource.Where(e => (
+                    dataSource!.Where(e => (
                         e.Id == new Guid("821e7913-876f-4377-a799-17fb8b5a0a49")
                         && e.Archived == false
                     )).FirstOrDefault(),

@@ -48,9 +48,9 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.Count.CountQuery
             {
                 var dataSource = PoolsFaker.CreatePools().Values.AsQueryable();
                 var requestorId = new Guid("7c9e6679-7425-40de-944b-e07fc1f90ae7");
-                Expression<Func<Pool, bool>> condition = null;
+                Expression<Func<Pool, bool>> condition = null!;
 
-                condition = null;
+                condition = null!;
                 Add(
                     dataSource.Count(),
                     new CountQuery()

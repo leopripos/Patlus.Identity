@@ -2,8 +2,8 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Patlus.IdentityManagement.Rest.Auhtorization.Policies;
-using Patlus.IdentityManagement.Rest.Authentication;
+using Patlus.Common.Rest.Authentication;
+using Patlus.IdentityManagement.Presentation.Auhtorization.Policies;
 using Patlus.IdentityManagement.Rest.Filters.Actions;
 using Patlus.IdentityManagement.UseCase.Entities;
 using Patlus.IdentityManagement.UseCase.Features.Identities.CreateHosted;

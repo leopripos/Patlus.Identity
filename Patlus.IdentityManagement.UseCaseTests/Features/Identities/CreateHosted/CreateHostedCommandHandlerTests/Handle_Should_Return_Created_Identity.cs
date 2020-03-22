@@ -85,7 +85,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.CreateHoste
                 options.IgnoringCyclicReferences();
                 options.Excluding(e => e.Id);
                 options.Excluding(e => e.AuthKey);
-                options.Excluding(e => e.HostedAccount.Id);
+                options.Excluding(e => e.HostedAccount!.Id);
 
                 return options;
             });

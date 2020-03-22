@@ -1,13 +1,14 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using Patlus.IdentityManagement.Persistence;
 
 namespace Patlus.IdentityManagement.Rest
 {
-    public static class Program
+    public class Program
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            CreateHostBuilder(args).Build().MigrateDatabase<Program>().Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

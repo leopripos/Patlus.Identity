@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
+using Patlus.Common.Presentation.Responses.Content;
 using Patlus.IdentityManagement.Rest;
 using Patlus.IdentityManagement.Rest.Features.Tokens;
-using Patlus.IdentityManagement.Rest.Responses.Content;
 using System.Net;
 using System.Net.Http;
 using System.Text;

@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Routing;
-using Patlus.IdentityManagement.Rest.Authentication;
-using Patlus.IdentityManagement.Rest.Responses.Content;
+using Patlus.Common.Presentation.Responses.Content;
+using Patlus.Common.Rest.Authentication;
 using Patlus.IdentityManagement.UseCase.Features.Pools.Exist;
 using System;
 

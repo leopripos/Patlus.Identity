@@ -2,8 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp5.0</TargetFramework>
-    <AssemblyName>Patlus.IdentityManagement.Rest</AssemblyName>
-    <RootNamespace>Patlus.IdentityManagement.Rest</RootNamespace>
     <LangVersion>8</LangVersion>
     <Nullable>enable</Nullable>
     <UserSecretsId>5f9cc7c3-5798-42c5-81d9-aa42e9a2ed95</UserSecretsId>
@@ -15,7 +13,7 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <OutputPath></OutputPath>
     <NoWarn>1701;1702;1591</NoWarn>
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -24,23 +22,17 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
-    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="9.0.0-preview3" />
-    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.0-preview.1.20124.5" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.0-preview.2.20120.8" />
-    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="5.0.0-preview.1.20120.4" />
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.9.10" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.1.0" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.6.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.0-preview.2.20120.8">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.8" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.2.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Patlus.Common.Presentation\Patlus.Common.Presentation.csproj" />
+    <ProjectReference Include="..\Patlus.Common.Rest\Patlus.Common.Rest.csproj" />
+    <ProjectReference Include="..\Patlus.IdentityManagement.Cache\Patlus.IdentityManagement.Cache.csproj" />
     <ProjectReference Include="..\Patlus.IdentityManagement.Persistence\Patlus.IdentityManagement.Persistence.csproj" />
-    <ProjectReference Include="..\Patlus.IdentityManagement.UseCase\Patlus.IdentityManagement.UseCase.csproj" />
+    <ProjectReference Include="..\Patlus.IdentityManagement.Presentation\Patlus.IdentityManagement.Presentation.csproj" />
   </ItemGroup>
 
 </Project>

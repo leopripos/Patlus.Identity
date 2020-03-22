@@ -17,8 +17,6 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.UpdateActiv
     [Trait("UT-Class", "Identities/UpdateActiveStatus/UpdateActiveStatusCommandHandlerTests")]
     public sealed class Handle_Should_Return_Updated_Identitity : IDisposable
     {
-        private readonly IQueryable<Identity> _dataSource;
-
         private readonly Mock<ILogger<UpdateActiveStatusCommandHandler>> _mockLogger;
         private readonly Mock<IMasterDbContext> _mockMasterDbContext;
         private readonly Mock<ITimeService> _mockTimeService;
@@ -26,8 +24,6 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.UpdateActiv
 
         public Handle_Should_Return_Updated_Identitity()
         {
-            _dataSource = IdentitiesFaker.CreateIdentities().Values.AsQueryable();
-
             _mockLogger = new Mock<ILogger<UpdateActiveStatusCommandHandler>>();
             _mockMasterDbContext = new Mock<IMasterDbContext>();
             _mockTimeService = new Mock<ITimeService>();
@@ -48,7 +44,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.UpdateActiv
         {
             // Arrange
             var currentTime = DateTimeOffset.Now;
-            _mockMasterDbContext.Setup(e => e.Identities).Returns(_dataSource);
+            _mockMasterDbContext.Setup(e => e.Identities).Returns(IdentitiesFaker.CreateIdentities().Values.AsQueryable());
             _mockTimeService.Setup(e => e.Now).Returns(currentTime);
 
             var handler = new UpdateActiveStatusCommandHandler(
@@ -71,7 +67,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.UpdateActiv
                 return opt;
             });
 
-            actualResult.Active.Should().Be(command.Active.Value);
+            actualResult.Active.Should().Be(command.Active!.Value);
             actualResult.LastModifiedTime.Should().Be(currentTime);
 
             _mockMediator.Verify(
@@ -85,7 +81,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.UpdateActiv
                 ), Times.Once);
         }
 
-        class TestData : TheoryData<Identity, UpdateActiveStatusCommand>
+        class TestData : TheoryData<Identity?, UpdateActiveStatusCommand>
         {
             public TestData()
             {
@@ -97,7 +93,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.UpdateActiv
                     )).FirstOrDefault(),
                     new UpdateActiveStatusCommand()
                     {
-                        PoolId = null,
+                        PoolId = null!,
                         Id = new Guid("9b76c5e9-fe62-4598-ba99-16ca96e5c605"),
                         Active = false,
                         RequestorId = Guid.NewGuid()
