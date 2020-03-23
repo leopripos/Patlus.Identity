@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using Patlus.IdentityManagement.Rest.Authentication;
+using Patlus.Common.Rest.Authentication;
+using Patlus.IdentityManagement.Presentation.Authentication;
 using System;
 using System.Text;
 
@@ -14,10 +14,10 @@ namespace Patlus.IdentityManagement.Rest.Extensions
     {
         public static void ConfigureAuthenticationService(this IServiceCollection services, IConfiguration configuration)
         {
-            var options = new ApplicationAuthenticationOptions();
+            var options = new AuthenticationOptions();
             configuration.GetSection("Authentication").Bind(options);
 
-            services.Configure<ApplicationAuthenticationOptions>(options =>
+            services.Configure<AuthenticationOptions>(options =>
             {
                 configuration.GetSection("Authentication").Bind(options);
             });

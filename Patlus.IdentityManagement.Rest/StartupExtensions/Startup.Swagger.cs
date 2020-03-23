@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using System;
@@ -10,7 +9,7 @@ namespace Patlus.IdentityManagement.Rest.Extensions
 {
     public static class StartupSwagger
     {
-        public static void ConfigureSwaggerService(this IServiceCollection services, IWebHostEnvironment env)
+        public static void ConfigureSwaggerService(this IServiceCollection services)
         {
             services.AddSwaggerGen(c =>
             {

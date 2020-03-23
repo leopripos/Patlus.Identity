@@ -2,8 +2,8 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Patlus.Common.Presentation.Responses.Content;
 using Patlus.Common.UseCase.Exceptions;
-using Patlus.IdentityManagement.Rest.Responses.Content;
 using Patlus.IdentityManagement.UseCase.Features.Tokens.Create;
 using Patlus.IdentityManagement.UseCase.Features.Tokens.Refresh;
 using System;

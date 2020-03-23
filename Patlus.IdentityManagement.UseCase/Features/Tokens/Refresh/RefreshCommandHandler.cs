@@ -68,7 +68,7 @@ namespace Patlus.IdentityManagement.UseCase.Features.Tokens.Refresh
 
                 try
                 {
-                    var notification = new RefreshedNotification(token, request.RequestorId, _timeService.Now);
+                    var notification = new RefreshedNotification(entity.Id, token, request.RequestorId, _timeService.Now);
 
                     await _mediator.Publish(notification, cancellationToken).ConfigureAwait(false);
                 }

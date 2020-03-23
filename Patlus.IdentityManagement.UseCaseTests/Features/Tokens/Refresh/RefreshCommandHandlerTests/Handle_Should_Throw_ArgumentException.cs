@@ -46,7 +46,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Tokens.Refresh.Refresh
         public void Theory(string expectedParamName, RefreshCommand command)
         {
             // Arrange
-            ClaimsPrincipal principal = null;
+            ClaimsPrincipal? principal = null;
             _mockTokenService.Setup(e => e.TryParseRefreshToken(It.IsAny<string>(), out principal)).Returns(false);
 
             var handler = new RefreshCommandHandler(

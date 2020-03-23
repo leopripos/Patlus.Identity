@@ -9,6 +9,15 @@ services:
       dockerfile: Patlus.IdentityManagement.Rest/Dockerfile
     depends_on:
       - patlus.identitymanagement.db
+
+  patlus.identitymanagement.eventhandler:
+    image: ${DOCKER_REGISTRY-}patlusidentitymanagementeventhandler
+    build:
+      context: .
+      dockerfile: Patlus.IdentityManagement.EventHandler/Dockerfile
+    depends_on:
+      - patlus.identitymanagement.db
+
   patlus.identitymanagement.db:
     container_name: patlus.identitymanagement.db
     image: mcr.microsoft.com/mssql/server:2019-CU3-ubuntu-16.04
@@ -18,3 +27,4 @@ services:
         MSSQL_PID: "Developer"
     ports:
         - "1433:1433"
+

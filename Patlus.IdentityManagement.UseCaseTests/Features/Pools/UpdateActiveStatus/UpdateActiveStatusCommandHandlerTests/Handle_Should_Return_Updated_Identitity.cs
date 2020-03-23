@@ -67,7 +67,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.UpdateActiveStat
                 return opt;
             });
 
-            actualResult.Active.Should().Be(command.Active.Value);
+            actualResult.Active.Should().Be(command.Active!.Value);
             actualResult.LastModifiedTime.Should().Be(currentTime);
 
             _mockMediator.Verify(
@@ -81,11 +81,11 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.UpdateActiveStat
                 ), Times.Once);
         }
 
-        class TestData : TheoryData<Pool, UpdateActiveStatusCommand>
+        class TestData : TheoryData<Pool?, UpdateActiveStatusCommand>
         {
             public TestData()
             {
-                var dataSource = PoolsFaker.CreatePools().Values.AsQueryable();
+                var dataSource = PoolsFaker.CreatePools().Values!.AsQueryable();
                 Add(
                     dataSource.Where(e => (
                         e.Id == new Guid("821e7913-876f-4377-a799-17fb8b5a0a49")

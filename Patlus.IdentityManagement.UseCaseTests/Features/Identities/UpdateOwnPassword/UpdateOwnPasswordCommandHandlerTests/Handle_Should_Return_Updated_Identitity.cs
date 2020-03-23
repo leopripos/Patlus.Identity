@@ -69,16 +69,16 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.UpdateOwnPa
                 opt = opt.IgnoringCyclicReferences();
                 opt = opt.Excluding(e => e.AuthKey);
                 opt = opt.Excluding(e => e.LastModifiedTime);
-                opt = opt.Excluding(e => e.HostedAccount.Password);
-                opt = opt.Excluding(e => e.HostedAccount.LastModifiedTime);
+                opt = opt.Excluding(e => e.HostedAccount!.Password);
+                opt = opt.Excluding(e => e.HostedAccount!.LastModifiedTime);
 
                 return opt;
             });
 
             actualResult.AuthKey.Should().NotBe(previousValue.AuthKey);
             actualResult.LastModifiedTime.Should().Be(currentTime);
-            actualResult.HostedAccount.Password.Should().Be("newpasswordhash");
-            actualResult.HostedAccount.LastModifiedTime.Should().Be(currentTime);
+            actualResult.HostedAccount!.Password.Should().Be("newpasswordhash");
+            actualResult.HostedAccount!.LastModifiedTime.Should().Be(currentTime);
 
             _mockMediator.Verify(
                 e => e.Publish(
@@ -89,7 +89,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.UpdateOwnPa
                 ), Times.Once);
         }
 
-        class TestData : TheoryData<Identity, UpdateOwnPasswordCommand>
+        class TestData : TheoryData<Identity?, UpdateOwnPasswordCommand>
         {
             public TestData()
             {

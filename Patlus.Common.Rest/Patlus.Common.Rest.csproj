@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp5.0</TargetFramework>
+    <LangVersion>8</LangVersion>
+    <Nullable>enable</Nullable>
+    <OutputType>Library</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.0-preview.1.20124.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Patlus.Common.Presentation\Patlus.Common.Presentation.csproj" />
+    <ProjectReference Include="..\Patlus.Common.UseCase\Patlus.Common.UseCase.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -45,7 +45,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.GetOne.GetO
             actualResult.Should().BeEquivalentTo(expectedResult, opt => opt.IgnoringCyclicReferences());
         }
 
-        class TestData : TheoryData<Identity, GetOneQuery>
+        class TestData : TheoryData<Identity?, GetOneQuery>
         {
             public TestData()
             {
@@ -55,7 +55,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.GetOne.GetO
 
                 condition = e => e.Id == new Guid("821e7913-876f-4377-a799-17fb8b5a0a49");
                 Add(
-                    dataSource.Where(condition).FirstOrDefault(),
+                    dataSource!.Where(condition).FirstOrDefault(),
                     new GetOneQuery()
                     {
                         Condition = condition,
@@ -214,7 +214,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.GetOne.GetO
                     }
                 );
 
-                condition = e => e.Pool.Id == new Guid("29899885-bbf1-430f-b9d6-613066b4021a");
+                condition = e => e.Pool!.Id == new Guid("29899885-bbf1-430f-b9d6-613066b4021a");
                 Add(
                     dataSource.Where(condition).FirstOrDefault(),
                     new GetOneQuery()
@@ -224,7 +224,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.GetOne.GetO
                     }
                 );
 
-                condition = e => e.HostedAccount.Name == "systemadmin0";
+                condition = e => e.HostedAccount!.Name == "systemadmin0";
                 Add(
                     dataSource.Where(condition).FirstOrDefault(),
                     new GetOneQuery()
@@ -234,7 +234,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.GetOne.GetO
                     }
                 );
 
-                condition = e => e.HostedAccount.Name.Contains("systemadmin");
+                condition = e => e.HostedAccount!.Name.Contains("systemadmin");
                 Add(
                     dataSource.Where(condition).FirstOrDefault(),
                     new GetOneQuery()
@@ -244,7 +244,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.GetOne.GetO
                     }
                 );
 
-                condition = e => e.HostedAccount.Name.Length == 5;
+                condition = e => e.HostedAccount!.Name.Length == 5;
                 Add(
                     dataSource.Where(condition).FirstOrDefault(),
                     new GetOneQuery()
@@ -254,7 +254,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.GetOne.GetO
                     }
                 );
 
-                condition = e => e.HostedAccount.Archived == false;
+                condition = e => e.HostedAccount!.Archived == false;
                 Add(
                     dataSource.Where(condition).FirstOrDefault(),
                     new GetOneQuery()

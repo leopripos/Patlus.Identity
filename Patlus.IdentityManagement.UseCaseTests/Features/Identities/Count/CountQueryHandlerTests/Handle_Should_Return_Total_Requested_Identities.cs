@@ -50,9 +50,9 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.Count.Count
             {
                 var dataSource = IdentitiesFaker.CreateIdentities().Values.AsQueryable();
                 var requestorId = new Guid("7c9e6679-7425-40de-944b-e07fc1f90ae7");
-                Expression<Func<Identity, bool>> condition = null;
+                Expression<Func<Identity, bool>> condition = null!;
 
-                condition = null;
+                condition = null!;
                 Add(
                     dataSource.Count(),
                     new CountQuery()
@@ -102,7 +102,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.Count.Count
                     }
                 );
 
-                condition = e => e.Name.Contains("System Admin");
+                condition = e => e.Name!.Contains("System Admin");
                 Add(
                     dataSource.Count(condition),
                     new CountQuery()
@@ -223,7 +223,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.Count.Count
                     }
                 );
 
-                condition = e => e.Pool.Id == new Guid("29899885-bbf1-430f-b9d6-613066b4021a");
+                condition = e => e.Pool!.Id == new Guid("29899885-bbf1-430f-b9d6-613066b4021a");
                 Add(
                     dataSource.Count(condition),
                     new CountQuery()
@@ -233,7 +233,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.Count.Count
                     }
                 );
 
-                condition = e => e.HostedAccount.Name == "systemadmin0";
+                condition = e => e.HostedAccount!.Name == "systemadmin0";
                 Add(
                     dataSource.Count(condition),
                     new CountQuery()
@@ -243,7 +243,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.Count.Count
                     }
                 );
 
-                condition = e => e.HostedAccount.Name.Contains("systemadmin");
+                condition = e => e.HostedAccount!.Name.Contains("systemadmin");
                 Add(
                     dataSource.Count(condition),
                     new CountQuery()
@@ -253,7 +253,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.Count.Count
                     }
                 );
 
-                condition = e => e.HostedAccount.Name.Length == 5;
+                condition = e => e.HostedAccount!.Name.Length == 5;
                 Add(
                     dataSource.Count(condition),
                     new CountQuery()
@@ -263,7 +263,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.Count.Count
                     }
                 );
 
-                condition = e => e.HostedAccount.Archived == false;
+                condition = e => e.HostedAccount!.Archived == false;
                 Add(
                     dataSource.Count(condition),
                     new CountQuery()

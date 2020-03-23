@@ -75,7 +75,7 @@ namespace Patlus.IdentityManagement.UseCase.Features.Identities.CreateHosted
 
             await _dbService.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-            var notification = new CreatedNotification(entity, request.RequestorId.Value, currentTime);
+            var notification = new HostedCreatedNotification(entity, request.RequestorId.Value, currentTime);
 
             try
             {
@@ -84,7 +84,7 @@ namespace Patlus.IdentityManagement.UseCase.Features.Identities.CreateHosted
 #pragma warning disable CA1031 // Do not catch general exception types, Justification: Error publishing notification unknown, but it should not interup action
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error publish {nameof(CreatedNotification)} when handle { nameof(CreateHostedCommand) } at { nameof(CreateHostedCommandHandler) }");
+                _logger.LogError(e, $"Error publish {nameof(HostedCreatedNotification)} when handle { nameof(CreateHostedCommand) } at { nameof(CreateHostedCommandHandler) }");
             }
 #pragma warning restore CA1031 // Do not catch general exception types
 

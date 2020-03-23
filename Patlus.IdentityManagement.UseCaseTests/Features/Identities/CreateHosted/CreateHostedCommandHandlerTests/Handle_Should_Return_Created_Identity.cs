@@ -85,7 +85,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.CreateHoste
                 options.IgnoringCyclicReferences();
                 options.Excluding(e => e.Id);
                 options.Excluding(e => e.AuthKey);
-                options.Excluding(e => e.HostedAccount.Id);
+                options.Excluding(e => e.HostedAccount!.Id);
 
                 return options;
             });
@@ -95,7 +95,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.CreateHoste
             _mockMasterDbContext.Verify(e => e.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
             _mockMediator.Verify(
                 e => e.Publish(
-                    It.Is<CreatedNotification>(e => (
+                    It.Is<HostedCreatedNotification>(e => (
                        e.Entity == actualResult
                        && e.By == actualResult.CreatorId
                        && e.Time == actualResult.CreatedTime

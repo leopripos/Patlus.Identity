@@ -118,7 +118,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities
 
             foreach (var pair in identities)
             {
-                pair.Value.HostedAccount.Identity = pair.Value;
+                pair.Value.HostedAccount!.Identity = pair.Value;
             }
 
             return identities;
