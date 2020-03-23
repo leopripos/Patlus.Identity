@@ -30,8 +30,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Patlus.Common.Presentation\Patlus.Common.Presentation.csproj" />
     <ProjectReference Include="..\Patlus.Common.Rest\Patlus.Common.Rest.csproj" />
-    <ProjectReference Include="..\Patlus.IdentityManagement.Cache\Patlus.IdentityManagement.Cache.csproj" />
-    <ProjectReference Include="..\Patlus.IdentityManagement.Persistence\Patlus.IdentityManagement.Persistence.csproj" />
     <ProjectReference Include="..\Patlus.IdentityManagement.Presentation\Patlus.IdentityManagement.Presentation.csproj" />
   </ItemGroup>
 

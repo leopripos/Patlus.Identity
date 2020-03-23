@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text.Json;
 
-namespace Patlus.Common.Rest.Filters.Actions
+namespace Patlus.Common.Presentation.Json
 {
     /// <summary>
     /// Addapted from <see href="https://github.com/dotnet/corefx/blob/master/src/System.Text.Json/src/System/Text/Json/Serialization/JsonCamelCaseNamingPolicy.cs">JsonCamelCaseNamingPolic</see>

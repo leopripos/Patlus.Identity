@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Confluent.Kafka" Version="1.4.0-RC4" />
+    <PackageReference Include="MediatR" Version="8.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="5.0.0-preview.1.20120.4" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0-preview.1.20120.4" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="5.0.0-preview.1.20120.4" />
+    <PackageReference Include="System.Text.Json" Version="5.0.0-preview.1.20120.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Patlus.Common.Presentation\Patlus.Common.Presentation.csproj" />
+    <ProjectReference Include="..\Patlus.Common.UseCase\Patlus.Common.UseCase.csproj" />
+    <ProjectReference Include="..\Patlus.IdentityManagement.UseCase\Patlus.IdentityManagement.UseCase.csproj" />
+  </ItemGroup>
+
+</Project>

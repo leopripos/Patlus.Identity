@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace Patlus.Common.Rest.Filters.Actions
+namespace Patlus.Common.Presentation.Json
 {
     public static class JsonNamingPolicies
     {

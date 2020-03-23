@@ -6,8 +6,17 @@ namespace Patlus.IdentityManagement.UseCase.Features.Tokens.Refresh
 {
     public class RefreshedNotification : BaseCreatedNotification<Token>
     {
-        public RefreshedNotification(Token entity, Guid? by, DateTimeOffset time)
+        public Guid IdentityId { get; }
+
+        public override Guid OrderingGroup
+        {
+            get { return IdentityId; }
+        }
+
+        public RefreshedNotification(Guid identityId, Token entity, Guid? by, DateTimeOffset time)
             : base(entity, by, time)
-        { }
+        {
+            IdentityId = identityId;
+        }
     }
 }

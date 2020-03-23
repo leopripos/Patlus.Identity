@@ -67,7 +67,7 @@ namespace Patlus.IdentityManagement.UseCase.Features.Tokens.Create
 
             try
             {
-                var notification = new CreatedNotification(token, request.RequestorId, _timeService.Now);
+                var notification = new CreatedNotification(entity.Id, token, request.RequestorId, _timeService.Now);
 
                 await _mediator.Publish(notification, cancellationToken).ConfigureAwait(false);
             }

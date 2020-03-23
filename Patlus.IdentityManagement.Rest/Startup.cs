@@ -11,8 +11,6 @@ using Patlus.Common.Presentation.Responses.Content;
 using Patlus.Common.Rest.Filters.Actions;
 using Patlus.Common.Rest.Filters.Exceptions;
 using Patlus.Common.Rest.Formatter.Json;
-using Patlus.IdentityManagement.Cache;
-using Patlus.IdentityManagement.Persistence;
 using Patlus.IdentityManagement.Presentation;
 using Patlus.IdentityManagement.Rest.Extensions;
 using Patlus.IdentityManagement.Rest.Filters.Actions;
@@ -73,10 +71,7 @@ namespace Patlus.IdentityManagement.Rest
 
             services.AddAutoMapper(GetType().Assembly);
 
-            services.AddDatabase(_configuration);
-            services.AddUseCaseFeatures();
-            services.AddCacheService();
-            services.AddMachineService();
+            services.AddPresentationCore(_configuration);
 
             services.ConfigureCorsService();
 

@@ -2,10 +2,10 @@
 
 namespace Patlus.IdentityManagement.UseCase
 {
-    public static class ModuleProfile
+    public static class UseCaseModule
     {
         public static Assembly[] GetBundles() => new Assembly[] {
-            typeof(ModuleProfile).GetTypeInfo().Assembly
+            typeof(UseCaseModule).GetTypeInfo().Assembly
         };
     }
 }

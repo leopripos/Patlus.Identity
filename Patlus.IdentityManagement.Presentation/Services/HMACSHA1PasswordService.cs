@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.Extensions.Options;
-using Patlus.IdentityManagement.UseCase.Services;
 using Patlus.IdentityManagement.Presentation.Authentication;
+using Patlus.IdentityManagement.UseCase.Services;
 using System;
 using System.Text;
 
