@@ -12,15 +12,15 @@ namespace Patlus.IdentityManagement.UseCase.Features.Pools.Create
 {
     public class CreateCommandHandler : ICommandFeatureHandler<CreateCommand, Pool>
     {
-        private readonly ILogger<CreateCommandHandler> _logger;
         private readonly IMasterDbContext _dbService;
+        private readonly IIdentifierService _identifierService;
         private readonly ITimeService _timeService;
         private readonly IMediator _mediator;
 
-        public CreateCommandHandler(ILogger<CreateCommandHandler> logger, IMasterDbContext dbService, ITimeService timeService, IMediator mediator)
+        public CreateCommandHandler(IMasterDbContext dbService, IIdentifierService identifierService, ITimeService timeService, IMediator mediator)
         {
-            _logger = logger;
             _dbService = dbService;
+            _identifierService = identifierService;
             _timeService = timeService;
             _mediator = mediator;
         }
@@ -36,7 +36,7 @@ namespace Patlus.IdentityManagement.UseCase.Features.Pools.Create
 
             var entity = new Pool()
             {
-                Id = Guid.NewGuid(),
+                Id = _identifierService.NewGuid(),
                 Active = request.Active.Value,
                 Name = request.Name,
                 Description = request.Description,
@@ -47,20 +47,11 @@ namespace Patlus.IdentityManagement.UseCase.Features.Pools.Create
 
             _dbService.Add(entity);
 
-            await _dbService.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            await _dbService.SaveChangesAsync(cancellationToken);
 
             var notification = new CreatedNotification(entity, request.RequestorId.Value, currentTime);
 
-            try
-            {
-                await _mediator.Publish(notification, cancellationToken).ConfigureAwait(false);
-            }
-#pragma warning disable CA1031 // Do not catch general exception types, Justification: Error when publishing notification cannot be predicted, but it should not interup action
-            catch (Exception e)
-            {
-                _logger.LogError(e, $"Error publish {nameof(CreatedNotification)} when handle { nameof(CreateCommand) } at { nameof(CreateCommandHandler) }");
-            }
-#pragma warning restore CA1031 // Do not catch general exception types
+            await _mediator.Publish(notification, cancellationToken);
 
             return entity;
         }

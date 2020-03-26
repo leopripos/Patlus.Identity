@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Patlus.IdentityManagement.Cache.Services
 {
-    public class TokenDistributedCacheService : ITokenCacheService
+    public class TokenDistributedCacheService : ITokenStorageService
     {
         private readonly IDistributedCache _distributedCache;
 

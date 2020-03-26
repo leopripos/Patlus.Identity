@@ -14,13 +14,10 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.GetAll.GetAllQue
     [Trait("UT-Class", "Pools/GetAll/GetAllQueryHandlerTests")]
     public sealed class Handle_Should_Return_Requested_Pools : IDisposable
     {
-        private readonly IQueryable<Pool> _poolsDataSource;
-
         private readonly Mock<IMasterDbContext> _mockMasterDbContext;
 
         public Handle_Should_Return_Requested_Pools()
         {
-            _poolsDataSource = PoolsFaker.CreatePools().Values.AsQueryable();
             _mockMasterDbContext = new Mock<IMasterDbContext>();
         }
 
@@ -34,7 +31,8 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.GetAll.GetAllQue
         public async void Theory(Pool[] expectedResult, GetAllQuery query)
         {
             // Arrange
-            _mockMasterDbContext.Setup(e => e.Pools).Returns(_poolsDataSource);
+            var dataSource = PoolsFaker.CreatePools();
+            _mockMasterDbContext.Setup(e => e.Pools).Returns(dataSource);
 
             var handler = new GetAllQueryHandler(_mockMasterDbContext.Object);
 
@@ -49,7 +47,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.GetAll.GetAllQue
         {
             public TestData()
             {
-                var dataSource = PoolsFaker.CreatePools().Values.AsQueryable();
+                var dataSource = PoolsFaker.CreatePools();
                 var requestorId = new Guid("7c9e6679-7425-40de-944b-e07fc1f90ae7");
                 Expression<Func<Pool, bool>> condition = null!;
 

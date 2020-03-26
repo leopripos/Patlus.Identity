@@ -1,6 +1,5 @@
 ﻿using FluentAssertions;
 using MediatR;
-using Microsoft.Extensions.Logging;
 using Moq;
 using Patlus.Common.UseCase.Services;
 using Patlus.IdentityManagement.UseCase.Features.Identities.CreateHosted;
@@ -16,16 +15,16 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.CreateHoste
     [Trait("UT-Class", "Identities/CreateHosted/CreateHostedCommandHandlerTests")]
     public sealed class Handle_Should_Throw_NullArgumentException : IDisposable
     {
-        private readonly Mock<ILogger<CreateHostedCommandHandler>> _mockLogger;
         private readonly Mock<IMasterDbContext> _mockMasterDbContext;
+        private readonly Mock<IIdentifierService> _mockIdentifierService;
         private readonly Mock<ITimeService> _mockTimeService;
         private readonly Mock<IMediator> _mockMediator;
         private readonly Mock<IPasswordService> _mockPasswordService;
 
         public Handle_Should_Throw_NullArgumentException()
         {
-            _mockLogger = new Mock<ILogger<CreateHostedCommandHandler>>();
             _mockMasterDbContext = new Mock<IMasterDbContext>();
+            _mockIdentifierService = new Mock<IIdentifierService>();
             _mockTimeService = new Mock<ITimeService>();
             _mockMediator = new Mock<IMediator>();
             _mockPasswordService = new Mock<IPasswordService>();
@@ -33,8 +32,8 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.CreateHoste
 
         public void Dispose()
         {
-            _mockLogger.Reset();
             _mockMasterDbContext.Reset();
+            _mockIdentifierService.Reset();
             _mockTimeService.Reset();
             _mockMediator.Reset();
             _mockPasswordService.Reset();
@@ -46,8 +45,8 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.CreateHoste
         {
             // Arrange
             var handler = new CreateHostedCommandHandler(
-                _mockLogger.Object,
                 _mockMasterDbContext.Object,
+                _mockIdentifierService.Object,
                 _mockTimeService.Object,
                 _mockMediator.Object,
                 _mockPasswordService.Object

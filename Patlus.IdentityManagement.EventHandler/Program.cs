@@ -10,7 +10,7 @@ namespace Patlus.IdentityManagement.EventHandler
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().ApplyDatabaseMigration<Program>().Run();
+            CreateHostBuilder(args).Build().ApplyPreRunSetup<Program>().Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args)

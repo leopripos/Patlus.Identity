@@ -7,6 +7,7 @@ using Patlus.Common.UseCase.Exceptions;
 using Patlus.IdentityManagement.UseCase.Features.Tokens.Create;
 using Patlus.IdentityManagement.UseCase.Features.Tokens.Refresh;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Patlus.IdentityManagement.Rest.Features.Tokens
@@ -27,11 +28,10 @@ namespace Patlus.IdentityManagement.Rest.Features.Tokens
         /// <summary>
         /// Create authentication token by passing user credential
         /// </summary>
-        /// <param name="form">Create form</param>
         /// <returns>Authentication Token</returns>
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ActionResult<TokenDto>> Create([FromBody] CreateForm form)
+        public async Task<ActionResult<TokenDto>> Create([FromBody] CreateForm form, CancellationToken cancellationToken)
         {
             var command = new CreateCommand()
             {
@@ -42,7 +42,7 @@ namespace Patlus.IdentityManagement.Rest.Features.Tokens
 
             try
             {
-                var token = await _mediator.Send(command).ConfigureAwait(false);
+                var token = await _mediator.Send(command, cancellationToken);
 
                 return _mapper.Map<TokenDto>(token);
             }
@@ -55,11 +55,10 @@ namespace Patlus.IdentityManagement.Rest.Features.Tokens
         /// <summary>
         /// Refresh the token by passing refresh token
         /// </summary>
-        /// <param name="form">Refresh Form</param>
         /// <returns>Authentication token</returns>
         [HttpPut]
         [AllowAnonymous]
-        public async Task<ActionResult<TokenDto>> Refresh([FromBody] RefreshForm form)
+        public async Task<ActionResult<TokenDto>> Refresh([FromBody] RefreshForm form, CancellationToken cancellationToken)
         {
             var command = new RefreshCommand()
             {
@@ -68,7 +67,7 @@ namespace Patlus.IdentityManagement.Rest.Features.Tokens
 
             try
             {
-                var token = await _mediator.Send(command).ConfigureAwait(false);
+                var token = await _mediator.Send(command, cancellationToken);
 
                 return _mapper.Map<TokenDto>(token);
             }

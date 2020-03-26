@@ -3,6 +3,7 @@ using Moq;
 using Patlus.IdentityManagement.UseCase.Features.Pools.Exist;
 using Patlus.IdentityManagement.UseCase.Services;
 using System;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.Exist.ExistQueryHandlerTests
@@ -31,7 +32,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.Exist.ExistQuery
             var handler = new ExistQueryHandler(_mockMasterDbContext.Object);
 
             // Act
-            Action action = () => handler.Handle(query, default);
+            Func<Task> action = async () => await handler.Handle(query, default);
 
             // Assert
             action.Should().Throw<ArgumentNullException>().Where(e => e.ParamName == expectedParamName);

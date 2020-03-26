@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <RootNamespace>Patlus.IdentityManagement.Rest</RootNamespace>
+    <LangVersion>8</LangVersion>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Patlus.Common.Presentation.Abstraction\Patlus.Common.Presentation.Abstraction.csproj" />
+  </ItemGroup>
+
+</Project>

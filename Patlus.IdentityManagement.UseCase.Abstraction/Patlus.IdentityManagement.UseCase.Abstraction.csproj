@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <LangVersion>8</LangVersion>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Patlus.IdentityManagement.UseCase</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="8.0.1" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\Patlus.Common.UseCase.Abstraction\Patlus.Common.UseCase.Abstraction.csproj" />
+    <ProjectReference Include="..\Patlus.Common.UseCase\Patlus.Common.UseCase.csproj" />
+  </ItemGroup>
+
+</Project>

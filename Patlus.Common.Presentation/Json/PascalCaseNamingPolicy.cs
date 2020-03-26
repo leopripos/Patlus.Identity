@@ -41,13 +41,13 @@ namespace Patlus.Common.Presentation.Json
 
                 bool hasNext = (i + 1 < chars.Length);
 
-                // Stop when next char is already lowercase.
-                if (i > 0 && hasNext && !char.IsLower(chars[i + 1]))
+                // Stop when next char is already uppercase.
+                if (i > 0 && hasNext && !char.IsUpper(chars[i + 1]))
                 {
                     // If the next char is a space, lowercase current char before exiting.
                     if (chars[i + 1] == ' ')
                     {
-                        chars[i] = char.ToUpperInvariant(chars[i]);
+                        chars[i] = char.ToLowerInvariant(chars[i]);
                     }
 
                     break;

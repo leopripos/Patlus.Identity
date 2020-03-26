@@ -53,6 +53,7 @@ namespace Patlus.IdentityManagement.Presentation
 
         public static IServiceCollection AddMachineService(this IServiceCollection services)
         {
+            services.AddSingleton<IIdentifierService, IdentifierGenerator>();
             services.AddSingleton<ITimeService, TimeService>();
             return services;
         }

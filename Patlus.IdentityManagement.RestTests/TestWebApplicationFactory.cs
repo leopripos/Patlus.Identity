@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Patlus.Common.Presentation.Services;
 using Patlus.IdentityManagement.Persistence.Contexts;
 using Patlus.IdentityManagement.UseCase.Services;
 using System;
@@ -17,6 +18,11 @@ namespace Patlus.IdentityManagement.RestTests
             builder.UseEnvironment("Test");
             builder.ConfigureServices(async services =>
             {
+                // Replace Event Dispatcher
+                var eventDispatcherService = services.SingleOrDefault(d => d.ServiceType == typeof(IEventDispatcher));
+                if (eventDispatcherService != null) services.Remove(eventDispatcherService);
+                services.AddSingleton<IEventDispatcher, DummyEventDispatcher>();
+
                 var dbContextOptions = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<MasterDbContext>));
                 if (dbContextOptions != null)
                 {

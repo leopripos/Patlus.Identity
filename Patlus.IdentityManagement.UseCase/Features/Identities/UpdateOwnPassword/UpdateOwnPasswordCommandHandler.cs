@@ -17,16 +17,16 @@ namespace Patlus.IdentityManagement.UseCase.Features.Identities.UpdateOwnPasswor
 {
     public class UpdateOwnPasswordCommandHandler : ICommandFeatureHandler<UpdateOwnPasswordCommand, Identity>
     {
-        private readonly ILogger<UpdateOwnPasswordCommandHandler> _logger;
         private readonly IMasterDbContext _dbService;
+        private readonly IIdentifierService _identifierService;
         private readonly ITimeService _timeService;
         private readonly IMediator _mediator;
         private readonly IPasswordService _passwordService;
 
-        public UpdateOwnPasswordCommandHandler(ILogger<UpdateOwnPasswordCommandHandler> logger, IMasterDbContext dbService, ITimeService timeService, IMediator mediator, IPasswordService passwordService)
+        public UpdateOwnPasswordCommandHandler(IMasterDbContext dbService, IIdentifierService identifierService, ITimeService timeService, IMediator mediator, IPasswordService passwordService)
         {
-            _logger = logger;
             _dbService = dbService;
+            _identifierService = identifierService;
             _timeService = timeService;
             _mediator = mediator;
             _passwordService = passwordService;
@@ -42,16 +42,16 @@ namespace Patlus.IdentityManagement.UseCase.Features.Identities.UpdateOwnPasswor
 
             var query = _dbService.Identities.Include(e => e.HostedAccount).Where(e => e.Id == request.RequestorId);
 
-            var entity = query.SingleOrDefault();
+            var entity = await query.SingleOrDefaultAsync(cancellationToken);
 
             if (entity == null || !_passwordService.ValidatePasswordHash(entity.HostedAccount!.Password, request.OldPassword))
             {
                 throw new NotFoundException(nameof(HostedAccount), new { request.RequestorId, request.OldPassword });
             }
 
-            var notification = new OwnPasswordUdpatedNotification(entity, new Dictionary<string, ValueChanged>(), request.RequestorId.Value, currentTime);
+            var notification = new OwnPasswordUdpatedNotification(entity, request.RequestorId.Value, currentTime);
 
-            entity.AuthKey = Guid.NewGuid();
+            entity.AuthKey = _identifierService.NewGuid();
             entity.LastModifiedTime = currentTime;
 
             entity.HostedAccount.Password = _passwordService.GeneratePasswordHash(request.NewPassword);
@@ -59,18 +59,9 @@ namespace Patlus.IdentityManagement.UseCase.Features.Identities.UpdateOwnPasswor
 
             _dbService.Update(entity);
 
-            await _dbService.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            await _dbService.SaveChangesAsync(cancellationToken);
 
-            try
-            {
-                await _mediator.Publish(notification, cancellationToken).ConfigureAwait(false);
-            }
-#pragma warning disable CA1031 // Do not catch general exception types, Justification: Error publishing notification unknown, but it should not interup action
-            catch (Exception e)
-            {
-                _logger.LogError(e, $"Error publish { nameof(OwnPasswordUdpatedNotification) } when handle { nameof(UpdateOwnPasswordCommand) } at { nameof(UpdateOwnPasswordCommandHandler) }");
-            }
-#pragma warning restore CA1031 // Do not catch general exception types
+            await _mediator.Publish(notification, cancellationToken);
 
             return entity;
         }

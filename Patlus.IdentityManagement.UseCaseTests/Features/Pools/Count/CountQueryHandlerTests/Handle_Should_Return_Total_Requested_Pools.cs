@@ -31,7 +31,8 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.Count.CountQuery
         public async void Theory(int expectedResult, CountQuery query)
         {
             // Arrange
-            _mockMasterDbContext.Setup(e => e.Pools).Returns(PoolsFaker.CreatePools().Values.AsQueryable());
+            var dataSource = PoolsFaker.CreatePools();
+            _mockMasterDbContext.Setup(e => e.Pools).Returns(dataSource);
 
             var handler = new CountQueryHandler(_mockMasterDbContext.Object);
 
@@ -46,7 +47,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.Count.CountQuery
         {
             public TestData()
             {
-                var dataSource = PoolsFaker.CreatePools().Values.AsQueryable();
+                var dataSource = PoolsFaker.CreatePools();
                 var requestorId = new Guid("7c9e6679-7425-40de-944b-e07fc1f90ae7");
                 Expression<Func<Pool, bool>> condition = null!;
 

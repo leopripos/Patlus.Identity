@@ -8,16 +8,18 @@ using System.Linq;
 
 namespace Patlus.IdentityManagement.Persistence.Contexts
 {
-    public class MasterDbContext : DbContext, IMasterDbContext
+    public sealed class MasterDbContext : DbContext, IMasterDbContext
     {
-        protected readonly ITimeService TimeService;
-        protected readonly IPasswordService PasswordService;
+        private readonly IIdentifierService _identifierService;
+        private readonly ITimeService _timeService;
+        private readonly IPasswordService _passwordService;
 
-        public MasterDbContext(DbContextOptions<MasterDbContext> options, ITimeService timeService, IPasswordService passwordService)
+        public MasterDbContext(DbContextOptions<MasterDbContext> options, IIdentifierService identifierService, ITimeService timeService, IPasswordService passwordService)
             : base(options)
         {
-            TimeService = timeService;
-            PasswordService = passwordService;
+            _identifierService = identifierService;
+            _timeService = timeService;
+            _passwordService = passwordService;
         }
 
         public IQueryable<Pool> Pools
@@ -63,21 +65,21 @@ namespace Patlus.IdentityManagement.Persistence.Contexts
                     Name = "Root Administrator",
                     Description = "Default identity pool for system administrator.",
                     CreatorId = identityId,
-                    CreatedTime = TimeService.Now,
-                    LastModifiedTime = TimeService.Now,
+                    CreatedTime = _timeService.Now,
+                    LastModifiedTime = _timeService.Now,
                 }
             });
 
             modelBuilder.Entity<Identity>().HasData(new Identity[] {
                 new Identity() {
                     Id = identityId,
-                    AuthKey = Guid.NewGuid(),
+                    AuthKey = _identifierService.NewGuid(),
                     PoolId = poolId,
                     Name = identityName,
                     Active = true,
                     CreatorId = identityId,
-                    CreatedTime = TimeService.Now,
-                    LastModifiedTime = TimeService.Now,
+                    CreatedTime = _timeService.Now,
+                    LastModifiedTime = _timeService.Now,
                 }
             });
 
@@ -85,10 +87,10 @@ namespace Patlus.IdentityManagement.Persistence.Contexts
                 new HostedAccount(){
                     Id = identityId,
                     Name = identityName,
-                    Password = PasswordService.GeneratePasswordHash(identityPassword),
+                    Password = _passwordService.GeneratePasswordHash(identityPassword),
                     CreatorId = identityId,
-                    CreatedTime = TimeService.Now,
-                    LastModifiedTime = TimeService.Now,
+                    CreatedTime = _timeService.Now,
+                    LastModifiedTime = _timeService.Now,
                 }
             });
         }

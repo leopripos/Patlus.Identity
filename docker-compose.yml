@@ -11,12 +11,14 @@ services:
       - patlus.identitymanagement.db
 
   patlus.identitymanagement.eventhandler:
+    container_name: patlus.identitymanagement.eventhandler
     image: ${DOCKER_REGISTRY-}patlusidentitymanagementeventhandler
     build:
       context: .
       dockerfile: Patlus.IdentityManagement.EventHandler/Dockerfile
     depends_on:
       - patlus.identitymanagement.db
+      - patlus.identitymanagement.kafka
 
   patlus.identitymanagement.db:
     container_name: patlus.identitymanagement.db
@@ -28,3 +30,38 @@ services:
     ports:
         - "1433:1433"
 
+  patlus.identitymanagement.kafka:
+    container_name: patlus.identitymanagement.kafka
+    image: 'bitnami/kafka:latest'
+    ports:
+      - '9092'
+    environment:
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=patlus.identitymanagement.zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_ZOOKEEPER_USER=zookeeper
+      - KAFKA_ZOOKEEPER_PASSWORD=zookeeper_password
+      - KAFKA_INTER_BROKER_USER=intern
+      - KAFKA_INTER_BROKER_PASSWORD=intern_password
+      - KAFKA_BROKER_USER=broker
+      - KAFKA_BROKER_PASSWORD=broker_password
+    depends_on:
+      - patlus.identitymanagement.zookeeper
+
+  patlus.identitymanagement.zookeeper:
+    container_name: patlus.identitymanagement.zookeeper
+    image: 'bitnami/zookeeper:latest'
+    ports:
+     - '2181:2181'
+    environment:
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - ZOO_ENABLE_AUTH=yes
+      - ZOO_SERVER_USERS=zookeeper
+      - ZOO_SERVER_PASSWORDS=zookeeper_password
+  patlus.identitymanagement.kafdrop:
+    container_name: patlus.identitymanagement.kafdrop
+    image: obsidiandynamics/kafdrop
+    ports:
+      - "9000:9000"
+    environment:
+      KAFKA_BROKERCONNECT: "patlus.identitymanagement.kafka:9092"
+      JVM_OPTS: "-Xms32M -Xmx64M"

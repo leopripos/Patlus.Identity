@@ -11,15 +11,19 @@
     <PackageReference Include="Microsoft.AspNetCore.Cryptography.KeyDerivation" Version="5.0.0-preview.1.20124.5" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="9.0.0-preview3" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.1.2" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.6.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="5.0.0-preview.1.20120.4" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.5.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Patlus.Common.Presentation.Abstraction\Patlus.Common.Presentation.Abstraction.csproj" />
+    <ProjectReference Include="..\Patlus.Common.Presentation\Patlus.Common.Presentation.csproj" />
+    <ProjectReference Include="..\Patlus.Common.UseCase.Abstraction\Patlus.Common.UseCase.Abstraction.csproj" />
     <ProjectReference Include="..\Patlus.IdentityManagement.Cache\Patlus.IdentityManagement.Cache.csproj" />
     <ProjectReference Include="..\Patlus.IdentityManagement.EventDispatcher\Patlus.IdentityManagement.EventDispatcher.csproj" />
     <ProjectReference Include="..\Patlus.IdentityManagement.Persistence\Patlus.IdentityManagement.Persistence.csproj" />
-    <ProjectReference Include="..\Patlus.IdentityManagement.UseCase\Patlus.IdentityManagement.UseCase.csproj" />
+    <ProjectReference Include="..\Patlus.IdentityManagement.Presentation.Abstraction\Patlus.IdentityManagement.Presentation.Abstraction.csproj" />
+    <ProjectReference Include="..\Patlus.IdentityManagement.UseCase.Abstraction\Patlus.IdentityManagement.UseCase.Abstraction.csproj" />
   </ItemGroup>
 
 </Project>

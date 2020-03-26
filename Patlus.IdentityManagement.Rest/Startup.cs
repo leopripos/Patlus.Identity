@@ -69,7 +69,7 @@ namespace Patlus.IdentityManagement.Rest
 
             services.AddScoped<ValidPoolFilter>();
 
-            services.AddAutoMapper(GetType().Assembly);
+            services.AddAutoMapper(GetType().Assembly, typeof(NotificationDispatcherModule).Assembly);
 
             services.AddPresentationCore(_configuration);
 
@@ -85,10 +85,8 @@ namespace Patlus.IdentityManagement.Rest
             }
         }
 
-        public void Configure(IApplicationBuilder app, IMapper mapper)
+        public void Configure(IApplicationBuilder app)
         {
-            mapper.ConfigurationProvider.AssertConfigurationIsValid();
-
             app.ConfigureCors();
 
             app.UseHttpsRedirection();

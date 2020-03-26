@@ -1,6 +1,5 @@
 ﻿using FluentAssertions;
 using MediatR;
-using Microsoft.Extensions.Logging;
 using Moq;
 using Patlus.Common.UseCase.Services;
 using Patlus.IdentityManagement.UseCase.Entities;
@@ -18,31 +17,16 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.CreateHoste
     [Trait("UT-Class", "Identities/CreateHosted/CreateHostedCommandHandlerTests")]
     public sealed class Handle_Should_Return_Created_Identity : IDisposable
     {
-        private readonly IQueryable<Identity> _identitiesDataSource;
-        private readonly IQueryable<Pool> _poolsDataSource;
-
-        private readonly Mock<ILogger<CreateHostedCommandHandler>> _mockLogger;
         private readonly Mock<IMasterDbContext> _mockMasterDbContext;
+        private readonly Mock<IIdentifierService> _mockIdentifierService;
         private readonly Mock<ITimeService> _mockTimeService;
         private readonly Mock<IMediator> _mockMediator;
         private readonly Mock<IPasswordService> _mockPasswordService;
 
         public Handle_Should_Return_Created_Identity()
         {
-            var pools = new List<Pool>() {
-                new Pool(){
-                    Id = new Guid("821e7913-876f-4377-a799-17fb8b5a0a49"),
-                    Archived = false,
-                },
-            };
-
-            var identities = new List<Identity>();
-
-            _poolsDataSource = pools.AsQueryable();
-            _identitiesDataSource = identities.AsQueryable();
-
-            _mockLogger = new Mock<ILogger<CreateHostedCommandHandler>>();
             _mockMasterDbContext = new Mock<IMasterDbContext>();
+            _mockIdentifierService = new Mock<IIdentifierService>();
             _mockTimeService = new Mock<ITimeService>();
             _mockMediator = new Mock<IMediator>();
             _mockPasswordService = new Mock<IPasswordService>();
@@ -50,7 +34,6 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.CreateHoste
 
         public void Dispose()
         {
-            _mockLogger.Reset();
             _mockMasterDbContext.Reset();
             _mockTimeService.Reset();
             _mockMediator.Reset();
@@ -65,12 +48,19 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.CreateHoste
             _mockTimeService.SetupGet(e => e.Now).Returns(new DateTimeOffset(2017, 7, 4, 1, 59, 59, 59, TimeSpan.FromHours(1)));
             _mockPasswordService.Setup(e => e.GeneratePasswordHash("newpassword1")).Returns("newpasswordhash1");
             _mockPasswordService.Setup(e => e.GeneratePasswordHash("newpassword2")).Returns("newpasswordhash2");
-            _mockMasterDbContext.SetupGet(e => e.Identities).Returns(_identitiesDataSource);
-            _mockMasterDbContext.SetupGet(e => e.Pools).Returns(_poolsDataSource);
+
+            var pools = new List<Pool>() {
+                new Pool(){
+                    Id = new Guid("821e7913-876f-4377-a799-17fb8b5a0a49"),
+                    Archived = false,
+                },
+            };
+
+            _mockMasterDbContext.SetupGet(e => e.Pools).Returns(pools.AsQueryable());
 
             var handler = new CreateHostedCommandHandler(
-                _mockLogger.Object,
                 _mockMasterDbContext.Object,
+                _mockIdentifierService.Object,
                 _mockTimeService.Object,
                 _mockMediator.Object,
                 _mockPasswordService.Object

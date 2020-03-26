@@ -31,7 +31,8 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.GetAll.GetA
         public async void Theory(Identity[] expectedResult, GetAllQuery query)
         {
             // Arrange
-            _mockMasterDbContext.Setup(e => e.Identities).Returns(IdentitiesFaker.CreateIdentities().Values.AsQueryable());
+            var dataSource = IdentitiesFaker.CreateIdentities();
+            _mockMasterDbContext.Setup(e => e.Identities).Returns(dataSource);
 
             var handler = new GetAllQueryHandler(_mockMasterDbContext.Object);
 
@@ -46,7 +47,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.GetAll.GetA
         {
             public TestData()
             {
-                var dataSource = IdentitiesFaker.CreateIdentities().Values.AsQueryable();
+                var dataSource = IdentitiesFaker.CreateIdentities();
                 var requestorId = new Guid("7c9e6679-7425-40de-944b-e07fc1f90ae7");
                 Expression<Func<Identity, bool>> condition = null!;
 

@@ -18,15 +18,13 @@ namespace Patlus.IdentityManagement.UseCase.Features.Tokens.Refresh
 {
     public class RefreshCommandHandler : ICommandFeatureHandler<RefreshCommand, Token>
     {
-        private readonly ILogger<RefreshCommandHandler> _logger;
         private readonly IMasterDbContext _dbContext;
         private readonly ITokenService _tokenService;
         private readonly ITimeService _timeService;
         private readonly IMediator _mediator;
 
-        public RefreshCommandHandler(ILogger<RefreshCommandHandler> logger, IMasterDbContext dbContext, ITokenService tokenService, ITimeService timeService, IMediator mediator)
+        public RefreshCommandHandler(IMasterDbContext dbContext, ITokenService tokenService, ITimeService timeService, IMediator mediator)
         {
-            _logger = logger;
             _dbContext = dbContext;
             _tokenService = tokenService;
             _timeService = timeService;
@@ -66,18 +64,9 @@ namespace Patlus.IdentityManagement.UseCase.Features.Tokens.Refresh
 
                 var token = _tokenService.Create(entity.AuthKey, claims);
 
-                try
-                {
-                    var notification = new RefreshedNotification(entity.Id, token, request.RequestorId, _timeService.Now);
+                var notification = new RefreshedNotification(entity.Id, token, request.RequestorId, _timeService.Now);
 
-                    await _mediator.Publish(notification, cancellationToken).ConfigureAwait(false);
-                }
-#pragma warning disable CA1031 // Do not catch general exception types, Justification: Error when publishing notification cannot be predicted, but it should not interup action
-                catch (Exception e)
-                {
-                    _logger.LogError(e, $"Error publish {nameof(RefreshedNotification)} when handle { nameof(RefreshCommand) } at { nameof(RefreshCommandHandler) }");
-                }
-#pragma warning restore CA1031 // Do not catch general exception types
+                await _mediator.Publish(notification, cancellationToken).ConfigureAwait(false);
 
                 return token;
             }

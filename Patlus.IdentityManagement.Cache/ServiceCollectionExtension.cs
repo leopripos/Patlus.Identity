@@ -14,7 +14,7 @@ namespace Patlus.IdentityManagement.Cache
 
         public static IServiceCollection AddTokenCacheService(this IServiceCollection services)
         {
-            services.AddSingleton<ITokenCacheService, TokenDistributedCacheService>();
+            services.AddSingleton<ITokenStorageService, TokenDistributedCacheService>();
 
             return services;
         }

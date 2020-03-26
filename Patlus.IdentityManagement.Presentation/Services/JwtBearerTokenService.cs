@@ -3,7 +3,6 @@ using Microsoft.IdentityModel.Tokens;
 using Patlus.Common.UseCase.Security;
 using Patlus.Common.UseCase.Services;
 using Patlus.IdentityManagement.Cache.Services;
-using Patlus.IdentityManagement.Presentation.Authentication;
 using Patlus.IdentityManagement.UseCase.Entities;
 using Patlus.IdentityManagement.UseCase.Services;
 using System;
@@ -16,20 +15,29 @@ namespace Patlus.IdentityManagement.Presentation.Services
 {
     public class JwtBearerTokenService : ITokenService
     {
-        private readonly IOptions<AuthenticationOptions> _authOptions;
+        private readonly IOptions<AccessTokenOptions> _accessTokenOptions;
+        private readonly IOptions<RefreshTokenOptions> _refreshTokenOptions;
+        private readonly IIdentifierService _identifierService;
         private readonly ITimeService _timeService;
-        private readonly ITokenCacheService _tokenCacheService;
+        private readonly ITokenStorageService _tokenCacheService;
 
-        public JwtBearerTokenService(IOptions<AuthenticationOptions> authOptions, ITimeService timeService, ITokenCacheService tokenCacheService)
-        {
-            _authOptions = authOptions;
+        public JwtBearerTokenService(
+            IOptions<AccessTokenOptions> accessTokenOptions, 
+            IOptions<RefreshTokenOptions> refreshTokenOptions, 
+            IIdentifierService identifierService,
+            ITimeService timeService, 
+            ITokenStorageService tokenStorageService
+        ) {
+            _accessTokenOptions = accessTokenOptions;
+            _refreshTokenOptions = refreshTokenOptions;
+            _identifierService = identifierService;
             _timeService = timeService;
-            _tokenCacheService = tokenCacheService;
+            _tokenCacheService = tokenStorageService;
         }
 
         public Token Create(Guid authKey, IList<Claim> claims)
         {
-            var id = Guid.NewGuid();
+            var id = _identifierService.NewGuid();
 
             var token = new Token()
             {
@@ -45,19 +53,29 @@ namespace Patlus.IdentityManagement.Presentation.Services
 
         public bool TryParseRefreshToken(string refreshToken, out ClaimsPrincipal principal)
         {
-            var refreshTokenOptions = _authOptions.Value.RefreshToken;
+            var options = _refreshTokenOptions.Value;
 
             var validatioParameter = new TokenValidationParameters()
             {
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(refreshTokenOptions.Key)),
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(options.Key)),
                 RequireSignedTokens = true,
                 RequireExpirationTime = true,
                 ValidateLifetime = true,
                 ValidateIssuer = true,
                 ValidateAudience = true,
-                ValidIssuer = refreshTokenOptions.Issuer,
-                ValidAudience = refreshTokenOptions.Audience,
-                ClockSkew = TimeSpan.Zero
+                ValidIssuer = options.Issuer,
+                ValidAudience = options.Audience,
+                ClockSkew = TimeSpan.Zero,
+                LifetimeValidator = (DateTime? notBefore, DateTime? expires, SecurityToken token, TokenValidationParameters parameter) =>
+                {
+                    if (!(notBefore is null) && notBefore.Value > _timeService.NowDateTime.ToUniversalTime())
+                        return false;
+
+                    if (!(expires is null) && expires.Value <= _timeService.NowDateTime.ToUniversalTime())
+                        return false;
+
+                    return true;
+                }
             };
 
             try
@@ -104,36 +122,36 @@ namespace Patlus.IdentityManagement.Presentation.Services
 
         private string CreateAccessToken(Guid id, IList<Claim> claims)
         {
-            var tokenOptions = _authOptions.Value.AccessToken;
+            var options = _accessTokenOptions.Value;
 
             var finalClaims = new List<Claim>
             {
                 new Claim(SecurityClaimTypes.TokenId, id.ToString()),
-                new Claim(SecurityClaimTypes.Version, tokenOptions.Version),
+                new Claim(SecurityClaimTypes.Version, options.Version),
             };
 
             finalClaims.AddRange(claims);
 
-            var expiredTime = _timeService.Now.AddMinutes(tokenOptions.Duration);
+            var expiredTime = _timeService.Now.AddMinutes(options.Duration);
 
-            return Generate(finalClaims, expiredTime, _timeService.Now, tokenOptions.Key, tokenOptions.Issuer, tokenOptions.Audience);
+            return Generate(finalClaims, expiredTime, _timeService.Now, options.Key, options.Issuer, options.Audience);
         }
 
         private string CreateRefreshToken(Guid id, Guid authKey, IList<Claim> claims)
         {
-            var tokenOptions = _authOptions.Value.RefreshToken;
+            var options = _refreshTokenOptions.Value;
 
             var finalClaims = new List<Claim>
             {
                 new Claim(SecurityClaimTypes.TokenId, id.ToString()),
-                new Claim(SecurityClaimTypes.Version, tokenOptions.Version),
+                new Claim(SecurityClaimTypes.Version, options.Version),
             };
 
             finalClaims.AddRange(claims);
 
-            var expiredTime = _timeService.Now.AddMinutes(tokenOptions.Duration);
+            var expiredTime = _timeService.Now.AddMinutes(options.Duration);
 
-            var jwtToken = Generate(finalClaims, expiredTime, _timeService.Now, tokenOptions.Key, tokenOptions.Issuer, tokenOptions.Audience);
+            var jwtToken = Generate(finalClaims, expiredTime, _timeService.Now, options.Key, options.Issuer, options.Audience);
 
             _tokenCacheService.Set(id, authKey, expiredTime);
 

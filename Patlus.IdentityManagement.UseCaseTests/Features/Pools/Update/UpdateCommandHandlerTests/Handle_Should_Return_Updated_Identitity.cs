@@ -17,14 +17,12 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.Update.UpdateCom
     [Trait("UT-Class", "Pools/Update/UpdateCommandHandlerTests")]
     public sealed class Handle_Should_Return_Updated_Identitity : IDisposable
     {
-        private readonly Mock<ILogger<UpdateCommandHandler>> _mockLogger;
         private readonly Mock<IMasterDbContext> _mockMasterDbContext;
         private readonly Mock<ITimeService> _mockTimeService;
         private readonly Mock<IMediator> _mockMediator;
 
         public Handle_Should_Return_Updated_Identitity()
         {
-            _mockLogger = new Mock<ILogger<UpdateCommandHandler>>();
             _mockMasterDbContext = new Mock<IMasterDbContext>();
             _mockTimeService = new Mock<ITimeService>();
             _mockMediator = new Mock<IMediator>();
@@ -32,7 +30,6 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.Update.UpdateCom
 
         public void Dispose()
         {
-            _mockLogger.Reset();
             _mockMasterDbContext.Reset();
             _mockTimeService.Reset();
             _mockMediator.Reset();
@@ -44,11 +41,11 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.Update.UpdateCom
         {
             // Arrange
             var currentTime = DateTimeOffset.Now;
-            _mockMasterDbContext.Setup(e => e.Pools).Returns(PoolsFaker.CreatePools().Values.AsQueryable());
+            var dataSource = PoolsFaker.CreatePools();
+            _mockMasterDbContext.Setup(e => e.Pools).Returns(dataSource);
             _mockTimeService.Setup(e => e.Now).Returns(currentTime);
 
             var handler = new UpdateCommandHandler(
-                _mockLogger.Object,
                 _mockMasterDbContext.Object,
                 _mockTimeService.Object,
                 _mockMediator.Object
@@ -113,7 +110,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.Update.UpdateCom
         {
             public TestData()
             {
-                var dataSource = PoolsFaker.CreatePools().Values.AsQueryable();
+                var dataSource = PoolsFaker.CreatePools();
                 Add(
                     dataSource!.Where(e => (
                         e.Id == new Guid("821e7913-876f-4377-a799-17fb8b5a0a49")
