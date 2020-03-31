@@ -46,7 +46,7 @@ namespace Patlus.IdentityManagement.Rest
             services.AddScoped<ValidPoolFilter>();
 
             services.AddAutoMapper(config => {
-                config.AddNotificationDispatcherMappings();
+                config.AddIntegrationDispatcherMappings();
             }, GetType().Assembly);
 
             services.AddPresentationCore(_configuration);

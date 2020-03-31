@@ -22,6 +22,7 @@
     <ProjectReference Include="..\Patlus.IdentityManagement.Infrastructure.Cache\Patlus.IdentityManagement.Infrastructure.Cache.csproj" />
     <ProjectReference Include="..\Patlus.IdentityManagement.Infrastructure.Dispatcher\Patlus.IdentityManagement.Infrastructure.Dispatcher.csproj" />
     <ProjectReference Include="..\Patlus.IdentityManagement.Infrastructure.Persistence\Patlus.IdentityManagement.Infrastructure.Persistence.csproj" />
+    <ProjectReference Include="..\Patlus.IdentityManagement.IntegrationDispatcher\Patlus.IdentityManagement.IntegrationDispatcher.csproj" />
     <ProjectReference Include="..\Patlus.IdentityManagement.UseCase.Abstraction\Patlus.IdentityManagement.UseCase.Abstraction.csproj" />
   </ItemGroup>
 
