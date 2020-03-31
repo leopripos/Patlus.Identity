@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Routing;
-using Patlus.Common.Presentation;
-using Patlus.Common.Presentation.Responses.Content;
+using Patlus.Common.Presentation.Responses.Errors;
+using Patlus.Common.Presentation.Security;
 using Patlus.IdentityManagement.UseCase.Features.Pools.Exist;
 using System;
 
@@ -48,7 +48,7 @@ namespace Patlus.IdentityManagement.Rest.Filters.Actions
             {
                 context.HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
                 context.Result = new NotFoundObjectResult(
-                    new NotFoundResultDto($"Pool with id `{(routeData.Values[RouteKey])}` not found.")
+                    new NotFoundErrorDto($"Pool with id `{(routeData.Values[RouteKey])}` not found.")
                 );
             }
         }

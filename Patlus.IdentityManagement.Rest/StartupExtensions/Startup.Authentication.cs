@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using Patlus.Common.Presentation;
+using Patlus.Common.Presentation.Security;
 using Patlus.Common.Rest.Authentication;
 using Patlus.IdentityManagement.Presentation.Services;
 using System;

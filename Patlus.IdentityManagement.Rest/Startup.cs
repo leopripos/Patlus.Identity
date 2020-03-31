@@ -2,20 +2,14 @@ using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
-using Patlus.Common.Presentation.Responses.Content;
-using Patlus.Common.Rest.Filters.Actions;
-using Patlus.Common.Rest.Filters.Exceptions;
-using Patlus.Common.Rest.Formatter.Json;
+using Patlus.Common.Rest;
 using Patlus.IdentityManagement.Presentation;
 using Patlus.IdentityManagement.Rest.Extensions;
 using Patlus.IdentityManagement.Rest.Filters.Actions;
 using Patlus.IdentityManagement.Rest.StartupExtensions;
-using System.Linq;
 using System.Text.Json;
 
 [assembly: ApiConventionType(typeof(DefaultApiConventions))]
@@ -36,14 +30,8 @@ namespace Patlus.IdentityManagement.Rest
         {
             services.AddControllers(options =>
                 {
-                    options.RespectBrowserAcceptHeader = true;
-
-                    options.Filters.Add<AcceptCaseHeaderActionFilter>();
-                    options.Filters.Add<NotFoundExceptionFilter>();
-                    options.Filters.Add<ValidationExceptionFilter>();
-
-                    options.OutputFormatters.RemoveType<SystemTextJsonOutputFormatter>();
-                    options.OutputFormatters.Add(new DynamicCaseJsonOutputFormater());
+                    options.AddDefaultExceptionFilters();
+                    options.AddDynamicJsonCaseFormatter();
                 })
                 .AddJsonOptions(options =>
                 {
@@ -52,24 +40,14 @@ namespace Patlus.IdentityManagement.Rest
                 })
                 .ConfigureApiBehaviorOptions(options =>
                 {
-                    options.InvalidModelStateResponseFactory = context =>
-                    {
-                        var jsonOptions = context.HttpContext.RequestServices.GetRequiredService<IOptionsSnapshot<JsonOptions>>();
-
-                        var errors = context.ModelState.ToDictionary(
-                            item => item.Key,
-                            item => item.Value.Errors.Select(e => e.ErrorMessage).ToArray()
-                        );
-
-                        return new BadRequestObjectResult(
-                            new ValidationErrorDto(errors)
-                        );
-                    };
+                    options.AddDefaultOptions();
                 });
 
             services.AddScoped<ValidPoolFilter>();
 
-            services.AddAutoMapper(GetType().Assembly, typeof(NotificationDispatcherModule).Assembly);
+            services.AddAutoMapper(config => {
+                config.AddNotificationDispatcherMappings();
+            }, GetType().Assembly);
 
             services.AddPresentationCore(_configuration);
 
@@ -104,8 +82,12 @@ namespace Patlus.IdentityManagement.Rest
 
             if (_hostEnvironment.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                app.UseExceptionHandler("/development-error");
                 app.ConfigureSwagger();
+            }
+            else
+            {
+                app.UseExceptionHandler("/error");
             }
         }
     }

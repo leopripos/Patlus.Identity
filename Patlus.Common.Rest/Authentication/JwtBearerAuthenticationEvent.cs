@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Patlus.Common.Presentation;
+using Patlus.Common.Presentation.Security;
 using Patlus.Common.UseCase.Security;
 using System;
 using System.IdentityModel.Tokens.Jwt;

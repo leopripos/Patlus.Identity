@@ -19,10 +19,9 @@
     <ProjectReference Include="..\Patlus.Common.Presentation.Abstraction\Patlus.Common.Presentation.Abstraction.csproj" />
     <ProjectReference Include="..\Patlus.Common.Presentation\Patlus.Common.Presentation.csproj" />
     <ProjectReference Include="..\Patlus.Common.UseCase.Abstraction\Patlus.Common.UseCase.Abstraction.csproj" />
-    <ProjectReference Include="..\Patlus.IdentityManagement.Cache\Patlus.IdentityManagement.Cache.csproj" />
-    <ProjectReference Include="..\Patlus.IdentityManagement.EventDispatcher\Patlus.IdentityManagement.EventDispatcher.csproj" />
-    <ProjectReference Include="..\Patlus.IdentityManagement.Persistence\Patlus.IdentityManagement.Persistence.csproj" />
-    <ProjectReference Include="..\Patlus.IdentityManagement.Presentation.Abstraction\Patlus.IdentityManagement.Presentation.Abstraction.csproj" />
+    <ProjectReference Include="..\Patlus.IdentityManagement.Infrastructure.Cache\Patlus.IdentityManagement.Infrastructure.Cache.csproj" />
+    <ProjectReference Include="..\Patlus.IdentityManagement.Infrastructure.Dispatcher\Patlus.IdentityManagement.Infrastructure.Dispatcher.csproj" />
+    <ProjectReference Include="..\Patlus.IdentityManagement.Infrastructure.Persistence\Patlus.IdentityManagement.Infrastructure.Persistence.csproj" />
     <ProjectReference Include="..\Patlus.IdentityManagement.UseCase.Abstraction\Patlus.IdentityManagement.UseCase.Abstraction.csproj" />
   </ItemGroup>
 

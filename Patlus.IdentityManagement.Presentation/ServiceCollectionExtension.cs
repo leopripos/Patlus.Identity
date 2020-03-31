@@ -1,12 +1,10 @@
-﻿using AutoMapper;
-using FluentValidation;
+﻿using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Patlus.Common.UseCase.Behaviours;
 using Patlus.Common.UseCase.Services;
-using Patlus.IdentityManagement.Cache;
-using Patlus.IdentityManagement.EventDispatcher;
+using Patlus.IdentityManagement.Infrastructure.Cache;
 using Patlus.IdentityManagement.Persistence;
 using Patlus.IdentityManagement.Presentation.Services;
 using Patlus.IdentityManagement.UseCase;
@@ -20,10 +18,9 @@ namespace Patlus.IdentityManagement.Presentation
         {
             services.AddDatabase(configuration);
             services.AddUseCaseFeatures();
-            services.AddMachineService();
 
             services.AddCacheService();
-            services.AddTokenCacheService();
+            services.AddTokenStorageCache();
 
             services.AddNotificationDispatcher(configuration);
 
@@ -38,23 +35,9 @@ namespace Patlus.IdentityManagement.Presentation
 
             services.AddSingleton<IPasswordService, HMACSHA1PasswordService>();
             services.AddSingleton<ITokenService, JwtBearerTokenService>();
-
-            return services;
-        }
-
-        public static IServiceCollection AddNotificationDispatcher(this IServiceCollection services, IConfiguration configuration)
-        {
-            services.AddMediatR(NotificationDispatcherModule.GetBundles());
-            services.AddAutoMapper(NotificationDispatcherModule.GetBundles());
-            services.AddKafkaDispatcher(configuration);
-
-            return services;
-        }
-
-        public static IServiceCollection AddMachineService(this IServiceCollection services)
-        {
             services.AddSingleton<IIdentifierService, IdentifierGenerator>();
             services.AddSingleton<ITimeService, TimeService>();
+
             return services;
         }
     }

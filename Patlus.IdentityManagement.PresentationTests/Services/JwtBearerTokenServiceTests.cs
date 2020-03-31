@@ -1,9 +1,9 @@
 ﻿using FluentAssertions;
 using Microsoft.Extensions.Options;
 using Moq;
+using Patlus.Common.Presentation.Security;
 using Patlus.Common.UseCase.Security;
 using Patlus.Common.UseCase.Services;
-using Patlus.IdentityManagement.Cache.Services;
 using Patlus.IdentityManagement.Presentation.Services;
 using System;
 using System.Collections.Generic;

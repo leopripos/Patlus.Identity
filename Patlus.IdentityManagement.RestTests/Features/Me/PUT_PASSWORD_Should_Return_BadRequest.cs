@@ -1,5 +1,5 @@
 ﻿using FluentAssertions;
-using Patlus.Common.Presentation.Responses.Content;
+using Patlus.Common.Presentation.Responses.Errors;
 using Patlus.IdentityManagement.Rest;
 using Patlus.IdentityManagement.Rest.Features.Me;
 using System.Net;

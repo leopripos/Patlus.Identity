@@ -8,7 +8,20 @@ namespace Patlus.IdentityManagement.Presentation
 {
     public static class HostExtension
     {
-        public static IHost ApplyPreRunSetup<TProgram>(this IHost host)
+        public static IHost MigrateDatabase<TProgram>(this IHost host)
+        {
+            using (var scope = host.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+
+                var db = services.GetRequiredService<IMasterDbContext>() as DbContext;
+                db!.Database.Migrate();
+            }
+
+            return host;
+        }
+
+        public static IHost ValidateAutoMapper(this IHost host)
         {
             using (var scope = host.Services.CreateScope())
             {
@@ -16,9 +29,6 @@ namespace Patlus.IdentityManagement.Presentation
 
                 var mapper = services.GetRequiredService<IMapper>();
                 mapper.ConfigurationProvider.AssertConfigurationIsValid();
-
-                var db = services.GetRequiredService<IMasterDbContext>() as DbContext;
-                db!.Database.Migrate();
             }
 
             return host;

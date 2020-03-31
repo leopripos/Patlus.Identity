@@ -15,47 +15,40 @@ namespace Patlus.IdentityManagement.RestTests
     {
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
-            builder.UseEnvironment("Test");
+            builder.UseEnvironment("Development");
             builder.ConfigureServices(async services =>
             {
                 // Replace Event Dispatcher
                 var eventDispatcherService = services.SingleOrDefault(d => d.ServiceType == typeof(IEventDispatcher));
-                if (eventDispatcherService != null) services.Remove(eventDispatcherService);
-                services.AddSingleton<IEventDispatcher, DummyEventDispatcher>();
-
+                if (eventDispatcherService != null) {
+                    services.Remove(eventDispatcherService);
+                    services.AddSingleton<IEventDispatcher, DummyEventDispatcher>();
+                }
+                
+                // Replace Db Context
                 var dbContextOptions = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<MasterDbContext>));
-                if (dbContextOptions != null)
+                var masterDbInterface = services.SingleOrDefault(d => d.ServiceType == typeof(IMasterDbContext));
+                if (dbContextOptions != null && masterDbInterface != null)
                 {
                     services.Remove(dbContextOptions);
-                }
-
-                var masterDbInterface = services.SingleOrDefault(d => d.ServiceType == typeof(IMasterDbContext));
-                if (masterDbInterface != null)
-                {
                     services.Remove(masterDbInterface);
+
+                    var connection = $"IntegrationTesting{Guid.NewGuid()}.db";
+                    services.AddDbContext<IMasterDbContext, MasterTestDbContext>(opt =>
+                    {
+                        opt.UseInMemoryDatabase(connection);
+                    });
                 }
 
-                var connection = $"IntegrationTesting{Guid.NewGuid()}.db";
-                services.AddDbContext<IMasterDbContext, MasterTestDbContext>(opt =>
-                {
-                    opt.UseInMemoryDatabase(connection);
-                });
+                // Remake database with its data
+                using var scope = services.BuildServiceProvider().CreateScope();
+                var scopedServices = scope.ServiceProvider;
+                var db = (scopedServices.GetRequiredService<IMasterDbContext>() as MasterTestDbContext)!;
+                var logger = scopedServices.GetRequiredService<ILogger<TestWebApplicationFactory<TStartup>>>();
 
-                // Build the service provider.
-                var serviceProvider = services.BuildServiceProvider();
-
-#pragma warning disable IDE0063 // Use simple 'using' statement, Justification: I dont know this cause testing error if using simple `using`
-                using (var scope = serviceProvider.CreateScope())
-#pragma warning restore IDE0063 // Use simple 'using' statement
-                {
-                    var scopedServices = scope.ServiceProvider;
-                    var db = (scopedServices.GetRequiredService<IMasterDbContext>() as MasterTestDbContext)!;
-                    var logger = scopedServices.GetRequiredService<ILogger<TestWebApplicationFactory<TStartup>>>();
-
-                    // Ensure the database is created.
-                    await db.Database.EnsureDeletedAsync();
-                    await db.Database.EnsureCreatedAsync();
-                }
+                // Ensure the database is deleted and then created.
+                await db.Database.EnsureDeletedAsync();
+                await db.Database.EnsureCreatedAsync();
             });
         }
     }

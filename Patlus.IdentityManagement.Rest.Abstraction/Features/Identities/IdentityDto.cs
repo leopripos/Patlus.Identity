@@ -1,4 +1,4 @@
-﻿using Patlus.Common.Presentation;
+﻿using Patlus.Common.Presentation.Responses;
 using System;
 
 namespace Patlus.IdentityManagement.Rest.Features.Identities

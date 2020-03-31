@@ -2,8 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Patlus.Common.Presentation;
-using Patlus.Common.Rest.Authentication;
+using Patlus.Common.Presentation.Security;
 using Patlus.IdentityManagement.Presentation.Auhtorization.Policies;
 using Patlus.IdentityManagement.Rest.Filters.Actions;
 using Patlus.IdentityManagement.UseCase.Entities;

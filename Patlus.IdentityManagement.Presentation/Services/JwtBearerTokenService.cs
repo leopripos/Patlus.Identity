@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Patlus.Common.Presentation.Security;
 using Patlus.Common.UseCase.Security;
 using Patlus.Common.UseCase.Services;
-using Patlus.IdentityManagement.Cache.Services;
 using Patlus.IdentityManagement.UseCase.Entities;
 using Patlus.IdentityManagement.UseCase.Services;
 using System;

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Patlus.Common.Presentation
+namespace Patlus.Common.Presentation.Security
 {
     public class UserResolver : IUserResolver
     {
