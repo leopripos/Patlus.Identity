@@ -1,6 +1,5 @@
 ﻿using FluentAssertions;
 using MediatR;
-using Microsoft.Extensions.Logging;
 using Moq;
 using Patlus.Common.UseCase.Services;
 using Patlus.IdentityManagement.UseCase.Entities;
@@ -17,16 +16,16 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.UpdateOwnPa
     [Trait("UT-Class", "Identities/UpdateOwnPassword/UpdateOwnPasswordCommandHandlerTests")]
     public sealed class Handle_Should_Return_Updated_Identitity : IDisposable
     {
-        private readonly Mock<ILogger<UpdateOwnPasswordCommandHandler>> _mockLogger;
         private readonly Mock<IMasterDbContext> _mockMasterDbContext;
+        private readonly Mock<IIdentifierService> _mockIdentifierService;
         private readonly Mock<ITimeService> _mockTimeService;
         private readonly Mock<IMediator> _mockMediator;
         private readonly Mock<IPasswordService> _mockPasswordService;
 
         public Handle_Should_Return_Updated_Identitity()
         {
-            _mockLogger = new Mock<ILogger<UpdateOwnPasswordCommandHandler>>();
             _mockMasterDbContext = new Mock<IMasterDbContext>();
+            _mockIdentifierService = new Mock<IIdentifierService>();
             _mockTimeService = new Mock<ITimeService>();
             _mockMediator = new Mock<IMediator>();
             _mockPasswordService = new Mock<IPasswordService>();
@@ -34,8 +33,8 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.UpdateOwnPa
 
         public void Dispose()
         {
-            _mockLogger.Reset();
             _mockMasterDbContext.Reset();
+            _mockIdentifierService.Reset();
             _mockTimeService.Reset();
             _mockMediator.Reset();
             _mockPasswordService.Reset();
@@ -47,14 +46,15 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.UpdateOwnPa
         {
             // Arrange
             var currentTime = DateTimeOffset.Now;
-            _mockMasterDbContext.Setup(e => e.Identities).Returns(IdentitiesFaker.CreateIdentities().Values.AsQueryable());
+            var dataSource = IdentitiesFaker.CreateIdentities();
+            _mockMasterDbContext.Setup(e => e.Identities).Returns(dataSource);
             _mockTimeService.Setup(e => e.Now).Returns(currentTime);
             _mockPasswordService.Setup(e => e.GeneratePasswordHash("newpassword")).Returns("newpasswordhash");
             _mockPasswordService.Setup(e => e.ValidatePasswordHash(It.IsAny<string>(), "rightpassword")).Returns(true);
 
             var handler = new UpdateOwnPasswordCommandHandler(
-                _mockLogger.Object,
                 _mockMasterDbContext.Object,
+                _mockIdentifierService.Object,
                 _mockTimeService.Object,
                 _mockMediator.Object,
                 _mockPasswordService.Object
@@ -93,7 +93,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.UpdateOwnPa
         {
             public TestData()
             {
-                var dataSource = IdentitiesFaker.CreateIdentities().Values.AsQueryable();
+                var dataSource = IdentitiesFaker.CreateIdentities();
                 Add(
                     dataSource.Where(e => (
                         e.Id == new Guid("9b76c5e9-fe62-4598-ba99-16ca96e5c605")

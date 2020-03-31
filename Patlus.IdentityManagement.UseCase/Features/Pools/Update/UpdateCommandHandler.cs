@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Patlus.Common.UseCase;
 using Patlus.Common.UseCase.Exceptions;
@@ -16,14 +17,12 @@ namespace Patlus.IdentityManagement.UseCase.Features.Pools.Update
 {
     public class UpdateCommandHandler : ICommandFeatureHandler<UpdateCommand, Pool>
     {
-        private readonly ILogger<UpdateCommandHandler> _logger;
         private readonly IMasterDbContext _dbService;
         private readonly ITimeService _timeService;
         private readonly IMediator _mediator;
 
-        public UpdateCommandHandler(ILogger<UpdateCommandHandler> logger, IMasterDbContext dbService, ITimeService timeService, IMediator mediator)
+        public UpdateCommandHandler(IMasterDbContext dbService, ITimeService timeService, IMediator mediator)
         {
-            _logger = logger;
             _dbService = dbService;
             _timeService = timeService;
             _mediator = mediator;
@@ -37,24 +36,24 @@ namespace Patlus.IdentityManagement.UseCase.Features.Pools.Update
 
             var currentTime = _timeService.Now;
 
-            var entity = _dbService.Pools.Where(e => e.Id == request.Id).SingleOrDefault();
+            var entity = await _dbService.Pools.Where(e => e.Id == request.Id).SingleOrDefaultAsync(cancellationToken);
 
             if (entity == null)
             {
                 throw new NotFoundException(nameof(Pool), new { request.Id });
             }
 
-            var valueChanges = new Dictionary<string, ValueChanged>();
+            var valueChanges = new Dictionary<string, DeltaValue>();
 
             if (request.HasName)
             {
-                valueChanges.Add(nameof(request.Name), new ValueChanged(entity.Name, request.Name!));
+                valueChanges.Add(nameof(request.Name), new DeltaValue(entity.Name, request.Name!));
                 entity.Name = request.Name!;
             }
 
             if (request.HasDescription)
             {
-                valueChanges.Add(nameof(request.Description), new ValueChanged(entity.Description, request.Description!));
+                valueChanges.Add(nameof(request.Description), new DeltaValue(entity.Description, request.Description!));
                 entity.Description = request.Description!;
             }
 
@@ -69,18 +68,9 @@ namespace Patlus.IdentityManagement.UseCase.Features.Pools.Update
 
             _dbService.Update(entity);
 
-            await _dbService.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            await _dbService.SaveChangesAsync(cancellationToken);
 
-            try
-            {
-                await _mediator.Publish(notification, cancellationToken).ConfigureAwait(false);
-            }
-#pragma warning disable CA1031 // Do not catch general exception types
-            catch (Exception e)
-            {
-                _logger.LogError(e, $"Error publish { nameof(UpdatedNotification) } when handle { nameof(UpdateCommand) } at { nameof(UpdateCommandHandler) }");
-            }
-#pragma warning restore CA1031 // Do not catch general exception types
+            await _mediator.Publish(notification, cancellationToken);
 
             return entity;
         }

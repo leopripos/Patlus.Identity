@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Patlus.Common.Presentation.Responses.Content;
+using Patlus.Common.Presentation.Responses.Errors;
 using Patlus.Common.UseCase.Exceptions;
 
 namespace Patlus.Common.Rest.Filters.Exceptions
@@ -12,10 +12,8 @@ namespace Patlus.Common.Rest.Filters.Exceptions
             if (context.Exception is NotFoundException exception)
             {
                 context.Result = new NotFoundObjectResult(
-                    new NotFoundResultDto(exception.Message)
+                    new NotFoundErrorDto(exception.Message)
                 );
-
-                context.ExceptionHandled = true;
             }
         }
     }

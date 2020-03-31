@@ -4,11 +4,14 @@ using Patlus.IdentityManagement.Presentation;
 
 namespace Patlus.IdentityManagement.Rest
 {
-    public class Program
+    public sealed class Program
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().ApplyDatabaseMigration<Program>().Run();
+            CreateHostBuilder(args)
+                .Build()
+                .ValidateAutoMapper()
+                .MigrateDatabase<Program>().Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

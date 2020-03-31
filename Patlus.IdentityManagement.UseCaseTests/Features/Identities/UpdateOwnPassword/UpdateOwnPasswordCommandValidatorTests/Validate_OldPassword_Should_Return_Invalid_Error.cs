@@ -3,7 +3,6 @@ using Moq;
 using Patlus.Common.UseCase.Validators;
 using Patlus.IdentityManagement.UseCase.Features.Identities.UpdateOwnPassword;
 using Patlus.IdentityManagement.UseCase.Services;
-using System.Linq;
 using Xunit;
 
 namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.UpdateOwnPassword.UpdateOwnPasswordCommandValidatorTests
@@ -27,7 +26,8 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.UpdateOwnPa
         public void Theory(string expectedPropertyName, UpdateOwnPasswordCommand command)
         {
             // Arrange
-            _mockMasterDbContext.SetupGet(e => e.Identities).Returns(IdentitiesFaker.CreateIdentities().Values.AsQueryable());
+            var dataSource = IdentitiesFaker.CreateIdentities();
+            _mockMasterDbContext.SetupGet(e => e.Identities).Returns(dataSource);
             _mockPasswordService.Setup(e => e.ValidatePasswordHash("sysadminpassword0", "rightpassword")).Returns(true);
             _mockPasswordService.Setup(e => e.ValidatePasswordHash("sysadminpassword0", "wrongpassword")).Returns(false);
 

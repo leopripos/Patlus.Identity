@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Patlus.Common.UseCase;
 using Patlus.Common.UseCase.Exceptions;
@@ -14,14 +15,12 @@ namespace Patlus.IdentityManagement.UseCase.Features.Pools.UpdateActiveStatus
 {
     public class UpdateActiveStatusCommandHandler : ICommandFeatureHandler<UpdateActiveStatusCommand, Pool>
     {
-        private readonly ILogger<UpdateActiveStatusCommandHandler> _logger;
         private readonly IMasterDbContext _dbService;
         private readonly ITimeService _timeService;
         private readonly IMediator _mediator;
 
-        public UpdateActiveStatusCommandHandler(ILogger<UpdateActiveStatusCommandHandler> logger, IMasterDbContext dbService, ITimeService timeService, IMediator mediator)
+        public UpdateActiveStatusCommandHandler(IMasterDbContext dbService, ITimeService timeService, IMediator mediator)
         {
-            _logger = logger;
             _dbService = dbService;
             _timeService = timeService;
             _mediator = mediator;
@@ -35,7 +34,7 @@ namespace Patlus.IdentityManagement.UseCase.Features.Pools.UpdateActiveStatus
 
             var currentTime = _timeService.Now;
 
-            var entity = _dbService.Pools.Where(e => e.Id == request.Id).SingleOrDefault();
+            var entity = await _dbService.Pools.Where(e => e.Id == request.Id).SingleOrDefaultAsync(cancellationToken);
 
             if (entity == null)
             {
@@ -49,18 +48,9 @@ namespace Patlus.IdentityManagement.UseCase.Features.Pools.UpdateActiveStatus
 
             _dbService.Update(entity);
 
-            await _dbService.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            await _dbService.SaveChangesAsync(cancellationToken);
 
-            try
-            {
-                await _mediator.Publish(notification, cancellationToken).ConfigureAwait(false);
-            }
-#pragma warning disable CA1031 // Do not catch general exception types
-            catch (Exception e)
-            {
-                _logger.LogError(e, $"Error publish { nameof(ActiveStatusUpdatedNotification) } when handle { nameof(UpdateActiveStatusCommand) } at { nameof(UpdateActiveStatusCommandHandler) }");
-            }
-#pragma warning restore CA1031 // Do not catch general exception types
+            await _mediator.Publish(notification, cancellationToken);
 
             return entity;
         }

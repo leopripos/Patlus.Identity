@@ -16,14 +16,12 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.UpdateActiveStat
     [Trait("UT-Class", "Pools/UpdateActiveStatus/UpdateActiveStatusCommandHandlerTests")]
     public sealed class Handle_Should_Throw_NullArgumentException : IDisposable
     {
-        private readonly Mock<ILogger<UpdateActiveStatusCommandHandler>> _mockLogger;
         private readonly Mock<IMasterDbContext> _mockMasterDbContext;
         private readonly Mock<ITimeService> _mockTimeService;
         private readonly Mock<IMediator> _mockMediator;
 
         public Handle_Should_Throw_NullArgumentException()
         {
-            _mockLogger = new Mock<ILogger<UpdateActiveStatusCommandHandler>>();
             _mockMasterDbContext = new Mock<IMasterDbContext>();
             _mockTimeService = new Mock<ITimeService>();
             _mockMediator = new Mock<IMediator>();
@@ -31,7 +29,6 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.UpdateActiveStat
 
         public void Dispose()
         {
-            _mockLogger.Reset();
             _mockMasterDbContext.Reset();
             _mockTimeService.Reset();
             _mockMediator.Reset();
@@ -43,7 +40,6 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.UpdateActiveStat
         {
             // Arrange
             var handler = new UpdateActiveStatusCommandHandler(
-                _mockLogger.Object,
                 _mockMasterDbContext.Object,
                 _mockTimeService.Object,
                 _mockMediator.Object

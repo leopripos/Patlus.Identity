@@ -4,7 +4,7 @@ namespace Patlus.Common.Presentation.Json
 {
     public static class JsonNamingPolicies
     {
-        public readonly static JsonNamingPolicy PascalCase = new PascalCaseNamingPolicy();
-        public readonly static JsonNamingPolicy CamelCase = JsonNamingPolicy.CamelCase;
+        public static readonly JsonNamingPolicy PascalCase = new PascalCaseNamingPolicy();
+        public static readonly JsonNamingPolicy CamelCase = JsonNamingPolicy.CamelCase;
     }
 }

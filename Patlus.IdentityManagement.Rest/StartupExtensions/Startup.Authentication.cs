@@ -3,8 +3,9 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Patlus.Common.Presentation.Security;
 using Patlus.Common.Rest.Authentication;
-using Patlus.IdentityManagement.Presentation.Authentication;
+using Patlus.IdentityManagement.Presentation.Services;
 using System;
 using System.Text;
 
@@ -14,29 +15,39 @@ namespace Patlus.IdentityManagement.Rest.Extensions
     {
         public static void ConfigureAuthenticationService(this IServiceCollection services, IConfiguration configuration)
         {
-            var options = new AuthenticationOptions();
-            configuration.GetSection("Authentication").Bind(options);
-
-            services.Configure<AuthenticationOptions>(options =>
+            services.Configure<PasswordOptions>(options =>
             {
-                configuration.GetSection("Authentication").Bind(options);
+                configuration.GetSection("Authentication:Password").Bind(options);
+            });
+
+            services.Configure<AccessTokenOptions>(options =>
+            {
+                configuration.GetSection("Authentication:AccessToken").Bind(options);
+            });
+            
+            services.Configure<RefreshTokenOptions>(options =>
+            {
+                configuration.GetSection("Authentication:RefreshToken").Bind(options);
             });
 
             services.AddScoped<IUserResolver, UserResolver>();
             services.AddTransient(typeof(JwtBearerAuthenticationEvent));
+
+            var accessTokenOptions = new AccessTokenOptions();
+            configuration.GetSection("Authentication:AccessToken").Bind(accessTokenOptions);
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(opt =>
                 {
                     opt.TokenValidationParameters = new TokenValidationParameters()
                     {
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(options.AccessToken.Key)),
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(accessTokenOptions.Key)),
                         RequireSignedTokens = true,
                         RequireExpirationTime = true,
                         ValidateLifetime = true,
                         ValidateIssuer = true,
                         ValidateAudience = true,
-                        ValidIssuer = options.AccessToken.Issuer,
-                        ValidAudience = options.AccessToken.Audience,
+                        ValidIssuer = accessTokenOptions.Issuer,
+                        ValidAudience = accessTokenOptions.Audience,
                         ClockSkew = TimeSpan.Zero,
                         LifetimeValidator = (DateTime? notBefore, DateTime? expires, SecurityToken token, TokenValidationParameters parameter) =>
                         {

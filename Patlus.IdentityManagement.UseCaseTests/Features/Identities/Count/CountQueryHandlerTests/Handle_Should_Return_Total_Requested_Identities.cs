@@ -14,12 +14,10 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.Count.Count
     [Trait("UT-Class", "Identities/Count/CountQueryHandlerTests")]
     public sealed class Handle_Should_Return_Total_Requested_Identities : IDisposable
     {
-        private readonly IQueryable<Identity> _dataSource;
         private readonly Mock<IMasterDbContext> _mockMasterDbContext;
 
         public Handle_Should_Return_Total_Requested_Identities()
         {
-            _dataSource = IdentitiesFaker.CreateIdentities().Values.AsQueryable();
             _mockMasterDbContext = new Mock<IMasterDbContext>();
         }
 
@@ -33,7 +31,8 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.Count.Count
         public async void Theory(int expectedResult, CountQuery query)
         {
             // Arrange
-            _mockMasterDbContext.Setup(e => e.Identities).Returns(_dataSource);
+            var dataSource = IdentitiesFaker.CreateIdentities();
+            _mockMasterDbContext.Setup(e => e.Identities).Returns(dataSource);
 
             var handler = new CountQueryHandler(_mockMasterDbContext.Object);
 
@@ -48,7 +47,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.Count.Count
         {
             public TestData()
             {
-                var dataSource = IdentitiesFaker.CreateIdentities().Values.AsQueryable();
+                var dataSource = IdentitiesFaker.CreateIdentities();
                 var requestorId = new Guid("7c9e6679-7425-40de-944b-e07fc1f90ae7");
                 Expression<Func<Identity, bool>> condition = null!;
 

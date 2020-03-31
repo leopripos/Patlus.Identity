@@ -16,23 +16,23 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.Create.CreateCom
     [Trait("UT-Class", "Pools/Create/CreateCommandHandlerTests")]
     public sealed class Handle_Should_Throw_NullArgumentException : IDisposable
     {
-        private readonly Mock<ILogger<CreateCommandHandler>> _mockLogger;
         private readonly Mock<IMasterDbContext> _mockMasterDbContext;
+        private readonly Mock<IIdentifierService> _mockIdentifierService;
         private readonly Mock<ITimeService> _mockTimeService;
         private readonly Mock<IMediator> _mockMediator;
 
         public Handle_Should_Throw_NullArgumentException()
         {
-            _mockLogger = new Mock<ILogger<CreateCommandHandler>>();
             _mockMasterDbContext = new Mock<IMasterDbContext>();
+            _mockIdentifierService = new Mock<IIdentifierService>();
             _mockTimeService = new Mock<ITimeService>();
             _mockMediator = new Mock<IMediator>();
         }
 
         public void Dispose()
         {
-            _mockLogger.Reset();
             _mockMasterDbContext.Reset();
+            _mockIdentifierService.Reset();
             _mockTimeService.Reset();
             _mockMediator.Reset();
         }
@@ -43,8 +43,8 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.Create.CreateCom
         {
             // Arrange
             var handler = new CreateCommandHandler(
-                _mockLogger.Object,
                 _mockMasterDbContext.Object,
+                _mockIdentifierService.Object,
                 _mockTimeService.Object,
                 _mockMediator.Object
             );

@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Routing;
-using Patlus.Common.Presentation.Responses.Content;
-using Patlus.Common.Rest.Authentication;
+using Patlus.Common.Presentation.Responses.Errors;
+using Patlus.Common.Presentation.Security;
 using Patlus.IdentityManagement.UseCase.Features.Pools.Exist;
 using System;
 
@@ -35,18 +35,20 @@ namespace Patlus.IdentityManagement.Rest.Filters.Actions
 
             if (Guid.TryParse(routeData.Values[RouteKey].ToString(), out Guid poolId))
             {
-                isValid = await _mediator.Send(new ExistQuery()
+                var query = new ExistQuery()
                 {
                     Condition = (e => e.Id == poolId),
                     RequestorId = _userResolver.Current.Id
-                });
+                };
+
+                isValid = await _mediator.Send(query, httpContext.RequestAborted);
             }
 
             if (!isValid)
             {
                 context.HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
                 context.Result = new NotFoundObjectResult(
-                    new NotFoundResultDto($"Pool with id `{(routeData.Values[RouteKey])}` not found.")
+                    new NotFoundErrorDto($"Pool with id `{(routeData.Values[RouteKey])}` not found.")
                 );
             }
         }

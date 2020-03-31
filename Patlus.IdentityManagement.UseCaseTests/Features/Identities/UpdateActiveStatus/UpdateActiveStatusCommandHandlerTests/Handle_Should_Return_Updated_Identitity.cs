@@ -17,14 +17,12 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.UpdateActiv
     [Trait("UT-Class", "Identities/UpdateActiveStatus/UpdateActiveStatusCommandHandlerTests")]
     public sealed class Handle_Should_Return_Updated_Identitity : IDisposable
     {
-        private readonly Mock<ILogger<UpdateActiveStatusCommandHandler>> _mockLogger;
         private readonly Mock<IMasterDbContext> _mockMasterDbContext;
         private readonly Mock<ITimeService> _mockTimeService;
         private readonly Mock<IMediator> _mockMediator;
 
         public Handle_Should_Return_Updated_Identitity()
         {
-            _mockLogger = new Mock<ILogger<UpdateActiveStatusCommandHandler>>();
             _mockMasterDbContext = new Mock<IMasterDbContext>();
             _mockTimeService = new Mock<ITimeService>();
             _mockMediator = new Mock<IMediator>();
@@ -32,7 +30,6 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.UpdateActiv
 
         public void Dispose()
         {
-            _mockLogger.Reset();
             _mockMasterDbContext.Reset();
             _mockTimeService.Reset();
             _mockMediator.Reset();
@@ -44,11 +41,11 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.UpdateActiv
         {
             // Arrange
             var currentTime = DateTimeOffset.Now;
-            _mockMasterDbContext.Setup(e => e.Identities).Returns(IdentitiesFaker.CreateIdentities().Values.AsQueryable());
+            var dataSource = IdentitiesFaker.CreateIdentities();
+            _mockMasterDbContext.Setup(e => e.Identities).Returns(dataSource);
             _mockTimeService.Setup(e => e.Now).Returns(currentTime);
 
             var handler = new UpdateActiveStatusCommandHandler(
-                _mockLogger.Object,
                 _mockMasterDbContext.Object,
                 _mockTimeService.Object,
                 _mockMediator.Object
@@ -85,7 +82,7 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Identities.UpdateActiv
         {
             public TestData()
             {
-                var dataSource = IdentitiesFaker.CreateIdentities().Values.AsQueryable();
+                var dataSource = IdentitiesFaker.CreateIdentities();
                 Add(
                     dataSource.Where(e => (
                         e.Id == new Guid("9b76c5e9-fe62-4598-ba99-16ca96e5c605")

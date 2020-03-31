@@ -17,7 +17,6 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Tokens.Refresh.Refresh
     [Trait("UT-Class", "Tokens/Refresh/RefreshCommandHandlerTests")]
     public sealed class Handle_Should_Throw_ArgumentException : IDisposable
     {
-        private readonly Mock<ILogger<RefreshCommandHandler>> _mockLogger;
         private readonly Mock<IMasterDbContext> _mockMasterDbContext;
         private readonly Mock<ITokenService> _mockTokenService;
         private readonly Mock<ITimeService> _mockTimeService;
@@ -25,7 +24,6 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Tokens.Refresh.Refresh
 
         public Handle_Should_Throw_ArgumentException()
         {
-            _mockLogger = new Mock<ILogger<RefreshCommandHandler>>();
             _mockMasterDbContext = new Mock<IMasterDbContext>();
             _mockTokenService = new Mock<ITokenService>();
             _mockTimeService = new Mock<ITimeService>();
@@ -34,7 +32,6 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Tokens.Refresh.Refresh
 
         public void Dispose()
         {
-            _mockLogger.Reset();
             _mockMasterDbContext.Reset();
             _mockTokenService.Reset();
             _mockTimeService.Reset();
@@ -50,7 +47,6 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Tokens.Refresh.Refresh
             _mockTokenService.Setup(e => e.TryParseRefreshToken(It.IsAny<string>(), out principal)).Returns(false);
 
             var handler = new RefreshCommandHandler(
-                _mockLogger.Object,
                 _mockMasterDbContext.Object,
                 _mockTokenService.Object,
                 _mockTimeService.Object,

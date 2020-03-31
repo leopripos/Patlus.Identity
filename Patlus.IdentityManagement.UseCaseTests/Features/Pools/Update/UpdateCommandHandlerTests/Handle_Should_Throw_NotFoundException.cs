@@ -18,14 +18,12 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.Update.UpdateCom
     [Trait("UT-Class", "Pools/Update/UpdateCommandHandlerTests")]
     public sealed class Handle_Should_Throw_NotFoundException : IDisposable
     {
-        private readonly Mock<ILogger<UpdateCommandHandler>> _mockLogger;
         private readonly Mock<IMasterDbContext> _mockMasterDbContext;
         private readonly Mock<ITimeService> _mockTimeService;
         private readonly Mock<IMediator> _mockMediator;
 
         public Handle_Should_Throw_NotFoundException()
         {
-            _mockLogger = new Mock<ILogger<UpdateCommandHandler>>();
             _mockMasterDbContext = new Mock<IMasterDbContext>();
             _mockTimeService = new Mock<ITimeService>();
             _mockMediator = new Mock<IMediator>();
@@ -33,7 +31,6 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.Update.UpdateCom
 
         public void Dispose()
         {
-            _mockLogger.Reset();
             _mockMasterDbContext.Reset();
             _mockTimeService.Reset();
             _mockMediator.Reset();
@@ -45,11 +42,13 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools.Update.UpdateCom
         {
             // Arrange
             var handler = new UpdateCommandHandler(
-                _mockLogger.Object,
                 _mockMasterDbContext.Object,
                 _mockTimeService.Object,
                 _mockMediator.Object
             );
+
+            var dataSource = PoolsFaker.CreatePools();
+            _mockMasterDbContext.Setup(e => e.Pools).Returns(dataSource);
 
             // Act
             Func<Task> action = async () => await handler.Handle(command, default);

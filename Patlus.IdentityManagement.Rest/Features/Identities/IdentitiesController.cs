@@ -2,7 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Patlus.Common.Rest.Authentication;
+using Patlus.Common.Presentation.Security;
 using Patlus.IdentityManagement.Presentation.Auhtorization.Policies;
 using Patlus.IdentityManagement.Rest.Filters.Actions;
 using Patlus.IdentityManagement.UseCase.Entities;
@@ -11,6 +11,7 @@ using Patlus.IdentityManagement.UseCase.Features.Identities.GetAll;
 using Patlus.IdentityManagement.UseCase.Features.Identities.GetOne;
 using Patlus.IdentityManagement.UseCase.Features.Identities.UpdateActiveStatus;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Patlus.IdentityManagement.Rest.Features.Identities
@@ -38,7 +39,7 @@ namespace Patlus.IdentityManagement.Rest.Features.Identities
         /// <returns>List of identities</returns>
         [HttpGet]
         [Authorize(Policy = IdentityPolicy.Read)]
-        public async Task<IdentityDto[]> GetAll(Guid poolId)
+        public async Task<IdentityDto[]> GetAll(Guid poolId, CancellationToken cancellationToken)
         {
             var query = new GetAllQuery()
             {
@@ -46,7 +47,7 @@ namespace Patlus.IdentityManagement.Rest.Features.Identities
                 RequestorId = _userResolver.Current.Id
             };
 
-            var identities = await _mediator.Send(query); ;
+            var identities = await _mediator.Send(query, cancellationToken); ;
 
             return _mapper.Map<Identity[], IdentityDto[]>(identities);
         }
@@ -54,18 +55,18 @@ namespace Patlus.IdentityManagement.Rest.Features.Identities
         /// <summary>
         /// Get specific identity in specific pool
         /// </summary>
-        /// <param name="poolId">Pool Id</param>
-        /// <param name="identityId">Identity Id</param>
         /// <returns>Requested Identity</returns>
         [HttpGet("{identityId}")]
         [Authorize(Policy = IdentityPolicy.Read)]
-        public async Task<ActionResult<IdentityDto>> GetById(Guid poolId, Guid identityId)
+        public async Task<ActionResult<IdentityDto>> GetById(Guid poolId, Guid identityId, CancellationToken cancellationToken)
         {
-            var identity = await _mediator.Send(new GetOneQuery()
+            var query = new GetOneQuery()
             {
                 Condition = (e => e.PoolId == poolId && e.Id == identityId),
                 RequestorId = _userResolver.Current.Id
-            });
+            };
+
+            var identity = await _mediator.Send(query, cancellationToken);
 
             if (identity == null)
             {
@@ -78,12 +79,10 @@ namespace Patlus.IdentityManagement.Rest.Features.Identities
         /// <summary>
         /// Create new identity 
         /// </summary>
-        /// <param name="poolId">Pool Id</param>
-        /// <param name="form">Create Form</param>
         /// <returns>Created Identity</returns>
         [HttpPost]
         [Authorize(Policy = IdentityPolicy.Create)]
-        public async Task<ActionResult<IdentityDto>> Create(Guid poolId, [FromBody] CreateForm form)
+        public async Task<ActionResult<IdentityDto>> Create(Guid poolId, [FromBody] CreateForm form, CancellationToken cancellationToken)
         {
             var command = new CreateHostedCommand
             {
@@ -95,7 +94,7 @@ namespace Patlus.IdentityManagement.Rest.Features.Identities
                 RequestorId = _userResolver.Current.Id
             };
 
-            var identity = await _mediator.Send(command);
+            var identity = await _mediator.Send(command, cancellationToken);
 
             return Created(new Uri($"{Request.Path}/{identity.Id}", UriKind.Relative), _mapper.Map<IdentityDto>(identity));
         }
@@ -103,13 +102,10 @@ namespace Patlus.IdentityManagement.Rest.Features.Identities
         /// <summary>
         /// Update active status of specific identity
         /// </summary>
-        /// <param name="poolId">Pool Id</param>
-        /// <param name="identityId">Identity Id</param>
-        /// <param name="form">Update Active Status Form</param>
         /// <returns>Updated Identity</returns>
         [HttpPut("{identityId}/active")]
         [Authorize(Policy = IdentityPolicy.UpdateActiveStatus)]
-        public async Task<IdentityDto> UpdateActiveStatus(Guid poolId, Guid identityId, [FromBody] UpdateActiveStatusForm form)
+        public async Task<IdentityDto> UpdateActiveStatus(Guid poolId, Guid identityId, [FromBody] UpdateActiveStatusForm form, CancellationToken cancellationToken)
         {
             var command = new UpdateActiveStatusCommand
             {
@@ -119,7 +115,7 @@ namespace Patlus.IdentityManagement.Rest.Features.Identities
                 RequestorId = _userResolver.Current.Id
             };
 
-            var identity = await _mediator.Send(command);
+            var identity = await _mediator.Send(command, cancellationToken);
 
             return _mapper.Map<Identity, IdentityDto>(identity);
         }

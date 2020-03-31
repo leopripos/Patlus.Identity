@@ -18,16 +18,14 @@ namespace Patlus.IdentityManagement.UseCase.Features.Tokens.Create
 {
     public class CreateCommandHandler : ICommandFeatureHandler<CreateCommand, Token>
     {
-        private readonly ILogger<CreateCommandHandler> _logger;
         private readonly IMasterDbContext _dbContext;
         private readonly IPasswordService _passwordService;
         private readonly ITokenService _tokenService;
         private readonly ITimeService _timeService;
         private readonly IMediator _mediator;
 
-        public CreateCommandHandler(ILogger<CreateCommandHandler> logger, IMasterDbContext dbContext, IPasswordService passwordService, ITokenService tokenService, ITimeService timeService, IMediator mediator)
+        public CreateCommandHandler(IMasterDbContext dbContext, IPasswordService passwordService, ITokenService tokenService, ITimeService timeService, IMediator mediator)
         {
-            _logger = logger;
             _dbContext = dbContext;
             _passwordService = passwordService;
             _tokenService = tokenService;
@@ -65,18 +63,9 @@ namespace Patlus.IdentityManagement.UseCase.Features.Tokens.Create
 
             var token = _tokenService.Create(entity.AuthKey, claims);
 
-            try
-            {
-                var notification = new CreatedNotification(entity.Id, token, request.RequestorId, _timeService.Now);
+            var notification = new CreatedNotification(entity.Id, token, request.RequestorId, _timeService.Now);
 
-                await _mediator.Publish(notification, cancellationToken).ConfigureAwait(false);
-            }
-#pragma warning disable CA1031 // Do not catch general exception types, Justification: Error when publishing notification cannot be predicted, but it should not interup action
-            catch (Exception e)
-            {
-                _logger.LogError(e, $"Error publish {nameof(CreatedNotification)} when handle { nameof(CreateCommand) } at { nameof(CreateCommandHandler) }");
-            }
-#pragma warning restore CA1031 // Do not catch general exception types
+            await _mediator.Publish(notification, cancellationToken).ConfigureAwait(false);
 
             return token;
         }

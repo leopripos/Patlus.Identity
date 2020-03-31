@@ -2,11 +2,12 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Patlus.Common.Rest.Authentication;
+using Patlus.Common.Presentation.Security;
 using Patlus.IdentityManagement.Presentation.Auhtorization.Policies;
 using Patlus.IdentityManagement.UseCase.Features.Identities.GetOne;
 using Patlus.IdentityManagement.UseCase.Features.Identities.UpdateOwnPassword;
 using System.Net.Mime;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Patlus.IdentityManagement.Rest.Features.Me
@@ -29,7 +30,7 @@ namespace Patlus.IdentityManagement.Rest.Features.Me
 
         [HttpGet("profile")]
         [Authorize(Policy = MePolicy.GetProfie)]
-        public async Task<ActionResult<ProfileDto>> GetProfile()
+        public async Task<ActionResult<ProfileDto>> GetProfile(CancellationToken cancellationToken)
         {
             var command = new GetOneQuery()
             {
@@ -37,14 +38,14 @@ namespace Patlus.IdentityManagement.Rest.Features.Me
                 RequestorId = _userResolver.Current.Id
             };
 
-            var identity = await _mediator.Send(command);
+            var identity = await _mediator.Send(command, cancellationToken);
 
             return _mapper.Map<ProfileDto>(identity);
         }
 
         [HttpPut("password")]
         [Authorize(Policy = MePolicy.UpdatePassword)]
-        public async Task<ActionResult> UpdateOwnPassword([FromBody] UpdatePasswordForm form)
+        public async Task<ActionResult> UpdateOwnPassword([FromBody] UpdatePasswordForm form, CancellationToken cancellationToken)
         {
             var command = new UpdateOwnPasswordCommand
             {
@@ -54,7 +55,7 @@ namespace Patlus.IdentityManagement.Rest.Features.Me
                 RequestorId = _userResolver.Current.Id
             };
 
-            await _mediator.Send(command);
+            await _mediator.Send(command, cancellationToken);
 
             return NoContent();
         }

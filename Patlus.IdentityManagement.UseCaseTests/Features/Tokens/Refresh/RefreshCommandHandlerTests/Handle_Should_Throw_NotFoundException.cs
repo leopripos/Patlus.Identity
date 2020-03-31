@@ -8,10 +8,8 @@ using Patlus.Common.UseCase.Services;
 using Patlus.IdentityManagement.UseCase.Entities;
 using Patlus.IdentityManagement.UseCase.Features.Tokens.Refresh;
 using Patlus.IdentityManagement.UseCase.Services;
-using Patlus.IdentityManagement.UseCaseTests.Features.Identities;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Xunit;
@@ -22,7 +20,6 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Tokens.Refresh.Refresh
     [Trait("UT-Class", "Tokens/Refresh/RefreshCommandHandlerTests")]
     public sealed class Handle_Should_Throw_NotFoundException : IDisposable
     {
-        private readonly Mock<ILogger<RefreshCommandHandler>> _mockLogger;
         private readonly Mock<IMasterDbContext> _mockMasterDbContext;
         private readonly Mock<ITokenService> _mockTokenService;
         private readonly Mock<ITimeService> _mockTimeService;
@@ -30,7 +27,6 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Tokens.Refresh.Refresh
 
         public Handle_Should_Throw_NotFoundException()
         {
-            _mockLogger = new Mock<ILogger<RefreshCommandHandler>>();
             _mockMasterDbContext = new Mock<IMasterDbContext>();
             _mockTokenService = new Mock<ITokenService>();
             _mockTimeService = new Mock<ITimeService>();
@@ -39,7 +35,6 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Tokens.Refresh.Refresh
 
         public void Dispose()
         {
-            _mockLogger.Reset();
             _mockMasterDbContext.Reset();
             _mockTokenService.Reset();
             _mockTimeService.Reset();
@@ -61,12 +56,12 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Tokens.Refresh.Refresh
 
             var principal = new ClaimsPrincipal(new ClaimsIdentity(claims, "Bearer"));
 
-            _mockMasterDbContext.SetupGet(e => e.Identities).Returns(IdentitiesFaker.CreateIdentities().Values.AsQueryable());
+            var dataSource = IdentitiesFaker.CreateIdentities();
+            _mockMasterDbContext.SetupGet(e => e.Identities).Returns(dataSource);
             _mockTokenService.Setup(e => e.TryParseRefreshToken(It.IsAny<string>(), out principal)).Returns(true);
             _mockTokenService.Setup(e => e.ValidateRefreshToken(It.IsAny<Guid>(), It.IsAny<ClaimsPrincipal>())).Returns(false);
 
             var handler = new RefreshCommandHandler(
-                _mockLogger.Object,
                 _mockMasterDbContext.Object,
                 _mockTokenService.Object,
                 _mockTimeService.Object,

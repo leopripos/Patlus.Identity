@@ -2,6 +2,8 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Patlus.Common.Presentation;
+using Patlus.Common.Presentation.Security;
 using Patlus.Common.Rest.Authentication;
 using Patlus.IdentityManagement.Presentation.Auhtorization.Policies;
 using Patlus.IdentityManagement.UseCase.Entities;
@@ -11,6 +13,7 @@ using Patlus.IdentityManagement.UseCase.Features.Pools.GetOne;
 using Patlus.IdentityManagement.UseCase.Features.Pools.Update;
 using Patlus.IdentityManagement.UseCase.Features.Pools.UpdateActiveStatus;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Patlus.IdentityManagement.Rest.Features.Pools
@@ -37,12 +40,14 @@ namespace Patlus.IdentityManagement.Rest.Features.Pools
         /// <returns>Array of pool</returns>
         [HttpGet]
         [Authorize(Policy = PoolPolicy.Read)]
-        public async Task<PoolDto[]> GetAll()
+        public async Task<PoolDto[]> GetAll(CancellationToken cancellationToken)
         {
-            var pools = await _mediator.Send(new GetAllQuery()
+            var query = new GetAllQuery()
             {
                 RequestorId = _userResolver.Current.Id
-            });
+            };
+
+            var pools = await _mediator.Send(query, cancellationToken);
 
             return _mapper.Map<Pool[], PoolDto[]>(pools);
         }
@@ -50,17 +55,18 @@ namespace Patlus.IdentityManagement.Rest.Features.Pools
         /// <summary>
         /// Get pool with specific id
         /// </summary>
-        /// <param name="poolId">Pool Id</param>
         /// <returns>Pool</returns>
         [HttpGet("{poolId}")]
         [Authorize(Policy = PoolPolicy.Read)]
-        public async Task<ActionResult<PoolDto>> GetById(Guid poolId)
+        public async Task<ActionResult<PoolDto>> GetById(Guid poolId, CancellationToken cancellationToken)
         {
-            var pool = await _mediator.Send(new GetOneQuery()
+            var query = new GetOneQuery()
             {
                 Condition = (e => e.Id == poolId),
                 RequestorId = _userResolver.Current.Id
-            });
+            };
+
+            var pool = await _mediator.Send(query, cancellationToken);
 
             if (pool == null)
             {
@@ -73,11 +79,10 @@ namespace Patlus.IdentityManagement.Rest.Features.Pools
         /// <summary>
         /// Create new Pool
         /// </summary>
-        /// <param name="form">New Pool Form</param>
         /// <returns>Created Pool</returns>
         [HttpPost]
         [Authorize(Policy = PoolPolicy.Create)]
-        public async Task<ActionResult<PoolDto>> Create([FromBody] CreateForm form)
+        public async Task<ActionResult<PoolDto>> Create([FromBody] CreateForm form, CancellationToken cancellationToken)
         {
             var command = new CreateCommand
             {
@@ -87,7 +92,7 @@ namespace Patlus.IdentityManagement.Rest.Features.Pools
                 RequestorId = _userResolver.Current.Id
             };
 
-            var pool = await _mediator.Send(command);
+            var pool = await _mediator.Send(command, cancellationToken);
 
             return Created(new Uri($"{Request.Path}/{pool.Id}", UriKind.Relative), _mapper.Map<PoolDto>(pool));
         }
@@ -97,12 +102,10 @@ namespace Patlus.IdentityManagement.Rest.Features.Pools
         /// Updating pool using partial update, so you have to update which field you want to update.
         /// No need to pass all value
         /// </summary>
-        /// <param name="poolId">Pool Id</param>
-        /// <param name="form">Updated Pool Form</param>
         /// <returns>Pool Updated</returns>
         [HttpPatch("{poolId}")]
         [Authorize(Policy = PoolPolicy.Update)]
-        public async Task<ActionResult<PoolDto>> Update(Guid poolId, [FromBody] UpdateForm form)
+        public async Task<ActionResult<PoolDto>> Update(Guid poolId, [FromBody] UpdateForm form, CancellationToken cancellationToken)
         {
             var command = new UpdateCommand()
             {
@@ -120,7 +123,7 @@ namespace Patlus.IdentityManagement.Rest.Features.Pools
                 command.Description = form.Description;
             }
 
-            var pool = await _mediator.Send(command);
+            var pool = await _mediator.Send(command, cancellationToken);
 
             return Ok(_mapper.Map<PoolDto>(pool));
         }
@@ -128,12 +131,10 @@ namespace Patlus.IdentityManagement.Rest.Features.Pools
         /// <summary>
         /// Update active status of specific pool
         /// </summary>
-        /// <param name="poolId">Pool Id</param>
-        /// <param name="form">Update Form</param>
         /// <returns>Pool Updated</returns>
         [HttpPut("{poolId}/active")]
         [Authorize(Policy = PoolPolicy.UpdateActiveStatus)]
-        public async Task<PoolDto> UpdateActiveStatus(Guid poolId, [FromBody] UpdateActiveStatusForm form)
+        public async Task<PoolDto> UpdateActiveStatus(Guid poolId, [FromBody] UpdateActiveStatusForm form, CancellationToken cancellationToken)
         {
             var command = new UpdateActiveStatusCommand
             {
@@ -142,7 +143,7 @@ namespace Patlus.IdentityManagement.Rest.Features.Pools
                 RequestorId = _userResolver.Current.Id
             };
 
-            var pool = await _mediator.Send(command);
+            var pool = await _mediator.Send(command, cancellationToken);
 
             return _mapper.Map<Pool, PoolDto>(pool);
         }

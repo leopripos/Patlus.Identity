@@ -17,7 +17,6 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Tokens.Create.CreateCo
     [Trait("UT-Class", "Tokens/Create/CreateCommandHandlerTests")]
     public sealed class Handle_Should_Throw_NotFoundException : IDisposable
     {
-        private readonly Mock<ILogger<CreateCommandHandler>> _mockLogger;
         private readonly Mock<IMasterDbContext> _mockMasterDbContext;
         private readonly Mock<IPasswordService> _mockPasswordService;
         private readonly Mock<ITokenService> _mockTokenService;
@@ -26,7 +25,6 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Tokens.Create.CreateCo
 
         public Handle_Should_Throw_NotFoundException()
         {
-            _mockLogger = new Mock<ILogger<CreateCommandHandler>>();
             _mockMasterDbContext = new Mock<IMasterDbContext>();
             _mockPasswordService = new Mock<IPasswordService>();
             _mockTokenService = new Mock<ITokenService>();
@@ -36,7 +34,6 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Tokens.Create.CreateCo
 
         public void Dispose()
         {
-            _mockLogger.Reset();
             _mockMasterDbContext.Reset();
             _mockPasswordService.Reset();
             _mockTokenService.Reset();
@@ -50,7 +47,6 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Tokens.Create.CreateCo
         {
             // Arrange
             var handler = new CreateCommandHandler(
-                _mockLogger.Object,
                 _mockMasterDbContext.Object,
                 _mockPasswordService.Object,
                 _mockTokenService.Object,

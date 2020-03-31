@@ -1,12 +1,14 @@
-﻿using Patlus.IdentityManagement.UseCase.Entities;
+﻿using MockQueryable.Moq;
+using Patlus.IdentityManagement.UseCase.Entities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools
 {
     public static class PoolsFaker
     {
-        public static IDictionary<Guid, Pool> CreatePools()
+        public static IQueryable<Pool> CreatePools()
         {
             var admin0Id = new Guid("9b76c5e9-fe62-4598-ba99-16ca96e5c605");
 
@@ -35,16 +37,13 @@ namespace Patlus.IdentityManagement.UseCaseTests.Features.Pools
                 Archived = false,
             };
 
-            return new Dictionary<Guid, Pool>() {
-                {
-                    sysAdminPool.Id,
-                    sysAdminPool
-                },
-                {
-                    employeePool.Id,
-                    employeePool
-                }
+            var pools = new List<Pool>
+            {
+                sysAdminPool,
+                employeePool
             };
+
+            return pools.AsQueryable().BuildMock().Object;
         }
     }
 }
