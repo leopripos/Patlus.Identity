@@ -13,7 +13,7 @@ namespace Patlus.IdentityManagement.Infrastructure.Cache
             return services;
         }
 
-        public static IServiceCollection AddTokenStorageCache(this IServiceCollection services)
+        public static IServiceCollection AddTokenCacheStorage(this IServiceCollection services)
         {
             services.AddSingleton<ITokenStorageService, DistributedTokenStorageService>();
 
